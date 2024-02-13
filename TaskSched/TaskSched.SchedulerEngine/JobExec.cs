@@ -32,35 +32,46 @@ namespace TaskSched.SchedulerEngine
 
         public async Task Execute(IJobExecutionContext context)
         {
-            Guid eventId = Guid.Parse(context.JobDetail.Key.Name);
-
-            var eventGet = await _eventStore.Get(eventId);
-            Event eventItem = eventGet.Result;
-
-            foreach(var eventActivity in eventItem.Activities)
+            try
             {
-                var activityGet = await _activityStore.Get(eventActivity.ActivityId);
-                Activity activity = activityGet.Result;
+                Guid eventId = Guid.Parse(context.JobDetail.Key.Name);
 
-                ActivityContext activityContext = new ActivityContext()
+                var eventGet = await _eventStore.Get(eventId);
+                Event eventItem = eventGet.Result;
+
+                foreach (var eventActivity in eventItem.Activities)
                 {
-                    EventItem = eventItem,
-                    EventActivity = eventActivity, 
-                    Activity = activity
-                };
+                    var activityGet = await _activityStore.Get(eventActivity.ActivityId);
+                    Activity activity = activityGet.Result;
 
-                _executionEngine.DoActivity(activityContext);
+                    ActivityContext activityContext = new ActivityContext()
+                    {
+                        EventItem = eventItem,
+                        EventActivity = eventActivity,
+                        Activity = activity
+                    };
 
+                    _executionEngine.DoActivity(activityContext);
+
+                }
+
+                eventItem.LastExecution = DateTime.Now;
+                DateTime? nextExecution = await GetNextFireTimeForJob(context);
+                eventItem.NextExecution = nextExecution ?? DateTime.MaxValue;
+
+                await _eventStore.Update(eventItem);
+
+
+                Console.WriteLine($"{DateTime.Now}: {context.JobDetail.Key}");
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
 
-            eventItem.LastExecution = DateTime.Now;
-            DateTime? nextExecution = await GetNextFireTimeForJob(context);
-            eventItem.NextExecution = nextExecution ?? DateTime.MaxValue; 
-
-            await _eventStore.Update(eventItem);
-
-
-            Console.WriteLine($"{DateTime.Now}: {context.JobDetail.Key}");
+                //  rethrow as a job execution exception 
+                var jee = new JobExecutionException(ex);
+                throw jee;
+            }
         }
 
         internal async Task<DateTime?> GetNextFireTimeForJob(IJobExecutionContext context)

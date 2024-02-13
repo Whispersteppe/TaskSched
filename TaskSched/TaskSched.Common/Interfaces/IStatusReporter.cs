@@ -11,7 +11,7 @@ namespace TaskSched.Common.Interfaces
     /// </summary>
     public interface IStatusListener
     {
-        //TODO
+        //TODO  need the listener stuff
     }
 
     /// <summary>
@@ -19,7 +19,7 @@ namespace TaskSched.Common.Interfaces
     /// </summary>
     public interface ISchedulerEngineStatus
     {
-        //TODO
+        //TODO  need the listener stuff
 
     }
 
@@ -29,7 +29,7 @@ namespace TaskSched.Common.Interfaces
     /// </summary>
     public interface IExecutionEngineStatus
     {
-        //TODO
+        //TODO  need the listener stuff
     }
 
 }

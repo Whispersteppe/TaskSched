@@ -23,7 +23,7 @@ namespace TaskSched.Common.DataModel
         /// <summary>
         /// the type of activity
         /// </summary>
-        public ActivityTypeEnum ActivityType { get; set; }
+        public Guid ActivityHandlerId { get; set; }
 
         /// <summary>
         /// Name of the activity
@@ -36,11 +36,5 @@ namespace TaskSched.Common.DataModel
         public List<ActivityField> DefaultFields { get; set; }
     }
 
-    /// <summary>
-    /// the different activity types that can be used
-    /// </summary>
-    public enum ActivityTypeEnum
-    {
-        ExternalProgram = 1
-    }
+
 }

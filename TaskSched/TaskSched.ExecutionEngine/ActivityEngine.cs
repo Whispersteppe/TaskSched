@@ -13,15 +13,17 @@ namespace TaskSched.ExecutionEngine
     public class ActivityEngine : IExecutionEngine
     {
         ILogger _logger;
+        IExecutionStore _executionStore;
 
         ITargetBlock<ActivityContext> _pipeline;
 
         /// <summary>
         /// constructor
         /// </summary>
-        public ActivityEngine(ILogger logger) 
+        public ActivityEngine(ILogger logger, IExecutionStore executionStore) 
         {
             _logger = logger;
+            _executionStore = executionStore;
             _pipeline = CreateDataflowPipeline();
         }
 
@@ -46,26 +48,32 @@ namespace TaskSched.ExecutionEngine
         {
             var ingestBlock = new TransformBlock<ActivityContext, ActivityContext>(IngestProcess);
             var ingestBuffer = new BufferBlock<ActivityContext>();
+            ingestBlock.LinkTo(ingestBuffer);
 
-            // all of the handlers
-            var executionHandler = new TransformBlock<ActivityContext, ActivityContext>(FoundExecutionHandler);
-            var notFoundHandler = new TransformBlock<ActivityContext, ActivityContext>(NotFoundHandler);
 
 
             var finalBuffer = new BufferBlock<ActivityContext>();
             var finalBlock = new ActionBlock<ActivityContext>(FinalProcess);
-
-            //  now link everything up
-
-            ingestBlock.LinkTo(ingestBuffer);
-
-            ingestBuffer.LinkTo(executionHandler, x => { return x.Activity.ActivityType == ActivityTypeEnum.ExternalProgram; });
-            ingestBuffer.LinkTo(notFoundHandler);
-
-
-            executionHandler.LinkTo(finalBuffer);
-            notFoundHandler.LinkTo(finalBuffer);
             finalBuffer.LinkTo(finalBlock);
+
+
+
+            // all of the handlers
+            var handlerList = _executionStore.GetExecutionHandlers().GetAwaiter().GetResult();
+
+            foreach (IExecutionHandler handler in handlerList)
+            {
+                var executionHandler = new TransformBlock<ActivityContext, ActivityContext>(handler.HandleActivity);
+
+                ingestBuffer.LinkTo(executionHandler, x => { return x.Activity.ActivityHandlerId == handler.HandlerInfo.HandlerId; });
+                executionHandler.LinkTo(finalBuffer);
+
+            }
+
+
+            var notFoundHandler = new TransformBlock<ActivityContext, ActivityContext>(NotFoundHandler);
+            ingestBuffer.LinkTo(notFoundHandler);
+            notFoundHandler.LinkTo(finalBuffer);
 
             return ingestBlock;
         }
@@ -76,11 +84,6 @@ namespace TaskSched.ExecutionEngine
             return context;
         }
 
-        internal async Task<ActivityContext> FoundExecutionHandler(ActivityContext context)
-        {
-            Debug.WriteLine($"Found Execution Handler: {context}");
-            return context;
-        }
 
         internal async Task<ActivityContext> NotFoundHandler(ActivityContext context)
         {

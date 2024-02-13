@@ -59,8 +59,7 @@ namespace TaskSched.Test
             var db = this.CollectionFixture.Repository;
 
             var item = await CreateActivity();
-
-            item.ActivityType = ActivityTypeEnum.ExternalProgram;
+            item.ActivityHandlerId = new Guid("00000000-0000-0000-0000-000000000001");
             db.Activities.Update(item);
             await db.SaveChangesAsync();
 

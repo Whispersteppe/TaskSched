@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using TaskSched.Common.Interfaces;
 using TaskSched.ExecutionEngine;
+using TaskSched.ExecutionStore;
 
 namespace TaskSched.Test.Console
 {
@@ -21,10 +22,11 @@ namespace TaskSched.Test.Console
             IEventStore eventStore = new InMemoryEventStore();
             IActivityStore activityStore = new InMemoryActivityStore();
             ILogger logger = new DebugLogger();
+            IExecutionStore executionStore = new TaskSched.ExecutionStore.ExecutionStore(logger);
 
             var activity = new Common.DataModel.Activity()
             {
-                ActivityType =  Common.DataModel.ActivityTypeEnum.ExternalProgram,
+                ActivityHandlerId = new Guid("00000000-0000-0000-0000-000000000001"),
                 Name = "testName",
                 DefaultFields = new List<Common.DataModel.ActivityField>()
                 {
@@ -39,7 +41,7 @@ namespace TaskSched.Test.Console
 
             var activityCreate = await activityStore.Create(activity);
 
-            IExecutionEngine executionEngine = new ActivityEngine(logger);
+            IExecutionEngine executionEngine = new ActivityEngine(logger, executionStore);
 
             ISchedulerEngine schedulerEngine = new TaskSched.SchedulerEngine.SchedulerEngine(executionEngine, eventStore, activityStore, logger);
 

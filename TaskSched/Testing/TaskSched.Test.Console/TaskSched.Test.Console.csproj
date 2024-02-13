@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\TaskSched.Common\TaskSched.Common.csproj" />
     <ProjectReference Include="..\..\TaskSched.ExecutionEngine\TaskSched.ExecutionEngine.csproj" />
+    <ProjectReference Include="..\..\TaskSched.ExecutionStore\TaskSched.ExecutionStore.csproj" />
     <ProjectReference Include="..\..\TaskSched.SchedulerEngine\TaskSched.SchedulerEngine.csproj" />
   </ItemGroup>
 

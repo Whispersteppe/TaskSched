@@ -23,7 +23,7 @@ namespace TaskSched.Test.Fakes
                     Bogus.Faker<Activity> generator = new Bogus.Faker<Activity>()
                         .RuleFor(x => x.Id, Guid.Empty)
                         .RuleFor(x => x.Name, f => f.Lorem.Sentence())
-                        .RuleFor(x => x.ActivityType, f =>  ActivityTypeEnum.ExternalProgram)
+                        .RuleFor(x => x.ActivityHandlerId, f =>  Guid.Empty)
                         .RuleFor(x => x.DefaultFields, f => ActivityFields.Create(activityFieldCount, Guid.Empty))
                         ;
 

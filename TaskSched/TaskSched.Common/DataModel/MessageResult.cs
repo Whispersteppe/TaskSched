@@ -8,6 +8,16 @@ namespace TaskSched.Common.DataModel
 {
     public class ExpandedResult
     {
+        public ResultMessageSeverity Status 
+        { 
+            get
+            {
+                if (Messages == null) return ResultMessageSeverity.OK;
+                if (Messages.Count == 0) return ResultMessageSeverity.OK;
+                return Messages.Max(x => x.Severity);
+
+            } 
+        }
         public List<ResultMessage> Messages { get; set; } = new List<ResultMessage>();
     }
 
@@ -24,10 +34,10 @@ namespace TaskSched.Common.DataModel
 
     public enum ResultMessageSeverity
     {
-        OK,
-        Information,
-        Warning,
-        Error,
-        Catastrophic,
+        OK = 0,
+        Information = 1,
+        Warning = 2,
+        Error = 3,
+        Catastrophic = 4,
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -31,6 +31,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\TaskSched.Common\TaskSched.Common.csproj" />
     <ProjectReference Include="..\..\TaskSched.DataStore\TaskSched.DataStore.csproj" />
+    <ProjectReference Include="..\..\TaskSched.ExecutionEngine\TaskSched.ExecutionEngine.csproj" />
+    <ProjectReference Include="..\..\TaskSched.ExecutionStore\TaskSched.ExecutionStore.csproj" />
+    <ProjectReference Include="..\..\TaskSched.SchedulerEngine\TaskSched.SchedulerEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

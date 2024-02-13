@@ -19,7 +19,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskSched.DataStore", "Task
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskSched.Test.Console", "Testing\TaskSched.Test.Console\TaskSched.Test.Console.csproj", "{9E9AB624-C1B5-4430-96A5-3EAB36DD3305}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OldDataLoader", "Testing\OldDataLoader\OldDataLoader.csproj", "{B0CB11F8-D355-482C-899E-6C100F13BBB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OldDataLoader", "Testing\OldDataLoader\OldDataLoader.csproj", "{B0CB11F8-D355-482C-899E-6C100F13BBB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSched.ExecutionStore", "TaskSched.ExecutionStore\TaskSched.ExecutionStore.csproj", "{B4CBE28D-F1C0-49E7-BD6C-D6FFF39EBB3A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{A4DE2370-1E79-4DA6-89A9-CE7913906AE6}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +62,10 @@ Global
 		{B0CB11F8-D355-482C-899E-6C100F13BBB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0CB11F8-D355-482C-899E-6C100F13BBB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0CB11F8-D355-482C-899E-6C100F13BBB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4CBE28D-F1C0-49E7-BD6C-D6FFF39EBB3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4CBE28D-F1C0-49E7-BD6C-D6FFF39EBB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4CBE28D-F1C0-49E7-BD6C-D6FFF39EBB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4CBE28D-F1C0-49E7-BD6C-D6FFF39EBB3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
