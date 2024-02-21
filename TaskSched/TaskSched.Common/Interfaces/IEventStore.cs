@@ -54,4 +54,5 @@ namespace TaskSched.Common.Interfaces
         /// <returns></returns>
         Task<ExpandedResult> MoveEvent(Guid eventId, Guid? newParentCalendarId);
     }
+
 }

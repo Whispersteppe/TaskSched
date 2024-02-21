@@ -14,12 +14,12 @@ namespace TaskSched.DataStore
 {
     public class CalendarStore : ICalendarStore
     {
-        TaskSchedDbContext _dbContext;
+        TaskSchedDbContextFactory _contextFactory;
         IDataStoreMapper _mapper;
 
-        public CalendarStore(TaskSchedDbContext dbContext, IDataStoreMapper mapper) 
+        public CalendarStore(TaskSchedDbContextFactory contextFactory, IDataStoreMapper mapper) 
         { 
-            _dbContext = dbContext;
+            _contextFactory = contextFactory;
             _mapper = mapper;
         }
 
@@ -29,182 +29,236 @@ namespace TaskSched.DataStore
 
             item.Id = Guid.Empty;
 
-            _dbContext.Calendars.Add(item);
-
-            await _dbContext.SaveChangesAsync();
-
-            Model.ExpandedResult<Guid> rslt = new Model.ExpandedResult<Guid>()
+            using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
             {
-                Result = item.Id
-            };
+                _dbContext.Calendars.Add(item);
 
-            rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar created" });
+                await _dbContext.SaveChangesAsync();
 
-            return rslt;
+                Model.ExpandedResult<Guid> rslt = new Model.ExpandedResult<Guid>()
+                {
+                    Result = item.Id
+                };
+
+                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar created" });
+
+                return rslt;
+            }
         }
 
 
 
         public async Task<Model.ExpandedResult> Delete(Guid calendarId)
         {
-            var entity = await _dbContext.Calendars.FirstOrDefaultAsync(x => x.Id == calendarId);
-
-            Model.ExpandedResult rslt = new Model.ExpandedResult();
-
-
-            if (entity != null)
+            using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
             {
-                _dbContext.Calendars.Remove(entity);
 
-                await _dbContext.SaveChangesAsync();
-                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar deleted" });
+                var entity = await _dbContext.Calendars.FirstOrDefaultAsync(x => x.Id == calendarId);
 
+                Model.ExpandedResult rslt = new Model.ExpandedResult();
+
+
+                if (entity != null)
+                {
+                    _dbContext.Calendars.Remove(entity);
+
+                    await _dbContext.SaveChangesAsync();
+                    rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar deleted" });
+
+                }
+                else
+                {
+                    rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Calendar not found.  no deletion occurred" });
+                }
+
+                return rslt;
             }
-            else
-            {
-                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Calendar not found.  no deletion occurred" });
-            }
-
-            return rslt;
         }
 
         public async Task<Model.ExpandedResult<Model.Calendar>> Get(Guid calendarId)
         {
-            var entity = await _dbContext
+            using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
+            {
+
+                var entity = await _dbContext
                 .Calendars
                 .FirstOrDefaultAsync(x => x.Id == calendarId)
                 ;
 
-            Model.ExpandedResult<Model.Calendar?> rslt = new Model.ExpandedResult<Model.Calendar>();
+                Model.ExpandedResult<Model.Calendar?> rslt = new Model.ExpandedResult<Model.Calendar>();
 
-            if (entity != null)
-            {
+                if (entity != null)
+                {
 
-                rslt.Result = _mapper.Map<Model.Calendar>(entity);
-                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar retrieved" });
+                    rslt.Result = _mapper.Map<Model.Calendar>(entity);
+                    rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar retrieved" });
 
+                }
+                else
+                {
+                    rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Calendar not found." });
+                }
+
+                return rslt;
             }
-            else
-            {
-                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Calendar not found." });
-            }
-
-            return rslt;
         }
 
 
         public async Task<Model.ExpandedResult<List<Model.Calendar>>> GetAll(CalendarRetrievalParameters parameters)
         {
-            var query = _dbContext
+            using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
+            {
+
+                var query = _dbContext
                 .Calendars.AsQueryable()
                 ;
 
-            if (parameters.AddChildEvents == true)
-            {
-                query = query
-                    .Include(x => x.Events)
-                    ;
-            }
-
-            var calendars = await query.ToListAsync();
+                var calendars = await query.ToListAsync();
 
 
-            if (parameters.AsTree == true)
-            {
-                //  build out the tree
-
-                var calendarTree = new List<Db.Calendar>();
-
-                foreach (var calendar in calendars)
+                if (parameters.AddChildEvents == true)
                 {
-                    if (calendar.ParentCalendarId == null)
+                    //  add the unassigned calendar
+                    calendars.Add(new Db.Calendar()
                     {
-                        calendarTree.Add(calendar);
-                    }
-                    else
+                        Id = Guid.Empty,
+                        Name = "Unassigned Events",
+                        ParentCalendarId = null,
+                        Events = new List<Db.Event>(),
+                    });
+
+                    var events = await _dbContext
+                        .Events
+                        .Include(x => x.Schedules)
+                        .Include(x => x.Activities).ThenInclude(x=>x.Fields)
+                        .ToListAsync();
+                    ;
+
+
+                    foreach (var eventItem in events)
                     {
-                        var parentCalendar = calendars.FirstOrDefault(x => x.Id == calendar.ParentCalendarId);
-                        if (parentCalendar != null)
+                        Db.Calendar? associatedCalendar;
+                        if (eventItem.CalendarId != null)
                         {
-                            if (parentCalendar.ChildCalendars == null)
+                            associatedCalendar = calendars.FirstOrDefault(x => x.Id == eventItem.CalendarId);
+                            if (associatedCalendar == null)
                             {
-                                parentCalendar.ChildCalendars = new List<Db.Calendar>();
+                                associatedCalendar = calendars.FirstOrDefault(x => x.Id == Guid.Empty);
                             }
-                            parentCalendar.ChildCalendars.Add(calendar);
                         }
+                        else
+                        {
+                            associatedCalendar = calendars.FirstOrDefault(x => x.Id == Guid.Empty);
+                        }
+
+                        associatedCalendar.Events.Add(eventItem);
                     }
                 }
 
-                calendars = calendarTree;
+                if (parameters.AsTree == true)
+                {
+                    //  build out the tree
+
+                    var calendarTree = new List<Db.Calendar>();
+
+                    foreach (var calendar in calendars)
+                    {
+                        if (calendar.ParentCalendarId == null)
+                        {
+                            calendarTree.Add(calendar);
+                        }
+                        else
+                        {
+                            var parentCalendar = calendars.FirstOrDefault(x => x.Id == calendar.ParentCalendarId);
+                            if (parentCalendar != null)
+                            {
+                                if (parentCalendar.ChildCalendars == null)
+                                {
+                                    parentCalendar.ChildCalendars = new List<Db.Calendar>();
+                                }
+                                parentCalendar.ChildCalendars.Add(calendar);
+                            }
+                        }
+                    }
+
+                    calendars = calendarTree;
+                }
+
+
+                Model.ExpandedResult<List<Model.Calendar>> rslt = new Model.ExpandedResult<List<Model.Calendar>>();
+
+                if (calendars != null)
+                {
+
+                    rslt.Result = _mapper.Map<List<Model.Calendar>>(calendars);
+                    rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendars retrieved" });
+
+                }
+                else
+                {
+                    rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Calendars not found." });
+                }
+
+                return rslt;
             }
-
-
-            Model.ExpandedResult<List<Model.Calendar>> rslt = new Model.ExpandedResult<List<Model.Calendar>>();
-
-            if (calendars != null)
-            {
-
-                rslt.Result = _mapper.Map<List<Model.Calendar>>(calendars);
-                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendars retrieved" });
-
-            }
-            else
-            {
-                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Calendars not found." });
-            }
-
-            return rslt;
         }
 
         public async Task<Model.ExpandedResult> Update(Model.Calendar calendar)
         {
-            var dbEntity = await _dbContext
+            using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
+            {
+
+                var dbEntity = await _dbContext
                 .Calendars
                 .FirstOrDefaultAsync(x => x.Id == calendar.Id)
                 ;
 
-            Model.ExpandedResult rslt = new Model.ExpandedResult();
+                Model.ExpandedResult rslt = new Model.ExpandedResult();
 
 
-            if (dbEntity != null)
-            {
-                _dbContext.Entry(dbEntity).CurrentValues.SetValues(calendar);
+                if (dbEntity != null)
+                {
+                    _dbContext.Entry(dbEntity).CurrentValues.SetValues(calendar);
 
-                _dbContext.Update(dbEntity);
+                    _dbContext.Update(dbEntity);
 
-                await _dbContext.SaveChangesAsync();
+                    await _dbContext.SaveChangesAsync();
 
-                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar updated" });
+                    rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar updated" });
 
+                }
+                else
+                {
+                    rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Error, Message = "Calendar not found.  no update occurred" });
+                }
+
+                return rslt;
             }
-            else
-            {
-                rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Error, Message = "Calendar not found.  no update occurred" });
-            }
-
-            return rslt;
 
         }
 
 
         public async Task<ExpandedResult> MoveCalendar(Guid calendarId, Guid? newParentCalendarId)
         {
-            var calendar = _dbContext.Calendars.FirstOrDefault(x=>x.Id == calendarId);
-
-            if (calendar != null)
+            using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
             {
-                calendar.ParentCalendarId = newParentCalendarId;
-                _dbContext.Calendars.Update(calendar);
-                await _dbContext.SaveChangesAsync();
 
-                return new ExpandedResult() { Messages = new List<Model.ResultMessage>() { new ResultMessage() { Message = "Calendar moved", Severity = ResultMessageSeverity.OK } } };
+                var calendar = _dbContext.Calendars.FirstOrDefault(x => x.Id == calendarId);
 
+                if (calendar != null)
+                {
+                    calendar.ParentCalendarId = newParentCalendarId;
+                    _dbContext.Calendars.Update(calendar);
+                    await _dbContext.SaveChangesAsync();
+
+                    return new ExpandedResult() { Messages = new List<Model.ResultMessage>() { new ResultMessage() { Message = "Calendar moved", Severity = ResultMessageSeverity.OK } } };
+
+                }
+                else
+                {
+                    return new ExpandedResult() { Messages = new List<Model.ResultMessage>() { new ResultMessage() { Message = "Calendar was not found", Severity = ResultMessageSeverity.Error } } };
+                }
             }
-            else
-            {
-                return new ExpandedResult() { Messages = new List<Model.ResultMessage>() { new ResultMessage() { Message = "Calendar was not found", Severity = ResultMessageSeverity.Error } } };
-            }
-
 
         }
 

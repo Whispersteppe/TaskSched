@@ -1,6 +1,7 @@
 ﻿using OldDataLoader.OldDataModel;
 using System.Diagnostics;
 using TaskSched.Common.DataModel;
+using TaskSched.Common.FieldValidator;
 using TaskSched.Common.Interfaces;
 using TaskSched.DataStore;
 using Activity = TaskSched.Common.DataModel.Activity;
@@ -28,12 +29,16 @@ namespace OldDataLoader
             //  set up and create the database.  we'll wipe whatever is already there.
             TaskSchedDbContextConfiguration dbConfig = new TaskSchedDbContextConfiguration()
             {
-                DataSource = "TaskSched.sqlite"
+                DataSource = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "TaskSched.sqlite")
             };
 
-            DataStoreMapper mapper = new DataStoreMapper();
+            Debug.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(dbConfig, Newtonsoft.Json.Formatting.Indented));
 
-            TaskSchedDbContext dbContext = new TaskSchedDbContext(dbConfig);
+
+            DataStoreMapper mapper = new DataStoreMapper();
+            TaskSchedDbContextFactory contextFactory = new TaskSchedDbContextFactory(dbConfig);
+            TaskSchedDbContext dbContext = contextFactory.GetConnection();
+
             if (File.Exists(dbConfig.DataSource))
             {
                 await dbContext.Database.EnsureDeletedAsync();
@@ -41,9 +46,10 @@ namespace OldDataLoader
             await dbContext.Database.EnsureCreatedAsync();
 
             //  create my event stores
-            IEventStore eventStore = new EventStore(dbContext, mapper);
-            IActivityStore activityStore = new ActivityStore(dbContext, mapper);
-            ICalendarStore calendarStore = new CalendarStore(dbContext, mapper);
+            IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
+            IEventStore eventStore = new EventStore(contextFactory, mapper, fieldValidatorSet);
+            IActivityStore activityStore = new ActivityStore(contextFactory, mapper, fieldValidatorSet);
+            ICalendarStore calendarStore = new CalendarStore(contextFactory, mapper);
 
             List<Activity> activities = await LoadActivities(config, activityStore);
 
@@ -65,7 +71,11 @@ namespace OldDataLoader
             return rslt.Result;
         }
 
-        private static async Task LoadBaseTaskList(TaskRunnerConfig config, ICalendarStore calendarStore, IEventStore eventStore, List<TaskBaseConfig>? taskList, Guid? parentCalendarId = null)
+        private static async Task LoadBaseTaskList(TaskRunnerConfig config, 
+            ICalendarStore calendarStore, 
+            IEventStore eventStore, 
+            List<TaskBaseConfig>? taskList, 
+            Guid? parentCalendarId = null)
         {
             if (taskList == null || taskList.Count == 0) return;
 
@@ -129,14 +139,17 @@ namespace OldDataLoader
                         {
                             Name = field.Key,
                             Value = field.Value.ToString(),
-                            ActivityFieldId = templateField.NewId
+                            ActivityFieldId = templateField.NewId,
+                            FieldType = field.Key == "Url" ? FieldTypeEnum.Url : FieldTypeEnum.String
                         };
 
                         activity.Fields.Add(eventActivityField);
 
                     }
 
-                    await eventStore.Create(eventItem);
+                    var rslt = await eventStore.Create(eventItem);
+                    var rsltGet = await eventStore.Get(rslt.Result);
+
 
                 }
             }
@@ -174,14 +187,15 @@ namespace OldDataLoader
                     {
                         Name = "ExecutablePath",
                         IsReadOnly = true,
-                        Value = executeTemplate.ExecutablePath
+                        Value = executeTemplate.ExecutablePath, 
+                        FieldType= FieldTypeEnum.ExecutablePath,
                     });
                     
                     activity.DefaultFields.Add(new ActivityField()
                     {
                         Name = "CommandLine",
                         IsReadOnly = true,
-                        Value = executeTemplate.CommandLine
+                        Value = executeTemplate.CommandLine.Replace("{0}", "{Url}")
                     });
 
                 }

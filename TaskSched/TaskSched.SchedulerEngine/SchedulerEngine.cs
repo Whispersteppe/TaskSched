@@ -19,7 +19,7 @@ namespace TaskSched.SchedulerEngine
         IActivityStore _activityStore;
         ILogger _logger;
 
-        Lazy<IScheduler> _scheduler;
+        IScheduler _scheduler;
 
         /// <summary>
         /// Scheduler Engine constructor
@@ -38,7 +38,9 @@ namespace TaskSched.SchedulerEngine
             _activityStore = activityStore;
             _logger = logger;
 
-            _scheduler = new Lazy<IScheduler>(InitializeQuartz);
+            IsRunning = false;
+
+            InitializeQuartz();
 
         }
 
@@ -49,11 +51,11 @@ namespace TaskSched.SchedulerEngine
         /// lazy load the scheduler on first use.
         /// </summary>
         /// <returns></returns>
-        private IScheduler InitializeQuartz()
+        private void InitializeQuartz()
         {
             var properties = new NameValueCollection();
 
-            var scheduler = SchedulerBuilder.Create(properties)
+            _scheduler = SchedulerBuilder.Create(properties)
                 // default max concurrency is 10
                 .UseDefaultThreadPool(x => x.MaxConcurrency = 5)
                 // this is the default 
@@ -65,28 +67,11 @@ namespace TaskSched.SchedulerEngine
                 .GetResult()
                 ;
 
-            scheduler.JobFactory = new EngineJobFactory(_executionEngine, _eventStore, _activityStore, _logger);
-
-            //  we'll want to load the scheduler with the current jobs from the database
-            LoadEventsFromDatastore().GetAwaiter().GetResult();
-
-            return scheduler;
-
+            _scheduler.JobFactory = new EngineJobFactory(_executionEngine, _eventStore, _activityStore, _logger);
 
         }
 
-        /// <summary>
-        /// loads all current events from the data store
-        /// </summary>
-        /// <returns></returns>
-        private async Task LoadEventsFromDatastore()
-        {
-            var rslt = await _eventStore.GetAll();
-            foreach (var eventItem in rslt.Result)
-            {
-                await LoadEvent(eventItem);
-            }
-        }
+
 
         /// <summary>
         /// loads a single event to quartz
@@ -95,11 +80,24 @@ namespace TaskSched.SchedulerEngine
         /// <returns></returns>
         private async Task LoadEvent(Event eventItem)
         {
+            if (eventItem == null) return;
+            if (eventItem.IsActive == false) return;
+
+            DateTime? nextExecution = await SchedulerUtility.GetNextFireTimeForJob(eventItem.JobKey(), _scheduler);
+            if (nextExecution != null)
+            {
+                if (eventItem.NextExecution != nextExecution)
+                {
+                    eventItem.NextExecution = nextExecution.Value;
+                    await _eventStore.Update(eventItem);
+                }
+            }
+
             IJobDetail job = JobBuilder.Create<JobExec>()
                  .WithIdentity(eventItem.JobKey())
                  .Build();
 
-            await _scheduler.Value.AddJob(job, true, true);
+            await _scheduler.AddJob(job, true, true);
 
             foreach (var schedule in eventItem.Schedules)
             {
@@ -110,7 +108,15 @@ namespace TaskSched.SchedulerEngine
                  .WithCronSchedule(schedule.CRONData)
                  .Build();
 
-                await _scheduler.Value.ScheduleJob(trigger);
+                await _scheduler.ScheduleJob(trigger);
+            }
+
+            if (eventItem.CatchUpOnStartup == true)
+            {
+                if (DateTime.Now > eventItem.NextExecution)
+                {
+                    await _scheduler.TriggerJob(eventItem.JobKey());
+                }
             }
 
         }
@@ -126,13 +132,15 @@ namespace TaskSched.SchedulerEngine
         /// <returns></returns>
         public async Task<ExpandedResult<Guid>> CreateEvent(Event eventItem)
         {
-            
 
             var rsltCreate = await _eventStore.Create(eventItem);
             var rsltGet = await _eventStore.Get(rsltCreate.Result);
             rsltGet.Messages.AddRange(rsltCreate.Messages);
 
-            await LoadEvent(rsltGet.Result);
+            if (IsRunning == true)
+            {
+                await LoadEvent(rsltGet.Result);
+            }
 
             return rsltCreate;
         }
@@ -146,7 +154,10 @@ namespace TaskSched.SchedulerEngine
         {
             var rsltGet = await _eventStore.Get(eventId);
 
-            await _scheduler.Value.DeleteJob(rsltGet.Result.JobKey());
+            if (IsRunning == true)
+            {
+                await _scheduler.DeleteJob(rsltGet.Result.JobKey());
+            }
 
             var rslt = await _eventStore.Delete(eventId);
             return rslt;
@@ -185,12 +196,18 @@ namespace TaskSched.SchedulerEngine
         /// </remarks>
         public async Task<ExpandedResult> UpdateEvent(Event eventItem)
         {
+            if (IsRunning == true)
+            {
+                await _scheduler.DeleteJob(eventItem.JobKey());
 
-            await _scheduler.Value.DeleteJob(eventItem.JobKey());
+            }
 
             var rslt = await _eventStore.Update(eventItem);
 
-            await LoadEvent(eventItem);
+            if (IsRunning == true)
+            {
+                await LoadEvent(eventItem);
+            }
 
             return rslt;
         }
@@ -199,15 +216,38 @@ namespace TaskSched.SchedulerEngine
 
         #region scheduler control
 
+        public bool IsRunning { get; private set; }
+
         /// <summary>
         /// Starts the underlying quartz instance
         /// </summary>
         /// <returns></returns>
         public async Task Start()
         {
-            await _scheduler.Value.Start();
+            if (IsRunning == false)
+            {
+
+                //  we'll want to load the scheduler with the current jobs from the database
+                await LoadEventsFromDatastore();
+
+                await _scheduler.Start();
+                IsRunning = true;
+            }
         }
 
+        /// <summary>
+        /// loads all current events from the data store
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadEventsFromDatastore()
+        {
+            var rslt = await _eventStore.GetAll();
+
+            foreach (var eventItem in rslt.Result)
+            {
+                await LoadEvent(eventItem);
+            }
+        }
 
 
         /// <summary>
@@ -216,18 +256,19 @@ namespace TaskSched.SchedulerEngine
         /// <returns></returns>
         public async Task Stop()
         {
-            if (_scheduler.IsValueCreated == false)
+            if (IsRunning == true)
             {
-                //  scheduler hasn't been created het, so don't create it and then destroy it.
-                return;
+
+
+                await _scheduler.Shutdown();
+
+                IDisposable? disposable = _scheduler as IDisposable;
+                disposable?.Dispose();
+
+                InitializeQuartz();
+
+                IsRunning = false;
             }
-
-            await _scheduler.Value.Shutdown();
-            
-            IDisposable? disposable = _scheduler as IDisposable;
-            disposable?.Dispose();
-
-            _scheduler = new Lazy<IScheduler>(InitializeQuartz);
         }
 
         #endregion

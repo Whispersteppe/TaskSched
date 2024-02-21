@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskSched.Common.FieldValidator;
 using TaskSched.Common.Interfaces;
 using TaskSched.DataStore;
 using TaskSched.ExecutionEngine;
@@ -27,11 +28,14 @@ namespace TaskSched.Test
             IExecutionStore executionStore = new ExecutionStore.ExecutionStore(logger);
             IExecutionEngine executionEngine = new ActivityEngine(logger, executionStore);
 
-            var db = this.CollectionFixture.Repository;
+            //var db = this.CollectionFixture.Repository;
+            var factory = CollectionFixture.RepositoryFactory;
+
+            IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
 
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            IEventStore eventStore = new TaskSched.DataStore.EventStore(db, mapper);
-            IActivityStore activityStore = new TaskSched.DataStore.ActivityStore(db, mapper);
+            IEventStore eventStore = new TaskSched.DataStore.EventStore(factory, mapper, fieldValidatorSet);
+            IActivityStore activityStore = new TaskSched.DataStore.ActivityStore(factory, mapper, fieldValidatorSet);
 
 
             ISchedulerEngine scheduleEngine = new SchedulerEngine.SchedulerEngine(executionEngine, eventStore, activityStore, logger);

@@ -4,6 +4,22 @@ using TaskSched.DataStore.DataModel;
 
 namespace TaskSched.DataStore
 {
+    public class TaskSchedDbContextFactory
+    {
+
+        TaskSchedDbContextConfiguration _configuration;
+        public TaskSchedDbContextFactory(TaskSchedDbContextConfiguration configuration) 
+        { 
+            _configuration = configuration;
+        }
+
+        public TaskSchedDbContext GetConnection()
+        {
+            TaskSchedDbContext dbContext = new TaskSchedDbContext(_configuration);
+
+            return dbContext;
+        }
+    }
 
     public class TaskSchedDbContext : DbContext
     {
@@ -18,7 +34,7 @@ namespace TaskSched.DataStore
 
         TaskSchedDbContextConfiguration _config;
 
-        public TaskSchedDbContext(TaskSchedDbContextConfiguration configuration) 
+        internal TaskSchedDbContext(TaskSchedDbContextConfiguration configuration) 
         {
             _config = configuration;
         }
@@ -33,9 +49,12 @@ namespace TaskSched.DataStore
                 builder.DataSource = _config.DataSource;
 
                 optionsBuilder.UseSqlite(builder.ConnectionString);
+
             }
 
+
             base.OnConfiguring(optionsBuilder);
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,6 +62,11 @@ namespace TaskSched.DataStore
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        public async Task EnsureCreated()
+        {
+            await Database.EnsureCreatedAsync();
         }
     }
 }

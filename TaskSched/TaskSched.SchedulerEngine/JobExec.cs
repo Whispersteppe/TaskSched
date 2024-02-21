@@ -56,7 +56,7 @@ namespace TaskSched.SchedulerEngine
                 }
 
                 eventItem.LastExecution = DateTime.Now;
-                DateTime? nextExecution = await GetNextFireTimeForJob(context);
+                DateTime? nextExecution = await SchedulerUtility.GetNextFireTimeForJob(context.JobDetail.Key, context.Scheduler);
                 eventItem.NextExecution = nextExecution ?? DateTime.MaxValue;
 
                 await _eventStore.Update(eventItem);
@@ -74,44 +74,5 @@ namespace TaskSched.SchedulerEngine
             }
         }
 
-        internal async Task<DateTime?> GetNextFireTimeForJob(IJobExecutionContext context)
-        {
-            JobKey jobKey = context.JobDetail.Key;
-            DateTime? nextFireTime = null;
-
-            var isJobExisting = context.Scheduler.CheckExists(jobKey);
-            if (isJobExisting.Result)
-            {
-                var triggers = await context.Scheduler.GetTriggersOfJob(jobKey);
-
-                
-                if (triggers.Count > 0)
-                {
-                    foreach(var trigger in triggers)
-                    {
-                        var nextFireTimeUtc = trigger.GetNextFireTimeUtc();
-                        if (nextFireTimeUtc.HasValue)
-                        {
-                            DateTime triggerNextFireTime = TimeZone.CurrentTimeZone.ToLocalTime(nextFireTimeUtc.Value.DateTime);
-
-                            if (nextFireTime != null)
-                            {
-                                if (triggerNextFireTime < nextFireTime)
-                                {
-                                    nextFireTime = triggerNextFireTime;
-                                }
-                            }
-                            else
-                            {
-                                nextFireTime = triggerNextFireTime;
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            return nextFireTime;
-        }
     }
 }

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="NLog" Version="5.2.8" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TaskSched.Common\TaskSched.Common.csproj" />
+    <ProjectReference Include="..\..\TaskSched.DataStore\TaskSched.DataStore.csproj" />
+    <ProjectReference Include="..\..\TaskSched.ExecutionEngine\TaskSched.ExecutionEngine.csproj" />
+    <ProjectReference Include="..\..\TaskSched.ExecutionStore\TaskSched.ExecutionStore.csproj" />
+    <ProjectReference Include="..\..\TaskSched.SchedulerEngine\TaskSched.SchedulerEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TaskScheduler.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

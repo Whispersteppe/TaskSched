@@ -15,6 +15,7 @@ namespace TaskSched.ExecutionEngine
         ILogger _logger;
         IExecutionStore _executionStore;
 
+
         ITargetBlock<ActivityContext> _pipeline;
 
         /// <summary>
@@ -25,6 +26,8 @@ namespace TaskSched.ExecutionEngine
             _logger = logger;
             _executionStore = executionStore;
             _pipeline = CreateDataflowPipeline();
+            IsRunning = false;
+
         }
 
         /// <summary>
@@ -100,12 +103,19 @@ namespace TaskSched.ExecutionEngine
 
         #region scheduler control
 
+
+        public bool IsRunning { get; private set; }
+
         /// <summary>
         /// Starts the underlying quartz instance
         /// </summary>
         /// <returns></returns>
         public async Task Start()
         {
+            if (IsRunning == false)
+            {
+                IsRunning = true;
+            }
         }
 
 
@@ -116,7 +126,10 @@ namespace TaskSched.ExecutionEngine
         /// <returns></returns>
         public async Task Stop()
         {
-
+            if (IsRunning == true)
+            {
+                IsRunning = false;
+            }
         }
 
         #endregion

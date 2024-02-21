@@ -178,15 +178,15 @@ namespace TaskSched.ExecutionStore
 
                         var process = Process.Start(startInfo);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        throw new Exception($"{executablePath} - {cmdLine}", e);
+                        _logger.LogError(ex, $"Error starting the FileExecuteHandler process - {executablePath} {commandLine}");
                     }
                 });
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, $"Error in running the FileExecuteHandler process - {executablePath} {commandLine}");
             }
 
 

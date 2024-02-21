@@ -1,4 +1,5 @@
 using Bogus;
+using TaskSched.Common.FieldValidator;
 using TaskSched.Common.Interfaces;
 using TaskSched.DataStore;
 using TaskSched.DataStore.DataModel;
@@ -25,13 +26,14 @@ namespace TaskSched.Test
         [Fact]
         public async Task EventActivityFieldCRUD()
         {
-            var db = this.CollectionFixture.Repository;
+            var factory = CollectionFixture.RepositoryFactory;
 
             var activity = await CreateActivity();
             var activityField = await CreateActivityField(activity.Id);
 
+            IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            IEventStore eventStore = new TaskSched.DataStore.EventStore(db, mapper);
+            IEventStore eventStore = new TaskSched.DataStore.EventStore(factory, mapper, fieldValidatorSet);
 
 
             var eventItem = Fakes.TaskSchedFaker.Model.Events.Create(3, 3);
@@ -64,16 +66,25 @@ namespace TaskSched.Test
         [Fact]
         public async Task ActivityFieldCRUD()
         {
-            var  db = this.CollectionFixture.Repository;
+            var factory = CollectionFixture.RepositoryFactory;
 
 
 
 
+            IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            IActivityStore activityStore = new TaskSched.DataStore.ActivityStore(db, mapper);
+            IActivityStore activityStore = new TaskSched.DataStore.ActivityStore(factory, mapper, fieldValidatorSet);
 
 
-            var activity = Fakes.TaskSchedFaker.Model.Activities.Create(3);
+            var activity = Fakes.TaskSchedFaker.Model.Activities.Create();
+
+            //  add fields
+            activity.DefaultFields.Add(Fakes.TaskSchedFaker.Model.ActivityFields.Create( FieldTypeEnum.String, "string data"));
+            activity.DefaultFields.Add(Fakes.TaskSchedFaker.Model.ActivityFields.Create(FieldTypeEnum.Url, "https://www.mozilla.org"));
+            activity.DefaultFields.Add(Fakes.TaskSchedFaker.Model.ActivityFields.Create(FieldTypeEnum.Number, "12345"));
+            activity.DefaultFields.Add(Fakes.TaskSchedFaker.Model.ActivityFields.Create(FieldTypeEnum.DateTime, DateTime.Now.ToString()));
+            activity.DefaultFields.Add(Fakes.TaskSchedFaker.Model.ActivityFields.Create(FieldTypeEnum.ExecutablePath, @"c:\MyDFatae.exe"));
+
 
 
             var rsltCreate = await activityStore.Create(activity);
@@ -96,10 +107,10 @@ namespace TaskSched.Test
         [Fact]
         public async Task CalendarCRUD()
         {
-            var db = this.CollectionFixture.Repository;
+            var factory = CollectionFixture.RepositoryFactory;
 
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            ICalendarStore calendarStore = new TaskSched.DataStore.CalendarStore(db, mapper);
+            ICalendarStore calendarStore = new TaskSched.DataStore.CalendarStore(factory, mapper);
 
 
             var calendar = Fakes.TaskSchedFaker.Model.Calendars.Create();

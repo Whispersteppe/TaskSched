@@ -1,4 +1,6 @@
-﻿namespace TaskSched.DataStore.DataModel
+﻿using TaskSched.Common.FieldValidator;
+
+namespace TaskSched.DataStore.DataModel
 {
     public class EventActivityField
     {
@@ -6,10 +8,13 @@
         public string Name { get; set; }
         public string Value { get; set; }
 
+        public FieldTypeEnum FieldType { get; set; }
+
         public Guid EventActivityId { get; set; }
         public Guid  ActivityFieldId { get; set; }
 
         public EventActivity EventActivityItem { get; set; }
         public ActivityField ActivityFieldItem { get; set; }
     }
+
 }

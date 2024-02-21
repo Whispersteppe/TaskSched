@@ -26,9 +26,9 @@ namespace TaskSched.Test
                 Name = "test activity",
                 DefaultFields = new List<ActivityField>()
                  {
-                    new ActivityField() { Id = Guid.NewGuid(), Name = "ExecutablePath", IsReadOnly = true, Value = "C:\\Program Files\\Mozilla Firefox\\firefox.exe" },
-                    new ActivityField() { Id = Guid.NewGuid(), Name = "CommandLine", IsReadOnly = true, Value = "-new-tab {0}" },
-                    new ActivityField() { Id = Guid.NewGuid(), Name = "Url", IsReadOnly = false, Value = "https://www.google.com/rss" },
+                    new ActivityField() { Id = Guid.NewGuid(), FieldType = Common.FieldValidator.FieldTypeEnum.ExecutablePath,  Name = "ExecutablePath", IsReadOnly = true, Value = "C:\\Program Files\\Mozilla Firefox\\firefox.exe" },
+                    new ActivityField() { Id = Guid.NewGuid(), FieldType = Common.FieldValidator.FieldTypeEnum.String,  Name = "CommandLine", IsReadOnly = true, Value = "-new-tab {Url}" },
+                    new ActivityField() { Id = Guid.NewGuid(), FieldType = Common.FieldValidator.FieldTypeEnum.Url, Name = "Url", IsReadOnly = false, Value = "https://www.google.com" },
 
                 }
             };
@@ -50,13 +50,39 @@ namespace TaskSched.Test
             {
                 if (field.IsReadOnly == false)
                 {
+                    string fieldData = "";
+                    switch (field.FieldType)
+                    {
+                        case Common.FieldValidator.FieldTypeEnum.String:
+                            fieldData = "string value";
+                            break;
+                        case Common.FieldValidator.FieldTypeEnum.Number:
+                            fieldData = "123";
+                            break;
+                        case Common.FieldValidator.FieldTypeEnum.Url:
+                            fieldData = "https://www.mozilla.org";
+                            break;
+                        case Common.FieldValidator.FieldTypeEnum.ExecutablePath:
+                            fieldData = @"c:\myStuff.exe";
+                            break;
+                        case Common.FieldValidator.FieldTypeEnum.DateTime:
+                            fieldData = DateTime.Now.ToString();
+                            break;
+                        default:
+                            fieldData = "default value - shouldn't get";
+                            break;
+                    }
+
+
                     eventActivity.Fields.Add(new EventActivityField()
                     {
                         Id = Guid.NewGuid(),
                         ActivityFieldId = field.Id,
                         Name = field.Name,
-                        Value = "glibnortz"
+                        Value = fieldData,
+                        FieldType = field.FieldType
                     });
+                    
                 }
             }
 

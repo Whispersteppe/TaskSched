@@ -35,117 +35,6 @@
           "PropertyType": "Url"
         }
       ]
-    },
-    {
-      "TemplateType": "FileExecute",
-      "ExecutablePath": "C:\\Program Files (x86)\\Notepad++\\notepad++.exe",
-      "CommandLine": "{0}",
-      "Name": "Notepad++",
-      "ID": 2,
-      "Properties": [
-        {
-          "Name": "FilePath",
-          "DefaultValue": "c:\\test.txt",
-          "Order": 1,
-          "PropertyType": "FilePath"
-        }
-      ]
-    },
-    {
-      "TemplateType": "FileExecute",
-      "ExecutablePath": "C:\\Program Files\\Microsoft Office\\root\\Office16\\visio.exe",
-      "CommandLine": "\"{Path}\\{FileName}\"",
-      "Name": "Visio",
-      "ID": 3,
-      "Properties": [
-        {
-          "Name": "FilePath",
-          "DefaultValue": "c:\\visio.vsd",
-          "Order": 1,
-          "PropertyType": "FilePath"
-        }
-      ]
-    },
-    {
-      "TemplateType": "FileExecute",
-      "ExecutablePath": "C:\\Program Files (x86)\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
-      "CommandLine": "\"{Path}\\{FileName}\"",
-      "Name": "Word",
-      "ID": 4,
-      "Properties": [
-        {
-          "Name": "Path",
-          "DefaultValue": "c:\\word.docx",
-          "Order": 1,
-          "PropertyType": "FilePath"
-        },
-        {
-          "Name": "FileName",
-          "DefaultValue": "Default",
-          "Order": 2,
-          "PropertyType": "String"
-        }
-      ]
-    },
-    {
-      "TemplateType": "RSSWatcher",
-      "ExecutablePath": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-      "CommandLine": "-new-tab {0}",
-      "Name": "RSS Feed",
-      "ID": 5,
-      "Properties": [
-        {
-          "Name": "Url",
-          "DefaultValue": "https://www.google.com/rss",
-          "Order": 1,
-          "PropertyType": "Url"
-        }
-      ]
-    },
-    {
-      "TemplateType": "FileExecute",
-      "ExecutablePath": "D:\\Program Files\\todolist_exe\\Todolist.exe",
-      "CommandLine": "{0}",
-      "Name": "TodoList",
-      "ID": 6,
-      "Properties": [
-        {
-          "Name": "FileName",
-          "DefaultValue": "c::\\list.tdl",
-          "Order": 1,
-          "PropertyType": "String"
-        }
-      ]
-    },
-    {
-      "TemplateType": "FileExecute",
-      "ExecutablePath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-      "CommandLine": "{Url}",
-      "Name": "Microsoft Edge",
-      "ID": 7,
-      "Properties": [
-        {
-          "Name": "Url",
-          "DefaultValue": "https://www.google.com",
-          "Order": 1,
-          "PropertyType": "String"
-        }
-      ]
-    },
-    {
-      "TemplateType": "FileExecute",
-      "ExecutablePath": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-      "CommandLine": "-private-window {0}",
-      "Name": "FirefoxUrl Private",
-      "ID": 8,
-      "Properties": [
-        {
-          "Name": "Url",
-          "DefaultValue": "https://www.google.com",
-          "Order": 1,
-          "PropertyType": "Url"
-        }
-      ]
     }
   ],
   "Tasks": [
@@ -2178,20 +2067,6 @@
           "Properties": {
             "Url": "https://cma.cincwebaxis.com/hiddencreek"
           }
-        },
-        {
-          "TemplateID": 6,
-          "IsActive": true,
-          "Trigger": {
-            "TriggerType": "CronTrigger",
-            "CronExpression": "0 0 14 * * ?"
-          },
-          "LastExecution": "2024-02-07T14:00:00.0296256-06:00",
-          "AllowLaunchOnStartup": true,
-          "Name": "House Cleaning",
-          "Properties": {
-            "FileName": "\"C:\\Users\\chris\\Documents\\House Cleaning Checklist.tdl\""
-          }
         }
       ],
       "Name": "Home",
@@ -2419,20 +2294,6 @@
           "Name": "Reddit",
           "Properties": {
             "Url": "https://www.reddit.com/"
-          }
-        },
-        {
-          "TemplateID": 7,
-          "IsActive": false,
-          "Trigger": {
-            "TriggerType": "CronTrigger",
-            "CronExpression": "0 0 7,9,11,13,15,17 * * ?"
-          },
-          "LastExecution": "2024-02-02T18:54:56.0076384-06:00",
-          "AllowLaunchOnStartup": true,
-          "Name": "Inoreader Edge",
-          "Properties": {
-            "Url": "http://www.inoreader.com/dashboard"
           }
         },
         {
@@ -2705,90 +2566,6 @@
               "Name": "The Morning Brew",
               "Properties": {
                 "Url": "http://blog.cwa.me.uk/"
-              }
-            },
-            {
-              "TemplateID": 5,
-              "IsActive": false,
-              "Trigger": {
-                "TriggerType": "CronTrigger",
-                "CronExpression": "0 0 * * * ?"
-              },
-              "LastExecution": "2024-02-02T18:54:56.0277544-06:00",
-              "AllowLaunchOnStartup": true,
-              "Name": "Dew Drop RSS",
-              "Properties": {
-                "Url": "http://feeds2.feedburner.com/alvinashcraft"
-              }
-            },
-            {
-              "TemplateID": 5,
-              "IsActive": false,
-              "Trigger": {
-                "TriggerType": "CronTrigger",
-                "CronExpression": "0 0 * * * ?"
-              },
-              "LastExecution": "2024-02-02T18:54:56.0292463-06:00",
-              "AllowLaunchOnStartup": true,
-              "Name": "Morning Brew RSS",
-              "Properties": {
-                "Url": "http://blog.cwa.me.uk/feed/"
-              }
-            },
-            {
-              "TemplateID": 5,
-              "IsActive": false,
-              "Trigger": {
-                "TriggerType": "CronTrigger",
-                "CronExpression": "0 0 * * * ?"
-              },
-              "LastExecution": "2024-02-02T18:54:56.0309076-06:00",
-              "AllowLaunchOnStartup": true,
-              "Name": ".Net App Developer Links RSS",
-              "Properties": {
-                "Url": "https://links.danrigby.com/feed.xml"
-              }
-            },
-            {
-              "TemplateID": 5,
-              "IsActive": false,
-              "Trigger": {
-                "TriggerType": "CronTrigger",
-                "CronExpression": "0 0 * * * ?"
-              },
-              "LastExecution": "2024-02-02T18:54:56.0318904-06:00",
-              "AllowLaunchOnStartup": true,
-              "Name": "A Fresh Cup",
-              "Properties": {
-                "Url": "https://afreshcup.com/feed.xml"
-              }
-            },
-            {
-              "TemplateID": 5,
-              "IsActive": false,
-              "Trigger": {
-                "TriggerType": "CronTrigger",
-                "CronExpression": "0 0 * * * ?"
-              },
-              "LastExecution": "2024-02-02T18:54:56.0337034-06:00",
-              "AllowLaunchOnStartup": true,
-              "Name": "Franky's Notes",
-              "Properties": {
-                "Url": "http://www.frankysnotes.com/feeds/posts/default"
-              }
-            },
-            {
-              "TemplateID": 5,
-              "IsActive": false,
-              "Trigger": {
-                "TriggerType": "CronTrigger",
-                "CronExpression": "0 0 * * * ?"
-              },
-              "LastExecution": "2024-02-02T18:54:56.0347598-06:00",
-              "AllowLaunchOnStartup": true,
-              "Name": "The Daily WTF",
-              "Properties": {
-                "Url": "http://syndication.thedailywtf.com/TheDailyWtf"
               }
             }
           ],
@@ -3309,20 +3086,6 @@
               }
             },
             {
-              "TemplateID": 7,
-              "IsActive": false,
-              "Trigger": {
-                "TriggerType": "CronTrigger",
-                "CronExpression": "0 0 14 ? * MON-FRI"
-              },
-              "LastExecution": "2024-02-02T18:54:56.0833874-06:00",
-              "AllowLaunchOnStartup": true,
-              "Name": "Boy Scout Training",
-              "Properties": {
-                "Url": "https://training.scouting.org/home"
-              }
-            },
-            {
               "ChildItems": [
                 {
                   "TemplateID": 1,
@@ -3693,20 +3456,6 @@
           ],
           "Name": "Job Hunt",
           "Properties": {}
-        },
-        {
-          "TemplateID": 5,
-          "IsActive": false,
-          "Trigger": {
-            "TriggerType": "CronTrigger",
-            "CronExpression": "0 1 8-19 ? * MON-FRI"
-          },
-          "LastExecution": "2024-02-02T18:54:56.110322-06:00",
-          "AllowLaunchOnStartup": true,
-          "Name": "Fark.Com Business",
-          "Properties": {
-            "Url": "http://www.fark.com/business/fark.rss"
-          }
         },
         {
           "TemplateID": 1,

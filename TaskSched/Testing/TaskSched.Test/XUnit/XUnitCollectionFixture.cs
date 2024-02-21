@@ -17,7 +17,8 @@ namespace TaskSched.Test.XUnit
 
             //  refresh the database
             TaskSchedDbContextConfiguration config = GetConfig<TaskSchedDbContextConfiguration>("Repository");
-            TaskSchedDbContext repository = new TaskSchedDbContext(config);
+            TaskSchedDbContextFactory contextFactory = new TaskSchedDbContextFactory(config);
+            TaskSchedDbContext repository = contextFactory.GetConnection();
 
             if (File.Exists(config.DataSource))
             {
@@ -46,13 +47,27 @@ namespace TaskSched.Test.XUnit
 
         }
 
+        TaskSchedDbContextFactory _contextFactory = null;
+        public TaskSchedDbContextFactory RepositoryFactory 
+        { 
+            get
+            {
+                if (_contextFactory == null)
+                {
+                    TaskSchedDbContextConfiguration config = GetConfig<TaskSchedDbContextConfiguration>("Repository");
+                    _contextFactory = new TaskSchedDbContextFactory(config);
+                }
+
+                return _contextFactory;
+
+            }
+        }
 
         public TaskSchedDbContext Repository
         {
             get
             {
-                TaskSchedDbContextConfiguration config = GetConfig<TaskSchedDbContextConfiguration>("Repository");
-                TaskSchedDbContext repository = new TaskSchedDbContext(config);
+                TaskSchedDbContext repository = RepositoryFactory.GetConnection();
 
                 return repository;
 
