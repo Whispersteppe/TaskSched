@@ -28,70 +28,92 @@
         /// </summary>
         private void InitializeComponent()
         {
-            activityViewer = new ActivityViewer();
-            calendarViewer = new CalendarViewer();
-            eventViewer = new EventViewer();
-            processViewer = new ProcessViewer();
-            blankViewer = new BlankViewer();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CanvasSelector));
+            toolStrip1 = new ToolStrip();
+            tsAdd = new ToolStripDropDownButton();
+            tsDelete = new ToolStripButton();
+            tsSave = new ToolStripButton();
+            tsReset = new ToolStripButton();
+            panelCanvasArea = new Panel();
+            toolStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // activityViewer
+            // toolStrip1
             // 
-            activityViewer.Location = new Point(18, 150);
-            activityViewer.Name = "activityViewer";
-            activityViewer.Size = new Size(70, 80);
-            activityViewer.TabIndex = 2;
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsAdd, tsDelete, tsSave, tsReset });
+            toolStrip1.Location = new Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Size = new Size(632, 25);
+            toolStrip1.TabIndex = 1;
+            toolStrip1.Text = "tsContainerStrip";
             // 
-            // calendarViewer
+            // tsAdd
             // 
-            calendarViewer.Location = new Point(177, 109);
-            calendarViewer.Name = "calendarViewer";
-            calendarViewer.Size = new Size(150, 150);
-            calendarViewer.TabIndex = 4;
+            tsAdd.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            tsAdd.Image = (Image)resources.GetObject("tsAdd.Image");
+            tsAdd.ImageTransparentColor = Color.Magenta;
+            tsAdd.Name = "tsAdd";
+            tsAdd.Size = new Size(42, 22);
+            tsAdd.Text = "Add";
             // 
-            // eventViewer
+            // tsDelete
             // 
-            eventViewer.Location = new Point(103, 160);
-            eventViewer.Name = "eventViewer";
-            eventViewer.Size = new Size(150, 150);
-            eventViewer.TabIndex = 6;
+            tsDelete.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            tsDelete.Image = (Image)resources.GetObject("tsDelete.Image");
+            tsDelete.ImageTransparentColor = Color.Magenta;
+            tsDelete.Name = "tsDelete";
+            tsDelete.Size = new Size(44, 22);
+            tsDelete.Text = "Delete";
+            tsDelete.Click += tsDelete_Click;
             // 
-            // processViewer
+            // tsSave
             // 
-            processViewer.Location = new Point(127, 175);
-            processViewer.Name = "processViewer";
-            processViewer.Size = new Size(150, 150);
-            processViewer.TabIndex = 7;
+            tsSave.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            tsSave.Image = (Image)resources.GetObject("tsSave.Image");
+            tsSave.ImageTransparentColor = Color.Magenta;
+            tsSave.Name = "tsSave";
+            tsSave.Size = new Size(35, 22);
+            tsSave.Text = "Save";
+            tsSave.Click += tsSave_Click;
             // 
-            // blankViewer
+            // tsReset
             // 
-            blankViewer.AutoSize = true;
-            blankViewer.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            blankViewer.Location = new Point(162, 31);
-            blankViewer.Name = "blankViewer";
-            blankViewer.Size = new Size(123, 30);
-            blankViewer.TabIndex = 8;
+            tsReset.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            tsReset.Image = (Image)resources.GetObject("tsReset.Image");
+            tsReset.ImageTransparentColor = Color.Magenta;
+            tsReset.Name = "tsReset";
+            tsReset.Size = new Size(39, 22);
+            tsReset.Text = "Reset";
+            tsReset.Click += tsReset_Click;
+            // 
+            // panelCanvasArea
+            // 
+            panelCanvasArea.Dock = DockStyle.Fill;
+            panelCanvasArea.Location = new Point(0, 25);
+            panelCanvasArea.Name = "panelCanvasArea";
+            panelCanvasArea.Size = new Size(632, 482);
+            panelCanvasArea.TabIndex = 2;
             // 
             // CanvasSelector
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(blankViewer);
-            Controls.Add(processViewer);
-            Controls.Add(eventViewer);
-            Controls.Add(calendarViewer);
-            Controls.Add(activityViewer);
+            Controls.Add(panelCanvasArea);
+            Controls.Add(toolStrip1);
             Name = "CanvasSelector";
-            Size = new Size(352, 312);
+            Size = new Size(632, 507);
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-        private ActivityViewer activityViewer;
-        private CalendarViewer calendarViewer;
-        private EventViewer eventViewer;
-        private ProcessViewer processViewer;
-        private BlankViewer blankViewer;
+        private ToolStrip toolStrip1;
+        private ToolStripButton tsDelete;
+        private ToolStripButton tsSave;
+        private ToolStripButton tsReset;
+        private ToolStripDropDownButton tsAdd;
+        private Panel panelCanvasArea;
     }
 }

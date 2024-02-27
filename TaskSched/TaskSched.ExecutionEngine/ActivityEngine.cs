@@ -15,8 +15,12 @@ namespace TaskSched.ExecutionEngine
         ILogger _logger;
         IExecutionStore _executionStore;
 
+        List<IDataflowBlock> _allBlocks;
 
-        ITargetBlock<ActivityContext> _pipeline;
+        public ExecutionStatusEnum ExecutionStatus { get; private set; }
+
+
+        ITargetBlock<ActivityContext>? _pipeline;
 
         /// <summary>
         /// constructor
@@ -25,8 +29,8 @@ namespace TaskSched.ExecutionEngine
         {
             _logger = logger;
             _executionStore = executionStore;
-            _pipeline = CreateDataflowPipeline();
-            IsRunning = false;
+
+            ExecutionStatus = ExecutionStatusEnum.Stopped;
 
         }
 
@@ -37,26 +41,41 @@ namespace TaskSched.ExecutionEngine
         /// <returns></returns>
         public async Task DoActivity(ActivityContext activity)
         {
-            _logger.LogInformation($"Starting Activity {activity.EventItem.Name}");
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
+            {
 
-            Debug.WriteLine($"in Activity Engine - {activity.EventItem.Name}");
+                _logger.LogInformation($"Starting Activity {activity.EventItem.Name}");
 
-            _pipeline.Post(activity);
+                Debug.WriteLine($"in Activity Engine - {activity.EventItem.Name}");
 
-            _logger.LogInformation($"Completing Activity {activity.EventItem.Name}");
+                _pipeline.Post(activity);
+
+                _logger.LogInformation($"Completing Activity {activity.EventItem.Name}");
+            }
+            else
+            {
+                _logger.LogError($"Trying to queue activity {activity.EventItem.Name} while engine is not running");
+            }
 
         }
 
         internal ITargetBlock<ActivityContext> CreateDataflowPipeline()
         {
+            _logger.LogInformation($"Creating the dataflow pipeline");
+
+            _allBlocks = new List<IDataflowBlock>();
             var ingestBlock = new TransformBlock<ActivityContext, ActivityContext>(IngestProcess);
+            _allBlocks.Add(ingestBlock);
             var ingestBuffer = new BufferBlock<ActivityContext>();
+            _allBlocks.Add(ingestBuffer);
             ingestBlock.LinkTo(ingestBuffer);
 
 
 
             var finalBuffer = new BufferBlock<ActivityContext>();
+            _allBlocks.Add(finalBuffer);
             var finalBlock = new ActionBlock<ActivityContext>(FinalProcess);
+            _allBlocks.Add(finalBlock);
             finalBuffer.LinkTo(finalBlock);
 
 
@@ -67,7 +86,7 @@ namespace TaskSched.ExecutionEngine
             foreach (IExecutionHandler handler in handlerList)
             {
                 var executionHandler = new TransformBlock<ActivityContext, ActivityContext>(handler.HandleActivity);
-
+                _allBlocks.Add(executionHandler);
                 ingestBuffer.LinkTo(executionHandler, x => { return x.Activity.ActivityHandlerId == handler.HandlerInfo.HandlerId; });
                 executionHandler.LinkTo(finalBuffer);
 
@@ -75,14 +94,19 @@ namespace TaskSched.ExecutionEngine
 
 
             var notFoundHandler = new TransformBlock<ActivityContext, ActivityContext>(NotFoundHandler);
+            _allBlocks.Add(notFoundHandler);
             ingestBuffer.LinkTo(notFoundHandler);
             notFoundHandler.LinkTo(finalBuffer);
+
+            _logger.LogInformation($"dataflow pipeline built");
+
 
             return ingestBlock;
         }
 
         internal async Task<ActivityContext> IngestProcess(ActivityContext context)
         {
+
             Debug.WriteLine($"Ingest process: {context}");
             return context;
         }
@@ -90,6 +114,7 @@ namespace TaskSched.ExecutionEngine
 
         internal async Task<ActivityContext> NotFoundHandler(ActivityContext context)
         {
+
             Debug.WriteLine($"Not Found Handler: {context}");
             return context;
         }
@@ -97,6 +122,7 @@ namespace TaskSched.ExecutionEngine
 
         internal async Task FinalProcess(ActivityContext context)
         {
+
             Debug.WriteLine($"Final Process: {context}");
         }
 
@@ -104,7 +130,6 @@ namespace TaskSched.ExecutionEngine
         #region scheduler control
 
 
-        public bool IsRunning { get; private set; }
 
         /// <summary>
         /// Starts the underlying quartz instance
@@ -112,9 +137,22 @@ namespace TaskSched.ExecutionEngine
         /// <returns></returns>
         public async Task Start()
         {
-            if (IsRunning == false)
+            if (ExecutionStatus == ExecutionStatusEnum.Stopped)
             {
-                IsRunning = true;
+                _logger.LogInformation($"Starting Activity Engine");
+
+                ExecutionStatus = ExecutionStatusEnum.Starting;
+                _pipeline = CreateDataflowPipeline();
+
+                ExecutionStatus = ExecutionStatusEnum.Running;
+                _logger.LogInformation($"Activity Engine started");
+            }
+            else
+            {
+                {
+                    _logger.LogError($"Cannot start Activity Engine - in non-stopped state - {ExecutionStatus}");
+
+                }
             }
         }
 
@@ -126,9 +164,35 @@ namespace TaskSched.ExecutionEngine
         /// <returns></returns>
         public async Task Stop()
         {
-            if (IsRunning == true)
+
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
-                IsRunning = false;
+                _logger.LogInformation($"Stopping Activity Engine");
+
+                ExecutionStatus = ExecutionStatusEnum.Stopping;
+
+                foreach (var block in _allBlocks)
+                {
+
+                    block.Complete();
+
+                    if (block is IDisposable disposableBlock)
+                    {
+                        disposableBlock.Dispose();
+                    }
+                }
+                _allBlocks.Clear();
+
+                _pipeline = null;
+
+                ExecutionStatus = ExecutionStatusEnum.Stopped;
+
+                _logger.LogInformation($"Activity Engine Stopped");
+            }
+            else
+            {
+                _logger.LogError($"Cannot stop Activity Engine - in non-running state - {ExecutionStatus}");
+
             }
         }
 

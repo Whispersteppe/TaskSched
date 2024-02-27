@@ -145,6 +145,8 @@ namespace TaskSched.ExecutionStore
         /// <returns></returns>
         public async Task<ActivityContext> HandleActivity(ActivityContext context)
         {
+            _logger.LogInformation($"Executing activity {context.EventItem.Name}");
+
             string commandLine = context.Activity.DefaultFields.FirstOrDefault(x => x.Name == "CommandLine").Value;
             string executablePath = context.Activity.DefaultFields.FirstOrDefault(x => x.Name == "ExecutablePath").Value;
 

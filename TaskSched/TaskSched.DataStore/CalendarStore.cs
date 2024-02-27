@@ -75,7 +75,7 @@ namespace TaskSched.DataStore
             }
         }
 
-        public async Task<Model.ExpandedResult<Model.Calendar>> Get(Guid calendarId)
+        public async Task<Model.ExpandedResult<Model.Calendar?>> Get(Guid calendarId)
         {
             using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
             {
@@ -85,7 +85,7 @@ namespace TaskSched.DataStore
                 .FirstOrDefaultAsync(x => x.Id == calendarId)
                 ;
 
-                Model.ExpandedResult<Model.Calendar?> rslt = new Model.ExpandedResult<Model.Calendar>();
+                Model.ExpandedResult<Model.Calendar?> rslt = new Model.ExpandedResult<Model.Calendar?>();
 
                 if (entity != null)
                 {
@@ -151,7 +151,10 @@ namespace TaskSched.DataStore
                             associatedCalendar = calendars.FirstOrDefault(x => x.Id == Guid.Empty);
                         }
 
-                        associatedCalendar.Events.Add(eventItem);
+                        if (associatedCalendar != null)
+                        {
+                            associatedCalendar.Events.Add(eventItem);
+                        }
                     }
                 }
 

@@ -2,63 +2,46 @@
 
 namespace TaskScheduler.WinForm.Models
 {
-    public class CalendarModel : ITreeItem
+    public class CalendarModel : BaseTreeItemModel<Calendar>
     {
-        Calendar _calendar;
-        List<CalendarModel> _childCalendars;
-        List<EventModel> _childEvents;
+        List<CalendarModel> _childCalendars = new List<CalendarModel>();
+        List<EventModel> _childEvents = new List<EventModel>();
 
-        
-        public CalendarModel(Calendar calendar)
+
+        public override TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.CalendarItem;
+
+        public CalendarModel(Calendar calendar, ITreeItem? parent)
+            :base(calendar, parent)
         {
-            _calendar = calendar;
-            _childEvents = new List<EventModel>();
-            _childCalendars = new List<CalendarModel>();
+            Name = calendar.Name;
+            ID = calendar.Id;
 
-            foreach(var childCalendar in calendar.ChildCalendars)
+            AllowedChildTypes = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
+            this.AllowedMoveToParentTypes = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.CalendarRootItem]; 
+
+            foreach (var childCalendar in calendar.ChildCalendars)
             {
-                _childCalendars.Add(new CalendarModel(childCalendar));
+                _childCalendars.Add(new CalendarModel(childCalendar, this));
             }
 
             foreach(var childEvent in calendar.Events)
             {
-                _childEvents.Add(new EventModel(childEvent));
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return _calendar.Name;
-            }
-        }
-
-        public List<ITreeItem>? Children
-        {
-            get
-            {
-                List<ITreeItem> allChildren = [.. _childCalendars, .. _childEvents];
-
-                return allChildren;
+                _childEvents.Add(new EventModel(childEvent, this));
             }
 
+            Children = [.. _childCalendars, .. _childEvents];
         }
 
-        public void Revert()
+        public CalendarModel(ITreeItem? parent)
+            :this(new Calendar(), parent)
         {
-            throw new NotImplementedException();
+        }
+        public override bool CanHaveChildren()
+        {
+            return true;
         }
 
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
+
     }
 
-    //public class ProcessModel : ITreeItem
-    //{
-    //    Proce
-
-    //}
 }

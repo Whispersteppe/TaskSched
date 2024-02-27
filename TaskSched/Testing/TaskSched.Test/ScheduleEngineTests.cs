@@ -23,6 +23,8 @@ namespace TaskSched.Test
         [Fact]
         public async Task ScheduleEngineTest()
         {
+            await Task.Run(() => { });
+
 
             ILogger logger = this.GetLogger(memberName: nameof(ExecutionEngineTests));
             IExecutionStore executionStore = new ExecutionStore.ExecutionStore(logger);

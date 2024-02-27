@@ -1,29 +1,43 @@
-﻿namespace TaskScheduler.WinForm.Models
+﻿using System.ComponentModel;
+
+namespace TaskScheduler.WinForm.Models
 {
+
+
     /// <summary>
     /// Tree items surrounding the various data models
     /// </summary>
-    public interface ITreeItem
+    public interface ITreeItem : INotifyPropertyChanged
     {
+
         /// <summary>
         /// text that will get displayed on the treeview
         /// </summary>
         string Name { get; }
+        Guid ID { get; }
 
-        /// <summary>
-        /// any children on this tree item
-        /// </summary>
-        List<ITreeItem>? Children { get; }
+        ITreeItem? ParentItem { get; }
 
-        /// <summary>
-        /// save this item
-        /// </summary>
-        void Save();
+        TreeItemTypeEnum TreeItemType { get; }
 
-        /// <summary>
-        /// revert tjos ote, back to the last saved version
-        /// </summary>
-        void Revert();
+        object? UnderlyingItem { get; set; }
+
+        bool CanMoveItem(ITreeItem possibleNewParent);
+        bool CanAddItem(ITreeItem possibleNewChild);
+        List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; }
+        List<TreeItemTypeEnum> AllowedChildTypes { get; }
+        bool CanHaveChildren();
+
+        List<ITreeItem> Children { get; }
+
+        bool CanAddCreateChild(TreeItemTypeEnum itemType);
+
+        bool CanDeleteItem();
+
+        bool CanEdit();
+
+
     }
+
 
 }

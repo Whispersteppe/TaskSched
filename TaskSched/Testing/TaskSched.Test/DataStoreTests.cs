@@ -13,7 +13,6 @@ namespace TaskSched.Test
     public class DataStoreTests : XUnitTestClassBase
     {
 
-        XUnitCollectionFixture _collectionFixture;
         public DataStoreTests(XUnitClassFixture fixture, XUnitCollectionFixture collectionFixture, ITestOutputHelper output) 
             : base(fixture, collectionFixture, output)
         {

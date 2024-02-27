@@ -2,27 +2,29 @@
 
 namespace TaskScheduler.WinForm.Models
 {
-    public class EventModel : ITreeItem
+    public class EventModel : BaseTreeItemModel<Event>
     {
-        Event _eventItem;
+        public override TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.EventItem;
 
-        public EventModel(Event eventItem) 
+        public EventModel(Event eventItem, ITreeItem? parent)
+            :base(eventItem, parent)
         {
-            _eventItem = eventItem;
+            Name = eventItem.Name;
+            ID = eventItem.Id;
+
         }
-        public string Name
+
+        public EventModel(ITreeItem? parent)
+            :this(new Event(), parent)
         {
-            get
-            {
-                return _eventItem.Name;
-            }
+
         }
 
         public DateTime LastExecutionDate
-        { 
+        {
             get
             {
-                return _eventItem.LastExecution;
+                return Item?.LastExecution ?? DateTime.Now;
             }
         }
 
@@ -30,33 +32,9 @@ namespace TaskScheduler.WinForm.Models
         {
             get
             {
-                return _eventItem.NextExecution;
+                return Item?.NextExecution ?? DateTime.Now;
             }
         }
 
-        public List<ITreeItem>? Children
-        {
-            get
-            {
-                return null;
-            }
-
-        }
-
-        public void Revert()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
     }
-
-    //public class ProcessModel : ITreeItem
-    //{
-    //    Proce
-
-    //}
 }

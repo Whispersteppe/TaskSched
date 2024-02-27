@@ -44,7 +44,7 @@
             // txtName
             // 
             txtName.AutoSize = true;
-            txtName.Location = new Point(82, 15);
+            txtName.Location = new Point(82, 12);
             txtName.Name = "txtName";
             txtName.Size = new Size(38, 15);
             txtName.TabIndex = 1;

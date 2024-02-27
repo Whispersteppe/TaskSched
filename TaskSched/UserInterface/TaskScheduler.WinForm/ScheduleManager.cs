@@ -12,10 +12,16 @@ using TaskSched.Common.Interfaces;
 using TaskSched.DataStore;
 using TaskSched.ExecutionEngine;
 using TaskSched.SchedulerEngine;
+using TaskScheduler.WinForm.Configuration;
 using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm
 {
+
+    public delegate Task ITreeItemEvent(ITreeItem treeItem);
+    public delegate Task ITreeItemParentEvent(ITreeItem? parentItem, ITreeItem childItem);
+
+
     /// <summary>
     /// primary manager for scheduling and execution of activities
     /// </summary>
@@ -36,13 +42,24 @@ namespace TaskScheduler.WinForm
         IFieldValidatorSet _fieldValidators;
 
         ILoggerFactory _loggerFactory;
+        ILogger _logger;
 
         IExecutionEngine _executionEngine;
         ISchedulerEngine _schedulerEngine;
 
+        #region Events
+
+        public event ITreeItemParentEvent? OnTreeItemCreated;
+        public event ITreeItemEvent? OnTreeItemRemoved;
+        public event ITreeItemEvent? OnTreeItemUpdated;
+        public event ITreeItemEvent? OnTreeItemSelected;
+
+        #endregion
+
+
         private bool disposedValue;
 
-        public bool IsRunning { get; private set; }
+        public ExecutionStatusEnum ExecutionStatus { get; private set; }
 
         /// <summary>
         /// Constructor
@@ -55,7 +72,9 @@ namespace TaskScheduler.WinForm
         {
             _config = configuration;
             _loggerFactory = loggerFactory;
-            IsRunning = false;
+            _logger = loggerFactory.CreateLogger<ScheduleManager>();
+
+            ExecutionStatus = ExecutionStatusEnum.Stopped;
 
             _dbContextFactory = new TaskSchedDbContextFactory(_config.DatabaseConfig);
 
@@ -81,26 +100,42 @@ namespace TaskScheduler.WinForm
 
         public async Task Start()
         {
-            if (IsRunning == false)
+            if (ExecutionStatus == ExecutionStatusEnum.Stopped)
             {
+                _logger.LogInformation($"Starting the manager");
+
+                ExecutionStatus = ExecutionStatusEnum.Starting;
+
                 using (var _dbContext = _dbContextFactory.GetConnection())
                 {
                     await _dbContext.EnsureCreated();
-                    await _schedulerEngine.Start();
                     await _executionEngine.Start();
-                    IsRunning = true;
+                    await _schedulerEngine.Start();
+
+                    ExecutionStatus = ExecutionStatusEnum.Running;
                 }
+
+                _logger.LogInformation($"Manager started");
+
             }
 
         }
 
         public async Task Stop()
         {
-            if (IsRunning == true)
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
-                await _executionEngine.Stop();
+                _logger.LogInformation($"Stopping the manager");
+
+                ExecutionStatus = ExecutionStatusEnum.Stopping;
+
                 await _schedulerEngine.Stop();
-                IsRunning = false;
+                await _executionEngine.Stop();
+
+                ExecutionStatus = ExecutionStatusEnum.Stopped;
+
+                _logger.LogInformation($"Manager stopped");
+
             }
 
         }
@@ -134,29 +169,33 @@ namespace TaskScheduler.WinForm
             GC.SuppressFinalize(this);
         }
 
-        public RootModel GetActivityModels()
-        {
-            RootModel topModel = new RootModel("Activities");
+        #region Get Treeview models
 
-            var getActivitiesResult = _activityStore.GetAll().GetAwaiter().GetResult();
+        public async Task<ActivityRootModel> GetActivityModels()
+        {
+
+            ActivityRootModel topModel = new ActivityRootModel(null);
+
+            var getActivitiesResult = await _activityStore.GetAll();
 
             foreach(var activity in getActivitiesResult.Result)
             {
-                ActivityModel model = new ActivityModel(activity);
+                ActivityModel model = new ActivityModel(activity, topModel);
                 topModel.Children.Add(model);
             }
 
             return topModel;
         }
 
-        public RootModel GetCalendarModels()
+        public async Task<CalendarRootModel> GetCalendarModels()
         {
-            RootModel topModel = new RootModel("Calendars");
+            CalendarRootModel topModel = new CalendarRootModel(null);
 
-            var calendars = _calendarStore.GetAll(new CalendarRetrievalParameters() { AddChildEvents = true, AddChildFolders = true, AsTree = true }).GetAwaiter().GetResult(); 
+            var calendars = await _calendarStore.GetAll(new CalendarRetrievalParameters() { AddChildEvents = true, AddChildFolders = true, AsTree = true }); 
             foreach (var calendar in calendars.Result)
             {
-                CalendarModel model = new CalendarModel(calendar);
+                CalendarModel model = new CalendarModel(calendar, topModel);
+
                 topModel.Children.Add(model);
 
                 //  handle the child calendars
@@ -168,36 +207,222 @@ namespace TaskScheduler.WinForm
             
         }
 
-        public RootModel GetStatusModels()
+        public async Task<StatusRootModel> GetStatusModels()
         {
-            RootModel topModel = new RootModel("Status");
+            StatusRootModel topModel = new StatusRootModel(null);
 
 
 
             return topModel;
         }
 
-        public RootModel GetLogModels()
+        public async Task<LogRootModel> GetLogModels()
         {
-            RootModel topModel = new RootModel("Log");
+            LogRootModel topModel = new LogRootModel(null);
 
 
 
             return topModel;
         }
 
-        public List<ITreeItem> GetAllRoots()
+        public async Task<List<ITreeItem>> GetAllRoots()
         {
             List<ITreeItem> rootItems = new List<ITreeItem>()
             {
-                GetCalendarModels(),
-                GetActivityModels(),
-                GetStatusModels(),
-                GetLogModels()
+                await GetCalendarModels(),
+                await GetActivityModels(),
+                await GetStatusModels(),
+                await GetLogModels()
             };
 
             return rootItems;
         }
+
+        #endregion
+
+        public async Task SelectTreeViewItem(ITreeItem treeItem)
+        {
+            if (OnTreeItemSelected != null)
+            {
+                await OnTreeItemSelected(treeItem);
+            }
+        }
+
+
+
+
+        #region data manipulation items
+
+
+        public async Task<ITreeItem> CreateModel(ITreeItem? parentItem, TreeItemTypeEnum modelType)
+        {
+
+            ITreeItem newItem = null;
+
+            switch (modelType)
+            {
+                case TreeItemTypeEnum.ActivityItem:
+                    {
+                        ActivityModel model = new ActivityModel(parentItem);
+
+                        newItem = model;
+                        break;
+                    }
+                case TreeItemTypeEnum.CalendarItem:
+                    {
+                        CalendarModel model = new CalendarModel(parentItem);
+                        newItem = model;
+                        break;
+                    }
+                case TreeItemTypeEnum.EventItem:
+                    {
+                        EventModel model = new EventModel(parentItem);
+                        newItem = model;
+                        break;
+                    }
+                default:
+                    {
+                        return null;
+                    }
+            }
+
+
+            if (OnTreeItemCreated != null)
+            {
+                await OnTreeItemCreated(parentItem, newItem);
+            }
+
+            return newItem;
+
+        }
+
+        public async Task<ITreeItem> SaveModel(ITreeItem? parentTreeItem, ITreeItem item)
+        {
+
+            switch (item.TreeItemType)
+            {
+                case TreeItemTypeEnum.ActivityItem:
+                    {
+                        ActivityModel activityModel = item as ActivityModel;
+
+                        if (activityModel.Item.Id == Guid.Empty)
+                        {
+                            var rslt = await _activityStore.Create(activityModel.Item);
+                            var rsltGet = await _activityStore.Get(rslt.Result);
+                            activityModel.UnderlyingItem = rsltGet.Result;
+
+                            item = activityModel;
+                        }
+                        else
+                        {
+                            var rslt = await _activityStore.Update(activityModel.Item);
+                            var rsltGet = await _activityStore.Get(activityModel.Item.Id);
+                            activityModel.UnderlyingItem = rsltGet.Result;
+
+                            item = activityModel;
+
+                        }
+                        break;
+                    }
+                case TreeItemTypeEnum.CalendarItem:
+                    {
+                        CalendarModel calendarModel = item as CalendarModel;
+
+                        if (calendarModel.Item.Id == Guid.Empty)
+                        {
+                            var rslt = await _calendarStore.Create(calendarModel.Item);
+                            var rsltGet = await _calendarStore.Get(rslt.Result);
+                            calendarModel.UnderlyingItem = rsltGet.Result;
+
+                            item = calendarModel;
+                        }
+                        else
+                        {
+                            var rslt = await _calendarStore.Update(calendarModel.Item);
+                            var rsltGet = await _calendarStore.Get(calendarModel.Item.Id);
+                            calendarModel.UnderlyingItem = rsltGet.Result;
+
+                            item = calendarModel;
+
+                        }
+                        break;
+                    }
+                case TreeItemTypeEnum.EventItem:
+                    {
+                        EventModel eventModel = item as EventModel;
+
+                        if (eventModel.Item.Id == Guid.Empty)
+                        {
+                            var rslt = await _eventStore.Create(eventModel.Item);
+                            var rsltGet = await _eventStore.Get(rslt.Result);
+                            eventModel.UnderlyingItem = rsltGet.Result;
+
+                            item = eventModel;
+                        }
+                        else
+                        {
+                            var rslt = await _eventStore.Update(eventModel.Item);
+                            var rsltGet = await _eventStore.Get(eventModel.Item.Id);
+                            eventModel.UnderlyingItem = rsltGet.Result;
+
+                            item = eventModel;
+
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        return null;
+                    }
+            }
+
+
+            if (OnTreeItemCreated != null)
+            {
+                await OnTreeItemUpdated(item);
+            }
+
+            return item;
+
+        }
+
+        public async Task DeleteItem(ITreeItem model)
+        {
+
+            switch (model.TreeItemType)
+            {
+                case TreeItemTypeEnum.ActivityItem:
+                    {
+                        var rslt = await _activityStore.Delete(model.ID);
+
+                        break;
+                    }
+                case TreeItemTypeEnum.CalendarItem:
+                    {
+                        var rslt = await _calendarStore.Delete(model.ID);
+                        break;
+                    }
+                case TreeItemTypeEnum.EventItem:
+                    {
+                        var rslt = await _eventStore.Delete(model.ID);
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
+
+
+            if (OnTreeItemCreated != null)
+            {
+                await OnTreeItemRemoved(model);
+            }
+
+            return;
+        }
+
+        #endregion
 
     }
 }

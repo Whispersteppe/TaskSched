@@ -9,6 +9,6 @@ namespace TaskSched.Common.Interfaces
         Task Stop();
         Task Start();
 
-
+        ExecutionStatusEnum ExecutionStatus { get; }
     }
 }

@@ -211,7 +211,6 @@
             schedulerTreeView.Name = "schedulerTreeView";
             schedulerTreeView.Size = new Size(174, 379);
             schedulerTreeView.TabIndex = 0;
-            schedulerTreeView.OnItemSelected += schedulerTreeView_OnItemSelected;
             // 
             // canvasSelector
             // 

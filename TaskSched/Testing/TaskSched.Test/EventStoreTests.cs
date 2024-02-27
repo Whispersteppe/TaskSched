@@ -15,7 +15,6 @@ namespace TaskSched.Test
     public class EventStoreTests : XUnitTestClassBase
     {
 
-        XUnitCollectionFixture _collectionFixture;
         public EventStoreTests(XUnitClassFixture fixture, XUnitCollectionFixture collectionFixture, ITestOutputHelper output) 
             : base(fixture, collectionFixture, output)
         {

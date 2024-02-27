@@ -47,7 +47,8 @@ namespace TaskSched.Test.XUnit
 
         }
 
-        TaskSchedDbContextFactory _contextFactory = null;
+        TaskSchedDbContextFactory? _contextFactory = null;
+
         public TaskSchedDbContextFactory RepositoryFactory 
         { 
             get

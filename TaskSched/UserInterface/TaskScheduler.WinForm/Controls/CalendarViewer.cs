@@ -11,21 +11,53 @@ using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls
 {
-    public partial class CalendarViewer : UserControl, ICanvasItem<CalendarModel>
+    public partial class CalendarViewer : UserControl, ICanvasItem<CalendarModel>, ICanvasItemCanDelete, ICanvasItemCanEdit, ICanvasItemHasChildren
     {
+        ScheduleManager? _scheduleManager;
+        CalendarModel _calendarModel;
+
         public CalendarViewer()
         {
             InitializeComponent();
         }
+
+
+        public void SetScheduleManager(ScheduleManager scheduleManager)
+        {
+            _scheduleManager = scheduleManager;
+        }
+
+        public ITreeItem? TreeItem { get; private set; }
+
+        public List<TreeItemTypeEnum> AllowedChildTypes => [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
 
         public bool CanClose()
         {
             return true;
         }
 
-        public void ShowItem(CalendarModel o)
+        public bool CanCreateChild(TreeItemTypeEnum itemType)
         {
-            this.txtName.Text = o.Name;
+            return true;
+        }
+
+
+
+        public void Delete()
+        {
+            MessageBox.Show("Delete");
+
+        }
+
+        public void Revert()
+        {
+            MessageBox.Show("Revert");
+
+        }
+
+        public void Save()
+        {
+            MessageBox.Show("Save");
 
         }
 
@@ -33,5 +65,22 @@ namespace TaskScheduler.WinForm.Controls
         {
             ShowItem(o as CalendarModel);
         }
+
+        public void ShowItem(CalendarModel o)
+        {
+            TreeItem = o;
+            _calendarModel = o;
+
+            this.txtName.Text = o.Name;
+
+        }
+
+        public async Task<ITreeItem?> CreateChild(TreeItemTypeEnum itemType)
+        {
+            MessageBox.Show("CreateChild");
+            return null;
+        }
+
+
     }
 }

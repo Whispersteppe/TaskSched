@@ -1,5 +1,39 @@
 ﻿{
   "DatabaseConfig": {
-    "DataSource":"TaskSched.sqLite"
+    "DataSource": "TaskSched.sqLite"
+  },
+  "DisplayConfig": {
+    "ShowOnStartup": true
+  },
+  "EngineConfig": {
+    "StartOnStartup": true
+  },
+  "NLog": {
+    "targets": {
+      "alldata": {
+        "type": "File",
+        "maxArchiveDays":  3,
+        "fileName": "log\\all-${date:format=yyyy-MM-dd HH}.log",
+        "layout": "${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}"
+      },
+      "errorLog": {
+        "type": "File",
+        "maxArchiveDays": 3,
+        "fileName": "log\\Error-${date:format=yyyy-MM-dd HH}.log",
+        "layout": "${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}"
+      }
+    },
+    "rules": [
+      {
+        "logger": "*",
+        "minLevel": "Trace",
+        "writeTo": "alldata"
+      },
+      {
+        "logger": "*",
+        "minLevel":  "Error",
+        "writeTo": "errorLog"
+      }
+    ]
   }
 }

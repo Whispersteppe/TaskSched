@@ -11,6 +11,9 @@ namespace TaskSched.Common.DataModel
 
         public bool IsReadOnly { get; set; } //  read only makes it fixed for the activity, such as an executable path.
 
-
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

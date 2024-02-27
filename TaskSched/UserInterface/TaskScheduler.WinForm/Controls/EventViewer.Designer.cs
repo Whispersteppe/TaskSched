@@ -46,11 +46,13 @@
             label8 = new Label();
             tabActivities = new TabPage();
             label13 = new Label();
-            listView1 = new ListView();
-            columnHeader1 = new ColumnHeader();
-            columnHeader2 = new ColumnHeader();
             label11 = new Label();
             listBox2 = new ListBox();
+            label2 = new Label();
+            label3 = new Label();
+            txtFieldName = new Label();
+            txtFieldValue = new TextBox();
+            lstFields = new ListBox();
             tabControl1.SuspendLayout();
             tabOverview.SuspendLayout();
             tabSchedule.SuspendLayout();
@@ -221,8 +223,12 @@
             // 
             // tabActivities
             // 
+            tabActivities.Controls.Add(lstFields);
+            tabActivities.Controls.Add(txtFieldValue);
+            tabActivities.Controls.Add(txtFieldName);
+            tabActivities.Controls.Add(label3);
+            tabActivities.Controls.Add(label2);
             tabActivities.Controls.Add(label13);
-            tabActivities.Controls.Add(listView1);
             tabActivities.Controls.Add(label11);
             tabActivities.Controls.Add(listBox2);
             tabActivities.Location = new Point(4, 24);
@@ -241,24 +247,6 @@
             label13.TabIndex = 3;
             label13.Text = "Activity Fields";
             // 
-            // listView1
-            // 
-            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2 });
-            listView1.Location = new Point(183, 31);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(206, 182);
-            listView1.TabIndex = 2;
-            listView1.UseCompatibleStateImageBehavior = false;
-            listView1.View = View.Details;
-            // 
-            // columnHeader1
-            // 
-            columnHeader1.Text = "Name";
-            // 
-            // columnHeader2
-            // 
-            columnHeader2.Text = "Value";
-            // 
             // label11
             // 
             label11.AutoSize = true;
@@ -272,10 +260,53 @@
             // 
             listBox2.FormattingEnabled = true;
             listBox2.ItemHeight = 15;
-            listBox2.Location = new Point(22, 29);
+            listBox2.Location = new Point(12, 29);
             listBox2.Name = "listBox2";
-            listBox2.Size = new Size(120, 184);
+            listBox2.Size = new Size(120, 244);
             listBox2.TabIndex = 0;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(230, 66);
+            label2.Name = "label2";
+            label2.Size = new Size(39, 15);
+            label2.TabIndex = 4;
+            label2.Text = "Name";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(227, 102);
+            label3.Name = "label3";
+            label3.Size = new Size(35, 15);
+            label3.TabIndex = 5;
+            label3.Text = "Value";
+            // 
+            // txtFieldName
+            // 
+            txtFieldName.AutoSize = true;
+            txtFieldName.Location = new Point(311, 65);
+            txtFieldName.Name = "txtFieldName";
+            txtFieldName.Size = new Size(37, 15);
+            txtFieldName.TabIndex = 6;
+            txtFieldName.Text = "name";
+            // 
+            // txtFieldValue
+            // 
+            txtFieldValue.Location = new Point(305, 103);
+            txtFieldValue.Name = "txtFieldValue";
+            txtFieldValue.Size = new Size(100, 23);
+            txtFieldValue.TabIndex = 7;
+            // 
+            // lstFields
+            // 
+            lstFields.FormattingEnabled = true;
+            lstFields.ItemHeight = 15;
+            lstFields.Location = new Point(142, 102);
+            lstFields.Name = "lstFields";
+            lstFields.Size = new Size(71, 94);
+            lstFields.TabIndex = 8;
             // 
             // EventViewer
             // 
@@ -312,12 +343,14 @@
         private ListBox listBox1;
         private Label label8;
         private Label label13;
-        private ListView listView1;
-        private ColumnHeader columnHeader1;
-        private ColumnHeader columnHeader2;
         private Label label11;
         private ListBox listBox2;
         private CheckBox cbCatchUpOnStartup;
         private CheckBox cbIsActive;
+        private TextBox txtFieldValue;
+        private Label txtFieldName;
+        private Label label3;
+        private Label label2;
+        private ListBox lstFields;
     }
 }

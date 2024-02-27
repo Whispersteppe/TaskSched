@@ -11,26 +11,86 @@ using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls
 {
-    public partial class BlankViewer : UserControl, ICanvasItem<RootModel>
+    public partial class BlankViewer : UserControl, ICanvasItem, ICanvasItemHasChildren
     {
+        ScheduleManager? _scheduleManager;
+
         public BlankViewer()
         {
             InitializeComponent();
         }
 
-        public bool CanClose()
+        public List<TreeItemTypeEnum> AllowedChildTypes { get; private set; } = [];
+
+        public ITreeItem? TreeItem { get; private set; }
+
+
+
+        public void SetScheduleManager(ScheduleManager scheduleManager)
         {
-            return true;
+            _scheduleManager = scheduleManager;
         }
+
 
         public void ShowItem(object o)
         {
-            ShowItem((RootModel)o);
+            if (o is ITreeItem treeItem)
+            {
+                TreeItem = treeItem;
+
+                txtName.Text = treeItem.Name;
+
+                if (TreeItem.CanHaveChildren())
+                {
+                    AllowedChildTypes = TreeItem.AllowedChildTypes;
+                }
+                else
+                {
+                    AllowedChildTypes = [];
+                }
+            }
+            else
+            {
+                TreeItem = null;
+            }
+
+        }
+        public bool CanClose()
+        {
+            return false;
         }
 
-        public void ShowItem(RootModel o)
+        public bool CanCreateChild(TreeItemTypeEnum itemType)
         {
-            txtName.Text = o.Name;
+            if (TreeItem.CanHaveChildren())
+            {
+                return TreeItem.AllowedChildTypes.Contains(itemType);
+
+            }
+            else
+            {
+                return false;
+            }
         }
+
+        public async Task<ITreeItem?> CreateChild(TreeItemTypeEnum itemType)
+        {
+            if (CanCreateChild(itemType) == false) return null;
+
+            if (TreeItem.CanHaveChildren())
+            {
+                var treeItem = await _scheduleManager.CreateModel(TreeItem, TreeItemTypeEnum.ActivityItem);
+
+                return treeItem;
+
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+
     }
 }

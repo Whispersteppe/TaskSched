@@ -1,13 +1,19 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Config;
 using NLog.Extensions.Logging;
+using NLog.Targets;
 using System.Configuration;
 using System.Diagnostics;
 using System.Windows.Forms;
+using TaskSched.Common.Interfaces;
 using TaskSched.DataStore;
+using TaskScheduler.WinForm.Configuration;
 using TaskScheduler.WinForm.Models;
 using TaskScheduler.WinForm.NLogCustom;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace TaskScheduler.WinForm
 {
@@ -16,39 +22,36 @@ namespace TaskScheduler.WinForm
 
         bool _exitClicked = false;
         ScheduleManager _engineManager;
-        ILoggerFactory _loggerFactory;
-
-        ScheduleManagerConfig _config;
+        TaskSchedConfigurationHandler _config;
 
         ILogger _logger;
+
+        NLogWrapper _loggerWrapper;
 
         public FrmMain()
         {
             InitializeComponent();
 
-            //_loggerFactory = LoggerFactory.Create(builder => builder.AddNLog());
-            _loggerFactory = LoggerFactory.Create(builder => builder.AddNLog(NLogBuilder));
-            _logger = _loggerFactory.CreateLogger<FrmMain>();
+            _config = new TaskSchedConfigurationHandler();
+
+
+            _loggerWrapper = new NLogWrapper(_config.NLogConfig);
+
+            _logger = _loggerWrapper.CreateLogger<FrmMain>();
 
             tsStop.Enabled = false;
+
+            _engineManager = new ScheduleManager(_config.Configuration, _loggerWrapper.LoggerFactory);
 
             _logger.LogInformation("Starting the application");
         }
 
+        #region NLog setup
 
-        private NLog.LogFactory NLogBuilder(IServiceProvider serviceProvider)
-        {
-            NLog.LogFactory factory = new NLog.LogFactory();
-            var nlogConfig = new NLog.Config.XmlLoggingConfiguration("Nlog.config");
 
-            factory.Configuration.AddTarget("InternalLogTarget", new NLogCustomTarget());
-            factory.Configuration.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, "InternalLogTarget");
-            //var factory = serviceProvider.GetService<NLog.LogFactory>();
 
-            factory.Configuration = nlogConfig;
 
-            return factory;
-        }
+        #endregion
 
         private void ShowMainForm()
         {
@@ -65,49 +68,32 @@ namespace TaskScheduler.WinForm
             ShowInTaskbar = false;
         }
 
-        public void FrmMain_Load(object? sender, EventArgs e)
+        public async void FrmMain_Load(object? sender, EventArgs e)
         {
 
             HideMainForm();
 
-            //TaskSchedDbContextConfiguration dbConfig = new TaskSchedDbContextConfiguration()
-            //{
-            //    DataSource = Path.Combine(Directory.GetCurrentDirectory(), "TaskSched.sqLite")
-            //};
+            this.Location = _config.Configuration.DisplayConfig.MainWindowLocation.Location;
+            this.Size = _config.Configuration.DisplayConfig.MainWindowLocation.Size;
 
+            await schedulerTreeView.SetScheduleManager(_engineManager);
+            await canvasSelector.SetScheduleManager(_engineManager);
 
+            if (_config.Configuration.EngineConfig.StartOnStartup == true)
+            {
+                await StartEngine();
+            }
 
-            var config = GetConfiguration();
-
-            _engineManager = new ScheduleManager(config, _loggerFactory);
-
-
-
-            List<ITreeItem> items = _engineManager.GetAllRoots();
-
-            schedulerTreeView.SetTreeviewCollection(items);
+            if (_config.Configuration.DisplayConfig.ShowOnStartup == true)
+            {
+                ShowMainForm();
+            }
 
 
         }
 
 
-        private ScheduleManagerConfig GetConfiguration()
-        {
-
-            _config = new ScheduleManagerConfig();
-
-            IConfiguration _configuration = new ConfigurationBuilder()
-                .AddJsonFile("TaskScheduler.json")
-                .Build();
-
-            _configuration.Bind(_config);
-
-            return _config;
-
-        }
-
-
-        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        private async void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (_exitClicked == false)
             {
@@ -117,46 +103,52 @@ namespace TaskScheduler.WinForm
             else
             {
                 //  let it ride
-                if (_engineManager.IsRunning == true)
+                if (_engineManager.ExecutionStatus == ExecutionStatusEnum.Running)
                 {
-                    _engineManager.Stop().GetAwaiter().GetResult();
+                    await _engineManager.Stop();
                 }
+
+                //  save the last location of the form
+                _config.Configuration.DisplayConfig.MainWindowLocation.Location = this.Location;
+                _config.Configuration.DisplayConfig.MainWindowLocation.Size = this.Size;
+
+                _config.SaveConfiguration();
             }
         }
 
 
         #region Notify Events
 
-        private void _notifyContextShow_Click(object sender, EventArgs e)
+        private async void _notifyContextShow_Click(object sender, EventArgs e)
         {
             ShowMainForm();
         }
 
-        private void _notifyContextCreate_Click(object sender, EventArgs e)
+        private async void _notifyContextCreate_Click(object sender, EventArgs e)
         {
             Debug.WriteLine("Create clicked");
         }
 
-        private void _notifyContextStart_Click(object sender, EventArgs e)
+        private async void _notifyContextStart_Click(object sender, EventArgs e)
         {
-            StartEngine();
+            await StartEngine();
 
 
         }
 
-        private void _notifyContextStop_Click(object sender, EventArgs e)
+        private async void _notifyContextStop_Click(object sender, EventArgs e)
         {
-            StopEngine();
+            await StopEngine();
 
         }
 
-        private void _notifyContextExit_Click(object sender, EventArgs e)
+        private async void _notifyContextExit_Click(object sender, EventArgs e)
         {
             _exitClicked = true;
             this.Close();
         }
 
-        private void _notifyIcon_Click(object sender, EventArgs e)
+        private async void _notifyIcon_Click(object sender, EventArgs e)
         {
             _notifyIconMenu.Show(Cursor.Position);
         }
@@ -164,36 +156,29 @@ namespace TaskScheduler.WinForm
         #endregion
 
 
-
-
-        private void schedulerTreeView_OnItemSelected(ITreeItem item)
-        {
-            canvasSelector.ViewItem(item);
-        }
-
-        private void tsExit_Click(object sender, EventArgs e)
+        private async void tsExit_Click(object sender, EventArgs e)
         {
             _exitClicked = true;
             this.Close();
         }
 
-        private void tsStart_Click(object sender, EventArgs e)
+        private async void tsStart_Click(object sender, EventArgs e)
         {
-            StartEngine();
+            await StartEngine();
         }
 
-        private void tsStop_Click(object sender, EventArgs e)
+        private async void tsStop_Click(object sender, EventArgs e)
         {
-            StopEngine();
+            await StopEngine();
         }
 
-        private void StartEngine()
+        private async Task StartEngine()
         {
             _notifyContextStart.Enabled = false;
             tsStart.Enabled = false;
-            if (_engineManager.IsRunning == false)
+            if (_engineManager.ExecutionStatus == ExecutionStatusEnum.Stopped)
             {
-                _engineManager.Start().GetAwaiter().GetResult();
+                await _engineManager.Start();
             }
             _notifyContextStop.Enabled = true;
             tsStop.Enabled = true;
@@ -201,13 +186,13 @@ namespace TaskScheduler.WinForm
 
         }
 
-        private void StopEngine()
+        private async Task StopEngine()
         {
             _notifyContextStop.Enabled = false;
             tsStop.Enabled = false;
-            if (_engineManager.IsRunning == true)
+            if (_engineManager.ExecutionStatus == ExecutionStatusEnum.Running)
             {
-                _engineManager?.Stop().GetAwaiter().GetResult();
+                await _engineManager?.Stop();
             }
             _notifyContextStart.Enabled = true;
             tsStart.Enabled = true;

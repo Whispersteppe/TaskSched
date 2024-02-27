@@ -2,44 +2,44 @@
 
 namespace TaskScheduler.WinForm.Models
 {
-    public class ActivityModel : ITreeItem
+    public class ActivityModel : BaseTreeItemModel<Activity>
     {
-        Activity _activity;
 
-        public ActivityModel(Activity activity)
+        public override TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.ActivityItem;
+
+        public ActivityModel(Activity activity, ITreeItem? parent)
+            :base(activity, parent)
         {
-            _activity = activity;
+            ID = activity.Id;
         }
-        public string Name
+
+        public ActivityModel(ITreeItem? parent)
+            :this(new Activity(), parent) 
+        {
+        }
+
+        public override string Name 
         {
             get
             {
-                return _activity.Name;
+                if (Item == null) return base.Name;
+                return Item.Name;
             }
-        }
-        public List<ITreeItem>? Children
-        {
-            get
+            protected set
             {
-                return null;
+                if (Item != null)
+                {
+                    Item.Name = value;
+                }
+                else
+                {
+                    base.Name = value;
+                }
             }
 
         }
 
-        public void Revert()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
+
     }
-
-    //public class ProcessModel : ITreeItem
-    //{
-    //    Proce
-
-    //}
 }

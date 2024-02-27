@@ -9,11 +9,11 @@ namespace TaskSched.Common.DataModel
     public class Calendar
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = "New Calendar";
 
         public Guid? ParentCalendarId { get; set; }
-        public List<Event> Events { get; set; }
-        public List<Calendar> ChildCalendars { get; set; }
+        public List<Event> Events { get; set; } = new List<Event>();
+        public List<Calendar> ChildCalendars { get; set; } = new List<Calendar>();
 
     }
 

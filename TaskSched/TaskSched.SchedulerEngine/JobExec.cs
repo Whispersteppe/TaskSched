@@ -39,6 +39,8 @@ namespace TaskSched.SchedulerEngine
                 var eventGet = await _eventStore.Get(eventId);
                 Event eventItem = eventGet.Result;
 
+                _logger.LogInformation($"Trigger for {eventItem.Name}. Executing the activity");
+
                 foreach (var eventActivity in eventItem.Activities)
                 {
                     var activityGet = await _activityStore.Get(eventActivity.ActivityId);

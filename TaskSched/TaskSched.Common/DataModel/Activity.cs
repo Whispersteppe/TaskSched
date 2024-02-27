@@ -28,12 +28,12 @@ namespace TaskSched.Common.DataModel
         /// <summary>
         /// Name of the activity
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = "New Activity";
 
         /// <summary>
         /// the set of default fields associated with this particular activity
         /// </summary>
-        public List<ActivityField> DefaultFields { get; set; }
+        public List<ActivityField> DefaultFields { get; set; } = new List<ActivityField>();
     }
 
 

@@ -38,14 +38,13 @@ namespace TaskSched.SchedulerEngine
             _activityStore = activityStore;
             _logger = logger;
 
-            IsRunning = false;
+            ExecutionStatus = ExecutionStatusEnum.Stopped;
 
-            InitializeQuartz();
 
         }
 
 
-        #region lazy loader
+        #region Set up quartz
 
         /// <summary>
         /// lazy load the scheduler on first use.
@@ -53,6 +52,8 @@ namespace TaskSched.SchedulerEngine
         /// <returns></returns>
         private void InitializeQuartz()
         {
+            _logger.LogInformation("setting up Quartz Scheduler");
+
             var properties = new NameValueCollection();
 
             _scheduler = SchedulerBuilder.Create(properties)
@@ -68,6 +69,10 @@ namespace TaskSched.SchedulerEngine
                 ;
 
             _scheduler.JobFactory = new EngineJobFactory(_executionEngine, _eventStore, _activityStore, _logger);
+
+
+            _logger.LogInformation("Quartz Scheduler setup complete");
+
 
         }
 
@@ -93,29 +98,33 @@ namespace TaskSched.SchedulerEngine
                 }
             }
 
-            IJobDetail job = JobBuilder.Create<JobExec>()
-                 .WithIdentity(eventItem.JobKey())
-                 .Build();
-
-            await _scheduler.AddJob(job, true, true);
-
-            foreach (var schedule in eventItem.Schedules)
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
-                ITrigger trigger = TriggerBuilder.Create()
-                 .WithIdentity(schedule.TriggerKey())
-                 .ForJob(job)
-                 .StartNow()
-                 .WithCronSchedule(schedule.CRONData)
-                 .Build();
 
-                await _scheduler.ScheduleJob(trigger);
-            }
+                IJobDetail job = JobBuilder.Create<JobExec>()
+                     .WithIdentity(eventItem.JobKey())
+                     .Build();
 
-            if (eventItem.CatchUpOnStartup == true)
-            {
-                if (DateTime.Now > eventItem.NextExecution)
+                await _scheduler.AddJob(job, true, true);
+
+                foreach (var schedule in eventItem.Schedules)
                 {
-                    await _scheduler.TriggerJob(eventItem.JobKey());
+                    ITrigger trigger = TriggerBuilder.Create()
+                     .WithIdentity(schedule.TriggerKey())
+                     .ForJob(job)
+                     .StartNow()
+                     .WithCronSchedule(schedule.CRONData)
+                     .Build();
+
+                    await _scheduler.ScheduleJob(trigger);
+                }
+
+                if (eventItem.CatchUpOnStartup == true)
+                {
+                    if (DateTime.Now > eventItem.NextExecution)
+                    {
+                        await _scheduler.TriggerJob(eventItem.JobKey());
+                    }
                 }
             }
 
@@ -132,12 +141,13 @@ namespace TaskSched.SchedulerEngine
         /// <returns></returns>
         public async Task<ExpandedResult<Guid>> CreateEvent(Event eventItem)
         {
+            _logger.LogInformation($"Creating event - {eventItem.Name}");
 
             var rsltCreate = await _eventStore.Create(eventItem);
             var rsltGet = await _eventStore.Get(rsltCreate.Result);
             rsltGet.Messages.AddRange(rsltCreate.Messages);
 
-            if (IsRunning == true)
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
                 await LoadEvent(rsltGet.Result);
             }
@@ -152,14 +162,18 @@ namespace TaskSched.SchedulerEngine
         /// <returns></returns>
         public async Task<ExpandedResult> DeleteEvent(Guid eventId)
         {
+
             var rsltGet = await _eventStore.Get(eventId);
 
-            if (IsRunning == true)
+            _logger.LogInformation($"Deleting event - {rsltGet.Result.Name}");
+
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
                 await _scheduler.DeleteJob(rsltGet.Result.JobKey());
             }
 
             var rslt = await _eventStore.Delete(eventId);
+
             return rslt;
         }
 
@@ -196,7 +210,9 @@ namespace TaskSched.SchedulerEngine
         /// </remarks>
         public async Task<ExpandedResult> UpdateEvent(Event eventItem)
         {
-            if (IsRunning == true)
+            _logger.LogInformation($"Updating event - {eventItem.Name}");
+
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
                 await _scheduler.DeleteJob(eventItem.JobKey());
 
@@ -204,7 +220,7 @@ namespace TaskSched.SchedulerEngine
 
             var rslt = await _eventStore.Update(eventItem);
 
-            if (IsRunning == true)
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
                 await LoadEvent(eventItem);
             }
@@ -216,7 +232,7 @@ namespace TaskSched.SchedulerEngine
 
         #region scheduler control
 
-        public bool IsRunning { get; private set; }
+        public ExecutionStatusEnum ExecutionStatus { get; private set; }
 
         /// <summary>
         /// Starts the underlying quartz instance
@@ -224,14 +240,26 @@ namespace TaskSched.SchedulerEngine
         /// <returns></returns>
         public async Task Start()
         {
-            if (IsRunning == false)
+
+
+            if (ExecutionStatus == ExecutionStatusEnum.Stopped)
             {
+                _logger.LogInformation($"Starting the scheduler");
+
+                ExecutionStatus = ExecutionStatusEnum.Starting;
+
+                InitializeQuartz();
+
+                await _scheduler.Start();
+
+                ExecutionStatus = ExecutionStatusEnum.Running;
 
                 //  we'll want to load the scheduler with the current jobs from the database
                 await LoadEventsFromDatastore();
 
-                await _scheduler.Start();
-                IsRunning = true;
+
+                _logger.LogInformation($"Scheduler is started");
+
             }
         }
 
@@ -256,8 +284,13 @@ namespace TaskSched.SchedulerEngine
         /// <returns></returns>
         public async Task Stop()
         {
-            if (IsRunning == true)
+
+            if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
+                _logger.LogInformation($"Stopping the scheduler");
+
+                ExecutionStatus = ExecutionStatusEnum.Stopping;
+
 
 
                 await _scheduler.Shutdown();
@@ -265,9 +298,10 @@ namespace TaskSched.SchedulerEngine
                 IDisposable? disposable = _scheduler as IDisposable;
                 disposable?.Dispose();
 
-                InitializeQuartz();
+                ExecutionStatus = ExecutionStatusEnum.Stopped;
+                _logger.LogInformation($"Scheduler is stopped");
 
-                IsRunning = false;
+
             }
         }
 
