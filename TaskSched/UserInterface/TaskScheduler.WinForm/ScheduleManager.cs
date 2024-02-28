@@ -424,5 +424,12 @@ namespace TaskScheduler.WinForm
 
         #endregion
 
+        public async Task<List<ExecutionHandlerInfo>> GetHandlerInfo()
+        {
+            var infoItems = await _executionStore.GetHandlerInfo();
+
+            return infoItems;
+        }
+
     }
 }

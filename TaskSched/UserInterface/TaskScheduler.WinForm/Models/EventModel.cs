@@ -9,7 +9,6 @@ namespace TaskScheduler.WinForm.Models
         public EventModel(Event eventItem, ITreeItem? parent)
             :base(eventItem, parent)
         {
-            Name = eventItem.Name;
             ID = eventItem.Id;
 
         }
@@ -33,6 +32,18 @@ namespace TaskScheduler.WinForm.Models
             get
             {
                 return Item?.NextExecution ?? DateTime.Now;
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return Item.Name;
+            }
+            protected set
+            {
+                Item.Name = value;
             }
         }
 

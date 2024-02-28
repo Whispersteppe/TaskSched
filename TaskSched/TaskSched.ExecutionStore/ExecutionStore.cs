@@ -33,5 +33,15 @@ namespace TaskSched.ExecutionStore
 
         }
 
+        public async Task<List<ExecutionHandlerInfo>> GetHandlerInfo()
+        {
+            List<ExecutionHandlerInfo> handlerInfos = new List<ExecutionHandlerInfo>();
+            foreach (var item in await GetExecutionHandlers())
+            {
+                handlerInfos.Add(item.HandlerInfo);
+            }
+
+            return handlerInfos;
+        }
     }
 }

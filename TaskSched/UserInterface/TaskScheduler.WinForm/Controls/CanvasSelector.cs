@@ -35,13 +35,6 @@ namespace TaskScheduler.WinForm.Controls
             _canvasItems.Add(typeof(CalendarRootModel), typeof(BlankViewer));
             _canvasItems.Add(typeof(ActivityRootModel), typeof(BlankViewer));
 
-            tsAdd.Enabled = false;
-            tsDelete.Enabled = false;
-            tsSave.Enabled = false;
-            tsReset.Enabled = false;
-
-            tsAdd.DropDownItems.Clear();
-
             _currentCanvas = null;
         }
 
@@ -54,62 +47,14 @@ namespace TaskScheduler.WinForm.Controls
 
         private async Task _scheduleManager_OnTreeItemSelected(ITreeItem treeItem)
         {
-            this.ViewItem(treeItem); 
+            await this.ViewItem(treeItem); 
         }
 
-        private void Ts_AddItem_Click(object? sender, EventArgs e)
-        {
-            if (sender is ToolStripButton tsAddButton)
-            {
-                MessageBox.Show($"Canvas Add {tsAddButton.Tag}");
-                ICanvasItemHasChildren canvas = _currentCanvas as ICanvasItemHasChildren;
-                if (canvas != null)
-                {
-                    if (canvas.CanCreateChild((TreeItemTypeEnum)tsAddButton.Tag) == true)
-                    {
-                        canvas.CreateChild((TreeItemTypeEnum)tsAddButton.Tag);
-                    }
-                }
-            }
-        }
-
-        private void tsDelete_Click(object sender, EventArgs e)
-        {
-            ICanvasItemCanDelete canvas = _currentCanvas as ICanvasItemCanDelete;
-            if (canvas != null)
-            {
-                canvas.Delete();
-            }
-
-        }
-
-        private void tsSave_Click(object sender, EventArgs e)
-        {
-            ICanvasItemCanEdit canvas = _currentCanvas as ICanvasItemCanEdit;
-
-            if (canvas != null)
-            {
-                canvas.Save();
-            }
-
-        }
-
-        private void tsReset_Click(object sender, EventArgs e)
-        {
-            ICanvasItemCanEdit canvas = _currentCanvas as ICanvasItemCanEdit;
-
-            if (canvas != null)
-            {
-                canvas.Revert();
-            }
-        }
-
-
-        public void ViewItem(ITreeItem item)
+        public async Task ViewItem(ITreeItem item)
         {
             if (item == null)
             {
-                ViewItem(item, typeof(BlankViewer));
+                await ViewItem(item, typeof(BlankViewer));
             }
             else
             {
@@ -117,18 +62,18 @@ namespace TaskScheduler.WinForm.Controls
                 Type? viewerType = _canvasItems[item.GetType()];
                 if (viewerType == null)
                 {
-                    ViewItem(item, typeof(BlankViewer));
+                    await ViewItem(item, typeof(BlankViewer));
                 }
                 else
                 {
-                    ViewItem(item, viewerType);
+                    await ViewItem(item, viewerType);
                 }
             }
 
         }
 
 
-        private void ViewItem(ITreeItem item, Type viewerType)
+        private async Task ViewItem(ITreeItem item, Type viewerType)
         {
             object? o = viewerType.Assembly.CreateInstance(viewerType.FullName);
             if (o != null)
@@ -151,62 +96,23 @@ namespace TaskScheduler.WinForm.Controls
 
                 if (_currentCanvas is ICanvasItem canvasItem)
                 {
-                    canvasItem.SetScheduleManager(_scheduleManager);
+                    await canvasItem.Initialize(_scheduleManager, item);
 
-                    if (item != null)
+                    // get the tool strip items from the canvas viewer
+                    //foreach(ToolStripItem toolStripItem in toolStrip1.Items)
+                    //{
+                    //    toolStripItem.Dispose();
+                    //}
+                    toolStrip1.Items.Clear();
+
+                    var toolStripItems = canvasItem.ToolStripItems;
+                    foreach(var toolStripItem in toolStripItems)
                     {
-                        canvasItem.ShowItem(item);
-                        tsAdd.Enabled = canvasItem is ICanvasItemHasChildren;
-
-                        tsDelete.Enabled = canvasItem is ICanvasItemCanDelete;
-                        tsSave.Enabled = canvasItem is ICanvasItemCanEdit;
-                        tsReset.Enabled = canvasItem is ICanvasItemCanEdit;
-
-                        //  update the add list
-                        tsAdd.DropDownItems.Clear();
-                        if (canvasItem is ICanvasItemHasChildren canvasItemHasChildren)
-                        {
-                            if (canvasItemHasChildren.AllowedChildTypes.Count > 0)
-                            {
-
-
-                                foreach (var itemType in canvasItemHasChildren.AllowedChildTypes)
-                                {
-                                    ToolStripItem ts = new ToolStripButton(itemType.ToString());
-                                    ts.Click += Ts_AddItem_Click;
-                                    ts.Tag = itemType;
-                                    ts.DisplayStyle = ToolStripItemDisplayStyle.Text;
-                                    ts.AutoSize = true;
-
-                                    tsAdd.DropDownItems.Add(ts);
-                                }
-                            }
-                            else
-                            {
-                                tsAdd.Enabled = false;
-                            }
-                        }
-
-                    }
-                    else
-                    {
-                        tsAdd.Enabled = false;
-                        tsDelete.Enabled = false;
-                        tsSave.Enabled = false;
-                        tsReset.Enabled = false;
-
-                        tsAdd.DropDownItems.Clear();
-
+                        toolStrip1.Items.Add(toolStripItem);
                     }
                 }
                 else
                 {
-                    tsAdd.Enabled = false;
-                    tsDelete.Enabled = false;
-                    tsSave.Enabled = false;
-                    tsReset.Enabled = false;
-
-                    tsAdd.DropDownItems.Clear();
                 }
 
                 _currentCanvas.Show();

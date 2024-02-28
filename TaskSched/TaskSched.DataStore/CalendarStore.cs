@@ -90,7 +90,7 @@ namespace TaskSched.DataStore
                 if (entity != null)
                 {
 
-                    rslt.Result = _mapper.Map<Model.Calendar>(entity);
+                    rslt.Result = _mapper.Map<Model.Calendar>(entity);  
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Calendar retrieved" });
 
                 }
@@ -113,6 +113,7 @@ namespace TaskSched.DataStore
                 .Calendars.AsQueryable()
                 ;
 
+                //  this seems to get all the calendars already built into a tree.  cool
                 var calendars = await query.ToListAsync();
 
 
@@ -127,6 +128,7 @@ namespace TaskSched.DataStore
                         Events = new List<Db.Event>(),
                     });
 
+                    //  this drops all the events into the calendars directly.  also cool.
                     var events = await _dbContext
                         .Events
                         .Include(x => x.Schedules)
@@ -153,7 +155,11 @@ namespace TaskSched.DataStore
 
                         if (associatedCalendar != null)
                         {
-                            associatedCalendar.Events.Add(eventItem);
+                            //  lets not add them again.  it gets clumsy
+                            if (associatedCalendar.Events.Any(x=>x.Id == eventItem.Id) == false)
+                            {
+                                associatedCalendar.Events.Add(eventItem);
+                            }
                         }
                     }
                 }
@@ -179,7 +185,11 @@ namespace TaskSched.DataStore
                                 {
                                     parentCalendar.ChildCalendars = new List<Db.Calendar>();
                                 }
-                                parentCalendar.ChildCalendars.Add(calendar);
+                                //  again, don't duplicate things
+                                if (parentCalendar.ChildCalendars.Any(x => x.Id == calendar.Id) == false)
+                                {
+                                    parentCalendar.ChildCalendars.Add(calendar);
+                                }
                             }
                         }
                     }
@@ -221,7 +231,10 @@ namespace TaskSched.DataStore
 
                 if (dbEntity != null)
                 {
-                    _dbContext.Entry(dbEntity).CurrentValues.SetValues(calendar);
+
+                    //  we're not doing a mapping since we've only got one field, and i don't want to screw up child events and calendars
+                    //_dbContext.Entry(dbEntity).CurrentValues.SetValues(calendar); 
+                    dbEntity.Name = calendar.Name;
 
                     _dbContext.Update(dbEntity);
 

@@ -13,7 +13,6 @@ namespace TaskScheduler.WinForm.Models
         public CalendarModel(Calendar calendar, ITreeItem? parent)
             :base(calendar, parent)
         {
-            Name = calendar.Name;
             ID = calendar.Id;
 
             AllowedChildTypes = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
@@ -39,6 +38,18 @@ namespace TaskScheduler.WinForm.Models
         public override bool CanHaveChildren()
         {
             return true;
+        }
+
+        public override string Name 
+        {
+            get
+            {
+                return Item.Name;
+            }
+            protected set
+            {
+                Item.Name = value;
+            }
         }
 
 

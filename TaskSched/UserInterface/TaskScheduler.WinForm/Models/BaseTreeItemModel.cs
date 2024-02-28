@@ -30,9 +30,12 @@ namespace TaskScheduler.WinForm.Models
 
         public BaseTreeItemModel(ITreeItem? parentItem, object underlyingItem)
         {
-            Name = "Not Set";
             UnderlyingItem = underlyingItem;
             ParentItem = parentItem;
+            if (string.IsNullOrEmpty(Name))
+            {
+                Name = "Not Set";
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -9,6 +9,8 @@ namespace TaskSched.Common.Interfaces
 {
     public interface IExecutionStore
     {
+
+        Task<List<ExecutionHandlerInfo>> GetHandlerInfo();
         Task<List<IExecutionHandler>> GetExecutionHandlers();
         Task<IExecutionHandler?> GetExecutionHandler(Guid handlerId);
 
@@ -28,6 +30,10 @@ namespace TaskSched.Common.Interfaces
         public Guid HandlerId { get; set; }
         public List<ActivityField> RequiredFields { get; set; }
 
+        public override string ToString()
+        {
+            return Name;
+        }
 
     }
 }

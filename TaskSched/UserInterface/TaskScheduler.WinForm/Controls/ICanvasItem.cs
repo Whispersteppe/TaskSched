@@ -16,10 +16,9 @@ namespace TaskScheduler.WinForm.Controls
         /// show the given item
         /// </summary>
         /// <param name="o"></param>
-        void ShowItem(object o);
+        Task Initialize(ScheduleManager scheduleManager, object treeItem);
 
-
-        void SetScheduleManager(ScheduleManager scheduleManager);
+        List<ToolStripItem> ToolStripItems { get; }
 
         /// <summary>
         /// checks to see whether the current item can be closed or not
@@ -33,32 +32,7 @@ namespace TaskScheduler.WinForm.Controls
 
     internal interface ICanvasItem<T> : ICanvasItem
     {
-        void ShowItem(T o);
+        Task Initialize(ScheduleManager scheduleManager, T o);
     }
 
-    public interface ICanvasItemHasChildren
-    {
-        List<TreeItemTypeEnum> AllowedChildTypes { get; }
-        Task<ITreeItem?> CreateChild(TreeItemTypeEnum itemType);
-        bool CanCreateChild(TreeItemTypeEnum itemType);
-
-    }
-
-    public interface ICanvasItemCanDelete
-    {
-        void Delete();
-    }
-
-    public interface ICanvasItemCanEdit
-    {
-        /// <summary>
-        /// save this item
-        /// </summary>
-        void Save();
-
-        /// <summary>
-        /// revert tjos ote, back to the last saved version
-        /// </summary>
-        void Revert();
-    }
 }

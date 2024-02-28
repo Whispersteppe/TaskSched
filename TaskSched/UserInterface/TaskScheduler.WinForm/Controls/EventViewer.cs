@@ -11,20 +11,58 @@ using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls
 {
-    public partial class EventViewer : UserControl, ICanvasItem<EventModel>, ICanvasItemCanDelete, ICanvasItemCanEdit
+    public partial class EventViewer : UserControl, ICanvasItem<EventModel>
     {
         ScheduleManager? _scheduleManager;
+        EventModel _eventModel;
 
         public EventViewer()
         {
             InitializeComponent();
         }
 
+        public List<ToolStripItem> ToolStripItems
+        {
+            get
+            {
+                ToolStripBuilder builder = new ToolStripBuilder();
+                builder.AddButton("Save", TsSave_Click);
+                builder.AddButton("Delete", TsDelete_Click);
 
-        public void SetScheduleManager(ScheduleManager scheduleManager)
+                return builder.ToolStripItems;
+            }
+        }
+
+        private async void TsDelete_Click(object? sender, EventArgs e)
+        {
+            await _scheduleManager.DeleteItem(_eventModel);
+        }
+
+        private async void TsSave_Click(object? sender, EventArgs e)
+        {
+            _eventModel.Item.Name = txtName.Text;
+            _eventModel.Item.CalendarId = _eventModel.ParentItem.ID;
+            var rslt = await _scheduleManager.SaveModel(_eventModel.ParentItem, _eventModel);
+        }
+
+        public async Task Initialize(ScheduleManager scheduleManager, EventModel o)
         {
             _scheduleManager = scheduleManager;
+
+            TreeItem = o;
+            _eventModel = o;
+
+            this.txtName.Text = o.Name;
+            this.lblLastExecution.Text = o.LastExecutionDate.ToString();
+            this.lbNextExecution.Text = o.NextExecutionDate.ToString();
+
         }
+
+        public async Task Initialize(ScheduleManager scheduleManager, object treeItem)
+        {
+            await Initialize(scheduleManager, treeItem as EventModel);
+        }
+
 
         public ITreeItem? TreeItem { get; private set; }
 
@@ -33,40 +71,5 @@ namespace TaskScheduler.WinForm.Controls
             return true;
         }
 
-        public void Delete()
-        {
-            MessageBox.Show("Delete");
-
-        }
-
-        public void Revert()
-        {
-            MessageBox.Show("Revert");
-
-        }
-
-        public void Save()
-        {
-            MessageBox.Show("Save");
-
-        }
-
-        public void ShowItem(EventModel o)
-        {
-            TreeItem = o;
-
-            this.txtName.Text = o.Name;
-            this.lblLastExecution.Text = o.LastExecutionDate.ToString();
-            this.lbNextExecution.Text = o.NextExecutionDate.ToString();
-        }
-
-        public void ShowItem(object o)
-        {
-            if (o == null) return;
-            if (o is EventModel eventModel) 
-            {
-                ShowItem(eventModel);
-            }
-        }
     }
 }

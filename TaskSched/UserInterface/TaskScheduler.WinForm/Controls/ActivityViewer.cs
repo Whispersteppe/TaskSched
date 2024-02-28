@@ -4,15 +4,17 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TaskSched.Common.DataModel;
+using TaskSched.Common.Interfaces;
 using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls
 {
-    public partial class ActivityViewer : UserControl, ICanvasItem<ActivityModel>, ICanvasItemCanEdit, ICanvasItemCanDelete
+    public partial class ActivityViewer : UserControl, ICanvasItem<ActivityModel>
     {
 
         public ITreeItem TreeItem { get; private set; }
@@ -25,26 +27,18 @@ namespace TaskScheduler.WinForm.Controls
             InitializeComponent();
         }
 
-        public void SetScheduleManager(ScheduleManager scheduleManager)
+
+        public async Task Initialize(ScheduleManager scheduleManager, ActivityModel o)
         {
             _scheduleManager = scheduleManager;
-        }
-
-        public void ShowItem(object o)
-        {
-            ShowItem((ActivityModel)o);
-        }
-
-        public void ShowItem(ActivityModel o)
-        {
+            _activityModel = o;
             TreeItem = o;
 
-            _activityModel = o as ActivityModel;
             _activity = _activityModel.Item;
 
             this.txtName.Text = o.Name;
+
             //this.lvFields 
-            //this.cmbActivityHandler
             foreach (var field in _activity.DefaultFields)
             {
                 lstFields.Items.Add(field);
@@ -55,8 +49,78 @@ namespace TaskScheduler.WinForm.Controls
                 lstFields.SelectedItem = lstFields.Items[0];
             }
 
+            //this.cmbActivityHandler
+            cmbActivityHandler.Items.Clear();
+
+            foreach(var handler in await _scheduleManager.GetHandlerInfo())
+            {
+                cmbActivityHandler.Items.Add(handler);
+            }
+
+
+            foreach (var item in cmbActivityHandler.Items)
+            {
+                if (item is ExecutionHandlerInfo handlerInfo)
+                {
+                    if (handlerInfo.HandlerId == _activity.ActivityHandlerId)
+                    {
+                        cmbActivityHandler.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+
+            if (cmbActivityHandler.SelectedItem == null)
+            {
+                cmbActivityHandler.SelectedIndex = 0;
+            }
 
         }
+
+        public async Task Initialize(ScheduleManager scheduleManager, object treeItem)
+        {
+            await Initialize(scheduleManager, treeItem as ActivityModel);
+        }
+
+        public List<ToolStripItem> ToolStripItems
+        {
+
+
+            get
+            {
+                ToolStripBuilder builder = new ToolStripBuilder();
+                builder.AddButton("Save", TsSave_Click);
+                builder.AddButton("Delete", TsDelete_Click);
+
+                return builder.ToolStripItems;
+            }
+        }
+
+        private async void TsDelete_Click(object? sender, EventArgs e)
+        {
+            await _scheduleManager.DeleteItem(_activityModel);
+        }
+
+        private async void TsSave_Click(object? sender, EventArgs e)
+        {
+            _activityModel.Item.Name = txtName.Text;
+            var rslt = await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
+        }
+
+        public async Task SetScheduleManager(ScheduleManager scheduleManager)
+        {
+            _scheduleManager = scheduleManager;
+
+            var infoItems = await _scheduleManager.GetHandlerInfo();
+
+            foreach (var infoItem in infoItems)
+            {
+                cmbActivityHandler.Items.Add(infoItem);
+            }
+
+
+        }
+
 
         #region handlers
 
@@ -143,21 +207,51 @@ namespace TaskScheduler.WinForm.Controls
             return true;
         }
 
-        public void Revert()
+
+        private void cmbActivityHandler_SelectedValueChanged(object sender, EventArgs e)
         {
-            MessageBox.Show("Revert");
+            //make sure the properties on the selected handler in the combobox exist in the field list
+
+            if (cmbActivityHandler.SelectedItem is ExecutionHandlerInfo handlerInfo)
+            {
+                foreach(var requiredfield in handlerInfo.RequiredFields)
+                {
+                    bool foundField = false;
+                    //  find in the current field list
+                    foreach(var field in lstFields.Items)
+                    {
+                        if (field is ActivityField activityField)
+                        {
+                            if (activityField.Name == requiredfield.Name)
+                            {
+                                //  we've found this one.
+                                foundField = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (foundField == false)
+                    {
+                        ActivityField field = new ActivityField()
+                        {
+                            FieldType = requiredfield.FieldType,
+                            IsReadOnly = true,
+                            Name = requiredfield.Name,
+                            Value = "not set"
+                        };
+
+                        _activity.DefaultFields.Add(field);
+                        lstFields.Items.Add(field);
+                        lstFields.SelectedItem = field;
+                    }
+                    
+                }
+
+            }
+
+
         }
 
-        public async void Save()
-        {
-            _activityModel.Item.Name = txtName.Text;
-            var rslt = await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
-
-        }
-
-        public async void Delete()
-        {
-            await _scheduleManager.DeleteItem(_activityModel);
-        }
     }
 }

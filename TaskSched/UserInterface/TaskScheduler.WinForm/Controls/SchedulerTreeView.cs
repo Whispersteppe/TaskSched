@@ -84,7 +84,7 @@ namespace TaskScheduler.WinForm.Controls
                     TreeNode? childNode = FindNode(node, treeItem);
                     if (childNode != null)
                     {
-                        return node;
+                        return childNode;
                     }
                 }
 

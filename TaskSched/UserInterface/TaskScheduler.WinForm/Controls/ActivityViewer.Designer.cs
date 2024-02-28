@@ -79,6 +79,7 @@
             cmbActivityHandler.Name = "cmbActivityHandler";
             cmbActivityHandler.Size = new Size(182, 23);
             cmbActivityHandler.TabIndex = 3;
+            cmbActivityHandler.SelectedValueChanged += cmbActivityHandler_SelectedValueChanged;
             // 
             // groupBox1
             // 
