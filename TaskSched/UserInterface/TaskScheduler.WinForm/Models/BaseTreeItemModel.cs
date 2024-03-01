@@ -12,7 +12,7 @@ namespace TaskScheduler.WinForm.Models
 
     public class BaseTreeItemModel: ITreeItem
     {
-        public virtual string Name { get; protected set; }
+        public virtual string DisplayName { get; protected set; }
         public virtual object? UnderlyingItem { get; set; }
 
         public virtual TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.Unknown;
@@ -32,9 +32,9 @@ namespace TaskScheduler.WinForm.Models
         {
             UnderlyingItem = underlyingItem;
             ParentItem = parentItem;
-            if (string.IsNullOrEmpty(Name))
+            if (string.IsNullOrEmpty(DisplayName))
             {
-                Name = "Not Set";
+                DisplayName = "Not Set";
             }
         }
 
@@ -98,24 +98,4 @@ namespace TaskScheduler.WinForm.Models
 
     }
 
-    public class BaseTreeItemModel<T> : BaseTreeItemModel where T: class
-    {
-        public T? Item
-        {
-            get 
-            {
-                return UnderlyingItem as T;
-            }
-            protected set
-            {
-                UnderlyingItem = value;
-            }
-        }
-
-        public BaseTreeItemModel(T item, ITreeItem? parent)
-            :base(parent, item)
-        {
-        }
-
-    }
 }

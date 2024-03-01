@@ -7,8 +7,8 @@
         public CalendarRootModel(ITreeItem? parent)
             :base(parent, "")
         {
-            Name = "Calendars";
-            AllowedChildTypes = [TreeItemTypeEnum.CalendarItem];
+            DisplayName = "Calendars";
+            AllowedChildTypes = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
         }
 
 

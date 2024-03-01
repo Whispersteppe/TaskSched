@@ -103,7 +103,7 @@ namespace TaskScheduler.WinForm.Controls
 
             if (node != null)
             {
-                node.Text = treeItem.Name;
+                node.Text = treeItem.DisplayName;
             }
         }
 
@@ -115,7 +115,7 @@ namespace TaskScheduler.WinForm.Controls
                 if (parentNode != null)
                 {
 
-                    TreeNode node = new TreeNode(childItem.Name)
+                    TreeNode node = new TreeNode(childItem.DisplayName)
                     {
 
                     };
@@ -134,7 +134,7 @@ namespace TaskScheduler.WinForm.Controls
             _list = list;
             foreach (ITreeItem item in _list)
             {
-                TreeNode node = new TreeNode(item.Name)
+                TreeNode node = new TreeNode(item.DisplayName)
                 {
 
                 };
@@ -156,7 +156,7 @@ namespace TaskScheduler.WinForm.Controls
 
                 foreach (ITreeItem item in parentTreeItem.Children)
                 {
-                    TreeNode node = new TreeNode(item.Name);
+                    TreeNode node = new TreeNode(item.DisplayName);
 
                     node.Tag = item;
 

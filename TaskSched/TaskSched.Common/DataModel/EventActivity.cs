@@ -7,7 +7,7 @@
 
         public Guid ActivityId { get; set; }
 
-        public List<EventActivityField> Fields { get; set; }
+        public List<EventActivityField>? Fields { get; set; }
 
     }
 }

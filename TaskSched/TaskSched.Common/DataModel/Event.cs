@@ -17,8 +17,8 @@ namespace TaskSched.Common.DataModel
         public bool CatchUpOnStartup { get; set; }
         public Guid? CalendarId { get; set; }
 
-        public List<EventSchedule> Schedules { get; set; } = new List<EventSchedule>();
-        public List<EventActivity> Activities { get; set; } = new List<EventActivity>();
+        public List<EventSchedule>? Schedules { get; set; } = new List<EventSchedule>();
+        public List<EventActivity>? Activities { get; set; } = new List<EventActivity>();
 
 
     }

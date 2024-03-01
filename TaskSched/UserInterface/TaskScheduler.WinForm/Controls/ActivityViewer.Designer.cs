@@ -38,12 +38,12 @@
             btnAddField = new Button();
             chkFieldRequiredByHandler = new CheckBox();
             txtFieldDefault = new TextBox();
-            txtFieldType = new TextBox();
             txtFieldName = new TextBox();
             label6 = new Label();
             label4 = new Label();
             label3 = new Label();
             lstFields = new ListBox();
+            cmbFieldType = new ComboBox();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -84,12 +84,12 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(cmbFieldType);
             groupBox1.Controls.Add(btnSaveField);
             groupBox1.Controls.Add(btnDeleteField);
             groupBox1.Controls.Add(btnAddField);
             groupBox1.Controls.Add(chkFieldRequiredByHandler);
             groupBox1.Controls.Add(txtFieldDefault);
-            groupBox1.Controls.Add(txtFieldType);
             groupBox1.Controls.Add(txtFieldName);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(label4);
@@ -154,14 +154,6 @@
             txtFieldDefault.Size = new Size(100, 23);
             txtFieldDefault.TabIndex = 8;
             // 
-            // txtFieldType
-            // 
-            txtFieldType.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtFieldType.Location = new Point(245, 55);
-            txtFieldType.Name = "txtFieldType";
-            txtFieldType.Size = new Size(100, 23);
-            txtFieldType.TabIndex = 6;
-            // 
             // txtFieldName
             // 
             txtFieldName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -208,6 +200,15 @@
             lstFields.TabIndex = 0;
             lstFields.SelectedValueChanged += lstFields_SelectedValueChanged;
             // 
+            // cmbFieldType
+            // 
+            cmbFieldType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFieldType.FormattingEnabled = true;
+            cmbFieldType.Location = new Point(241, 56);
+            cmbFieldType.Name = "cmbFieldType";
+            cmbFieldType.Size = new Size(121, 23);
+            cmbFieldType.TabIndex = 13;
+            // 
             // ActivityViewer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -237,11 +238,11 @@
         private Label label3;
         private ListBox lstFields;
         private TextBox txtFieldDefault;
-        private TextBox txtFieldType;
         private TextBox txtFieldName;
         private Button btnDeleteField;
         private Button btnAddField;
         private CheckBox chkFieldRequiredByHandler;
         private Button btnSaveField;
+        private ComboBox cmbFieldType;
     }
 }

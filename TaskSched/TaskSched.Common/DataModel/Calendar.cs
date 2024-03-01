@@ -12,8 +12,8 @@ namespace TaskSched.Common.DataModel
         public string Name { get; set; } = "New Calendar";
 
         public Guid? ParentCalendarId { get; set; }
-        public List<Event> Events { get; set; } = new List<Event>();
-        public List<Calendar> ChildCalendars { get; set; } = new List<Calendar>();
+        public List<Event>? Events { get; set; } = new List<Event>();
+        public List<Calendar>? ChildCalendars { get; set; } = new List<Calendar>();
 
     }
 

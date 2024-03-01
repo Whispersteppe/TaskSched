@@ -40,8 +40,14 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsSave_Click(object? sender, EventArgs e)
         {
-            _eventModel.Item.Name = txtName.Text;
-            _eventModel.Item.CalendarId = _eventModel.ParentItem.ID;
+            _eventModel.Name = txtName.Text;
+            _eventModel.CalendarId = _eventModel.ParentItem.ID;
+            _eventModel.CatchUpOnStartup = cbCatchUpOnStartup.Checked;
+            _eventModel.IsActive = cbIsActive.Checked;
+
+            //  activities
+            //  schedules
+
             var rslt = await _scheduleManager.SaveModel(_eventModel.ParentItem, _eventModel);
         }
 
@@ -52,9 +58,17 @@ namespace TaskScheduler.WinForm.Controls
             TreeItem = o;
             _eventModel = o;
 
-            this.txtName.Text = o.Name;
-            this.lblLastExecution.Text = o.LastExecutionDate.ToString();
-            this.lbNextExecution.Text = o.NextExecutionDate.ToString();
+            txtName.Text = o.DisplayName;
+            lblLastExecution.Text = o.LastExecution.ToString();
+            lbNextExecution.Text = o.NextExecution.ToString();
+            cbCatchUpOnStartup.Checked = o.CatchUpOnStartup;
+            cbIsActive.Checked = o.IsActive;
+
+            lstScheduleItems.Items.Clear();
+
+            lstActivities.Items.Clear();
+
+            lstActivityFields.Items.Clear();
 
         }
 
@@ -71,5 +85,9 @@ namespace TaskScheduler.WinForm.Controls
             return true;
         }
 
+        private void txtScheduleCRON_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

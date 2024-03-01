@@ -8,7 +8,7 @@
         public ActivityRootModel(ITreeItem? parent)
             :base(parent, "")
         {
-            Name = "Activities";
+            DisplayName = "Activities";
             AllowedChildTypes = [TreeItemTypeEnum.ActivityItem];
         }
 

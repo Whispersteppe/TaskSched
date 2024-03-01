@@ -16,7 +16,7 @@ namespace TaskScheduler.WinForm.Models
         public LogRootModel(ITreeItem parent)
             :base(parent, "")
         {
-            Name = "Logs";
+            DisplayName = "Logs";
         }
 
 

@@ -1,51 +1,85 @@
-﻿using TaskSched.Common.DataModel;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using TaskSched.Common.DataModel;
 
 namespace TaskScheduler.WinForm.Models
 {
-    public class EventModel : BaseTreeItemModel<Event>
+    public class EventModel : Event, ITreeItem
     {
-        public override TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.EventItem;
+        public TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.EventItem;
 
-        public EventModel(Event eventItem, ITreeItem? parent)
-            :base(eventItem, parent)
+
+        public string DisplayName => this.Name;
+        public virtual Guid ID => this.Id;
+        public virtual object? UnderlyingItem { get; set; }
+
+        public ITreeItem? ParentItem { get; set; }
+
+
+        public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = [TreeItemTypeEnum.CalendarRootItem, TreeItemTypeEnum.CalendarItem];
+
+        public List<TreeItemTypeEnum> AllowedChildTypes { get; protected set; } = [];
+
+        public List<ITreeItem> Children { get; protected set; } = [];
+
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
         {
-            ID = eventItem.Id;
-
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public EventModel(ITreeItem? parent)
-            :this(new Event(), parent)
+        public virtual bool CanMoveItem(ITreeItem possibleNewParent)
         {
-
-        }
-
-        public DateTime LastExecutionDate
-        {
-            get
+            if (CanAddCreateChild(possibleNewParent.TreeItemType))
             {
-                return Item?.LastExecution ?? DateTime.Now;
+                return true;
             }
+
+            return false;
         }
 
-        public DateTime NextExecutionDate
+        public virtual bool CanAddItem(ITreeItem possibleNewChild)
         {
-            get
+            if (CanAddCreateChild(possibleNewChild.TreeItemType))
             {
-                return Item?.NextExecution ?? DateTime.Now;
+                return true;
             }
+
+            return false;
         }
 
-        public override string Name
+        public virtual bool CanHaveChildren()
         {
-            get
+            if (AllowedChildTypes.Count > 0)
             {
-                return Item.Name;
+                return true;
             }
-            protected set
-            {
-                Item.Name = value;
-            }
+
+            return false;
         }
+
+        public virtual bool CanAddCreateChild(TreeItemTypeEnum itemType)
+        {
+            if (AllowedChildTypes.Contains(itemType))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public virtual bool CanDeleteItem()
+        {
+            return false;
+        }
+
+        public virtual bool CanEdit()
+        {
+            return false;
+        }
+
 
     }
 }

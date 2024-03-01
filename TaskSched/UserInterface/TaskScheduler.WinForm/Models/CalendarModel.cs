@@ -1,55 +1,113 @@
-﻿using TaskSched.Common.DataModel;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using TaskSched.Common.DataModel;
 
 namespace TaskScheduler.WinForm.Models
 {
-    public class CalendarModel : BaseTreeItemModel<Calendar>
+    public class CalendarModel : Calendar, ITreeItem
     {
-        List<CalendarModel> _childCalendars = new List<CalendarModel>();
-        List<EventModel> _childEvents = new List<EventModel>();
+
+        public string DisplayName => this.Name;
+        public virtual Guid ID => this.Id;
+
+        public virtual object? UnderlyingItem { get; set; }
+
+        public virtual TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.CalendarItem;
+        public ITreeItem? ParentItem { get; set; }
 
 
-        public override TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.CalendarItem;
+        public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.CalendarRootItem];
 
-        public CalendarModel(Calendar calendar, ITreeItem? parent)
-            :base(calendar, parent)
-        {
-            ID = calendar.Id;
+        public List<TreeItemTypeEnum> AllowedChildTypes { get; protected set; } = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
 
-            AllowedChildTypes = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
-            this.AllowedMoveToParentTypes = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.CalendarRootItem]; 
-
-            foreach (var childCalendar in calendar.ChildCalendars)
-            {
-                _childCalendars.Add(new CalendarModel(childCalendar, this));
-            }
-
-            foreach(var childEvent in calendar.Events)
-            {
-                _childEvents.Add(new EventModel(childEvent, this));
-            }
-
-            Children = [.. _childCalendars, .. _childEvents];
-        }
-
-        public CalendarModel(ITreeItem? parent)
-            :this(new Calendar(), parent)
-        {
-        }
-        public override bool CanHaveChildren()
-        {
-            return true;
-        }
-
-        public override string Name 
+        public List<ITreeItem> Children 
         {
             get
             {
-                return Item.Name;
+                List<ITreeItem> children = new List<ITreeItem>();
+
+                foreach (var childCalendar in ChildCalendars)
+                {
+                    if (childCalendar is CalendarModel model)
+                    {
+                        children.Add(model);
+                    }
+                }
+
+                foreach (var childEvent in Events)
+                {
+                    if (childEvent is EventModel model)
+                    {
+                        children.Add(model);
+                    }
+                }
+
+                return children;
+
+
             }
             protected set
             {
-                Item.Name = value;
+
             }
+        }
+
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public virtual bool CanMoveItem(ITreeItem possibleNewParent)
+        {
+            if (CanAddCreateChild(possibleNewParent.TreeItemType))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public virtual bool CanAddItem(ITreeItem possibleNewChild)
+        {
+            if (CanAddCreateChild(possibleNewChild.TreeItemType))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public virtual bool CanHaveChildren()
+        {
+            if (AllowedChildTypes.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public virtual bool CanAddCreateChild(TreeItemTypeEnum itemType)
+        {
+            if (AllowedChildTypes.Contains(itemType))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public virtual bool CanDeleteItem()
+        {
+            return false;
+        }
+
+        public virtual bool CanEdit()
+        {
+            return false;
         }
 
 

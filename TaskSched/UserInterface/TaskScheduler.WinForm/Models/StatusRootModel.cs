@@ -7,7 +7,7 @@
         public StatusRootModel(ITreeItem? parent)
             :base(parent, "")
         {
-            Name = "Status";
+            DisplayName = "Status";
 
         }
 

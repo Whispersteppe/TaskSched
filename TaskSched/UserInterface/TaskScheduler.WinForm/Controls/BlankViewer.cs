@@ -126,7 +126,7 @@ namespace TaskScheduler.WinForm.Controls
             {
                 TreeItem = treeItem;
 
-                txtName.Text = treeItem.Name;
+                txtName.Text = treeItem.DisplayName;
 
                 if (TreeItem.CanHaveChildren())
                 {

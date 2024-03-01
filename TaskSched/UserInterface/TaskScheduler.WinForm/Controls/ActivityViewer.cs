@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TaskSched.Common.DataModel;
+using TaskSched.Common.FieldValidator;
 using TaskSched.Common.Interfaces;
 using TaskScheduler.WinForm.Models;
 
@@ -34,11 +35,18 @@ namespace TaskScheduler.WinForm.Controls
             _activityModel = o;
             TreeItem = o;
 
-            _activity = _activityModel.Item;
+            _activity = _activityModel;
 
             this.txtName.Text = o.Name;
 
-            //this.lvFields 
+            //cmbFieldType
+            cmbFieldType.Items.Clear();
+            foreach (var fieldType in Enum.GetValues<FieldTypeEnum>())
+            {
+                cmbFieldType.Items.Add(fieldType);
+            }
+
+            //lvFields 
             foreach (var field in _activity.DefaultFields)
             {
                 lstFields.Items.Add(field);
@@ -49,7 +57,9 @@ namespace TaskScheduler.WinForm.Controls
                 lstFields.SelectedItem = lstFields.Items[0];
             }
 
-            //this.cmbActivityHandler
+
+
+            //cmbActivityHandler
             cmbActivityHandler.Items.Clear();
 
             foreach(var handler in await _scheduleManager.GetHandlerInfo())
@@ -74,6 +84,10 @@ namespace TaskScheduler.WinForm.Controls
             {
                 cmbActivityHandler.SelectedIndex = 0;
             }
+
+
+
+
 
         }
 
@@ -103,7 +117,7 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsSave_Click(object? sender, EventArgs e)
         {
-            _activityModel.Item.Name = txtName.Text;
+            _activityModel.Name = txtName.Text;
             var rslt = await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
         }
 
@@ -151,7 +165,7 @@ namespace TaskScheduler.WinForm.Controls
                     {
                         //  remove it
                         lstFields.Items.Remove(lstFields.SelectedItem);
-                        if (TreeItem.UnderlyingItem is Activity activity)
+                        if (TreeItem is Activity activity)
                         {
                             activity.DefaultFields.Remove(field);
                         }
@@ -169,7 +183,7 @@ namespace TaskScheduler.WinForm.Controls
                 if (lstFields.SelectedItem is ActivityField field)
                 {
                     txtFieldName.Text = field.Name;
-                    txtFieldType.Text = field.FieldType.ToString();
+                    cmbFieldType.SelectedItem = field.FieldType;
                     txtFieldDefault.Text = field.Value;
                     chkFieldRequiredByHandler.Checked = field.IsReadOnly;
                 }
@@ -178,7 +192,7 @@ namespace TaskScheduler.WinForm.Controls
             else
             {
                 txtFieldName.Text = "";
-                txtFieldType.Text = "";
+                cmbFieldType.SelectedItem = FieldTypeEnum.String;
                 txtFieldDefault.Text = "";
                 chkFieldRequiredByHandler.Checked = false;
             }

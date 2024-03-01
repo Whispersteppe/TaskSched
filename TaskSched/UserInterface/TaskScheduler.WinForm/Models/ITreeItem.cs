@@ -13,14 +13,12 @@ namespace TaskScheduler.WinForm.Models
         /// <summary>
         /// text that will get displayed on the treeview
         /// </summary>
-        string Name { get; }
+        string DisplayName { get; }
         Guid ID { get; }
 
         ITreeItem? ParentItem { get; }
 
         TreeItemTypeEnum TreeItemType { get; }
-
-        object? UnderlyingItem { get; set; }
 
         bool CanMoveItem(ITreeItem possibleNewParent);
         bool CanAddItem(ITreeItem possibleNewChild);

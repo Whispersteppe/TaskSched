@@ -56,8 +56,8 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsSave_Click(object? sender, EventArgs e)
         {
-            _calendarModel.Item.Name = txtName.Text;
-            _calendarModel.Item.ParentCalendarId = _calendarModel.ParentItem.ID;
+            _calendarModel.Name = txtName.Text;
+            _calendarModel.ParentCalendarId = _calendarModel.ParentItem.ID;
 
             var rslt = await _scheduleManager.SaveModel(_calendarModel.ParentItem, _calendarModel);
         }
@@ -69,7 +69,7 @@ namespace TaskScheduler.WinForm.Controls
             TreeItem = treeItem;
             _calendarModel = treeItem;
 
-            this.txtName.Text = treeItem.Name;
+            this.txtName.Text = treeItem.DisplayName;
         }
 
         public async Task Initialize(ScheduleManager scheduleManager, object treeItem)
