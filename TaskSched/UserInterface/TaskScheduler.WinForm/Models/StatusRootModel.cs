@@ -1,6 +1,6 @@
 ﻿namespace TaskScheduler.WinForm.Models
 {
-    public class StatusRootModel : BaseTreeItemModel
+    public class StatusRootModel : RootModel
     {
         public override TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.StatusRootItem;
 

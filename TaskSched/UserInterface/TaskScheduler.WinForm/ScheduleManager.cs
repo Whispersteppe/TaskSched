@@ -449,16 +449,35 @@ namespace TaskScheduler.WinForm
             {
                 case TreeItemTypeEnum.ActivityItem:
                     {
+                        ActivityModel activityModel  = model as ActivityModel;
+                        var events = await _eventStore.GetAll();
+                        foreach(var eventItem in events.Result)
+                        {
+                            //  if in use by any activity, fail it.
+                            foreach(var activity in eventItem.Activities)
+                            {
+                                if (activityModel.Id == activity.Id)
+                                {
+                                    return false;
+                                }
+                            }
+                        }
 
-                        break;
+                        return true;
                     }
                 case TreeItemTypeEnum.CalendarItem:
                     {
+                        CalendarModel calendarModel = model as CalendarModel;
+                        if (calendarModel.Events.Count == 0 && calendarModel.ChildCalendars.Count == 0)
+                        {
+                            return true;
+                        }
+
                         break;
                     }
                 case TreeItemTypeEnum.EventItem:
                     {
-                        break;
+                        return true;
                     }
                 default:
                     {
@@ -466,7 +485,7 @@ namespace TaskScheduler.WinForm
                     }
             }
 
-            return true;
+            return false;
         }
 
         public async Task DeleteItem(ITreeItem model)

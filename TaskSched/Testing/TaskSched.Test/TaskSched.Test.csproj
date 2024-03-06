@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Component\TaskSched.Component.Cron\TaskSched.Component.Cron.csproj" />
     <ProjectReference Include="..\..\TaskSched.Common\TaskSched.Common.csproj" />
     <ProjectReference Include="..\..\TaskSched.DataStore\TaskSched.DataStore.csproj" />
     <ProjectReference Include="..\..\TaskSched.ExecutionEngine\TaskSched.ExecutionEngine.csproj" />

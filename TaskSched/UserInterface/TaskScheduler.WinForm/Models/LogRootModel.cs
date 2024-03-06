@@ -9,7 +9,7 @@ using System.Xml.Linq;
 namespace TaskScheduler.WinForm.Models
 {
 
-    public class LogRootModel : BaseTreeItemModel
+    public class LogRootModel : RootModel
     {
         public override TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.LogRootItem;
 

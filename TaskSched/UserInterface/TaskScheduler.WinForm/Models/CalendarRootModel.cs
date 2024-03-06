@@ -1,6 +1,6 @@
 ﻿namespace TaskScheduler.WinForm.Models
 {
-    public class CalendarRootModel : BaseTreeItemModel
+    public class CalendarRootModel : RootModel
     {
         public override TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.CalendarRootItem;
 

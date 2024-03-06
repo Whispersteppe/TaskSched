@@ -28,9 +28,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskScheduler.WinForm", "UserInterface\TaskScheduler.WinForm\TaskScheduler.WinForm.csproj", "{B039F2F7-1087-4897-87D0-5D2DC2CCEE7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskScheduler.WinForm", "UserInterface\TaskScheduler.WinForm\TaskScheduler.WinForm.csproj", "{B039F2F7-1087-4897-87D0-5D2DC2CCEE7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskScheduler.WPF", "UserInterface\TaskScheduler.WPF\TaskScheduler.WPF.csproj", "{72781CEB-8DC2-4F25-8FE2-494E49AB4F10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskScheduler.WPF", "UserInterface\TaskScheduler.WPF\TaskScheduler.WPF.csproj", "{72781CEB-8DC2-4F25-8FE2-494E49AB4F10}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Component", "Component", "{77BD35C7-A48E-491C-9157-BE6A3E1AA76D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskSched.Component.Cron", "Component\TaskSched.Component.Cron\TaskSched.Component.Cron.csproj", "{3EBD23FE-9AC3-4ED9-823F-CAF1BF8D0D4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +82,10 @@ Global
 		{72781CEB-8DC2-4F25-8FE2-494E49AB4F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72781CEB-8DC2-4F25-8FE2-494E49AB4F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72781CEB-8DC2-4F25-8FE2-494E49AB4F10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EBD23FE-9AC3-4ED9-823F-CAF1BF8D0D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EBD23FE-9AC3-4ED9-823F-CAF1BF8D0D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EBD23FE-9AC3-4ED9-823F-CAF1BF8D0D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EBD23FE-9AC3-4ED9-823F-CAF1BF8D0D4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +96,7 @@ Global
 		{B0CB11F8-D355-482C-899E-6C100F13BBB7} = {1700D5D7-F0AE-484B-B5B8-9E7263EF93DA}
 		{B039F2F7-1087-4897-87D0-5D2DC2CCEE7C} = {2296CA44-F53E-49BD-93E4-19BF914723C2}
 		{72781CEB-8DC2-4F25-8FE2-494E49AB4F10} = {2296CA44-F53E-49BD-93E4-19BF914723C2}
+		{3EBD23FE-9AC3-4ED9-823F-CAF1BF8D0D4D} = {77BD35C7-A48E-491C-9157-BE6A3E1AA76D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CA9A4399-7737-40FA-82B0-1071E2E1A943}

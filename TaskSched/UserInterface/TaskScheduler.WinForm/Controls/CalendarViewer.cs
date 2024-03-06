@@ -51,7 +51,11 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsDelete_Click(object? sender, EventArgs e)
         {
-            await _scheduleManager.DeleteItem(_calendarModel);
+            if (await _scheduleManager.CanDeleteItem(_calendarModel))
+            {
+                await _scheduleManager.DeleteItem(_calendarModel);
+
+            }
         }
 
         private async void TsSave_Click(object? sender, EventArgs e)

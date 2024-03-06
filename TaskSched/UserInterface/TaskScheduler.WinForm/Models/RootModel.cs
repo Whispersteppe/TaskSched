@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace TaskScheduler.WinForm.Models
 {
 
-    public class BaseTreeItemModel: ITreeItem
+    public class RootModel: ITreeItem
     {
         public virtual string DisplayName { get; protected set; }
         public virtual object? UnderlyingItem { get; set; }
@@ -28,7 +28,7 @@ namespace TaskScheduler.WinForm.Models
         public virtual Guid ID {get;protected set; }
 
 
-        public BaseTreeItemModel(ITreeItem? parentItem, object underlyingItem)
+        public RootModel(ITreeItem? parentItem, object underlyingItem)
         {
             UnderlyingItem = underlyingItem;
             ParentItem = parentItem;
