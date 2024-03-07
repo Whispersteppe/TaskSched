@@ -4,7 +4,7 @@ namespace TaskSched.Component.Cron
 {
     public class CronComponentBase : ICronComponent
     {
-        public CronComponentType ComponentType { get; private set; }
+        public CronComponentType ComponentType { get; internal set; }
         public List<int> AllowedRangeValues { get; protected set; } = new List<int>();
         public ObservableCollection<int> Range { get; } = new ObservableCollection<int>();
 
@@ -13,11 +13,18 @@ namespace TaskSched.Component.Cron
         int _repeatStart;
 
 
-        public CronComponentBase() :
-            this("*")
+        public CronComponentBase(int allowedRangeStart, int allowedRangeEnd) :
+            this("*", allowedRangeStart, allowedRangeEnd)
         { }
-        public CronComponentBase(string value)
+
+        public CronComponentBase(string value, int allowedRangeStart, int allowedRangeEnd)
         {
+            AllowedRangeValues.Clear();
+            for (int i = allowedRangeStart; i <= allowedRangeEnd; i++)
+            {
+                AllowedRangeValues.Add(i);
+            }
+
             Range.CollectionChanged += Range_CollectionChanged;
             DecodeIncomingValue(value);
 
@@ -39,6 +46,7 @@ namespace TaskSched.Component.Cron
                     _repeatStart = int.Parse(pieces[0]);
                     _repeatInterval = int.Parse(pieces[1]);
                     ComponentType = CronComponentType.Repeating;
+                    SetRepeatingRange();
                 }
                 else
                 {
@@ -83,6 +91,7 @@ namespace TaskSched.Component.Cron
             {
                 _repeatInterval = value;
                 ComponentType = CronComponentType.Repeating;
+                SetRepeatingRange();
             }
         }
 
@@ -97,6 +106,23 @@ namespace TaskSched.Component.Cron
             {
                 _repeatStart = value;
                 ComponentType = CronComponentType.Repeating;
+                SetRepeatingRange();
+            }
+        }
+
+        private void SetRepeatingRange()
+        {
+            if ( _repeatInterval > 0)
+            {
+                Range.CollectionChanged -= Range_CollectionChanged;
+                Range.Clear();
+                int currentRangeItem = _repeatStart;
+                while ( currentRangeItem < AllowedRangeValues.Max() )
+                {
+                    Range.Add( currentRangeItem );
+                    currentRangeItem += _repeatInterval;
+                }
+                Range.CollectionChanged += Range_CollectionChanged;
             }
         }
 

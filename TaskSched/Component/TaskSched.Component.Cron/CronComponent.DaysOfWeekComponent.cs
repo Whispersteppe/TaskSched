@@ -9,14 +9,8 @@
             this("*")
         { }
         public DaysOfWeekComponent(string value)
-            : base(value)
+            : base(value, 1, 7)
         {
-            AllowedRangeValues.Clear();
-            for (int i = 1; i <= 7; i++)
-            {
-                AllowedRangeValues.Add(i);
-            }
-
         }
 
         Dictionary<string, string> stringReplacements = new Dictionary<string, string>() 
@@ -29,6 +23,7 @@
             {"FRI", "6" },
             {"SAT", "7" },
         };
+
         internal override void DecodeIncomingValue(string value)
         {
             //  could be numbers or strings
@@ -39,33 +34,39 @@
             }
             //TODO need to handle # stuff
 
-            if (value.EndsWith('L'))
+            if (value.Contains("?"))
             {
-                FromLast = true;
+                ComponentType = CronComponentType.Ignored;
+            }
+            else if (value.EndsWith('L'))
+            {
+
                 //  forms we can find:
                 //  L     - last day of week (saturday
-                //  3L    - last tuesday of month
+                //  7L    - last saturday of month
                 if (value == "L")
                 {
-                    FromLast = false;
-                    value = "7";
+                    Range.Add(7);
                 }
                 else
                 {
                     //  it's the last N day of the month
-                    FromLast = true;
-                    value = value.Substring(0, value.Length - 1);
+                    Range.Add(int.Parse(value.Substring(0, value.Length - 1)));
                 }
 
+                ComponentType = CronComponentType.DaysOfWeekFromLast;
 
             }
             else if (value.Contains('#'))
             {
                 //  handling the Nth weekday of the month
+                //  <day of week>#<iteration>
 
                 string[] parts = value.Split('#');
-                AllowedRangeValues.Add(int.Parse(parts[0]));
-                NthWeekday = int.Parse(parts[1]);
+                DayOfWeek = int.Parse(parts[0]);
+                WeekOfMonth = int.Parse(parts[1]);
+                ComponentType = CronComponentType.NthWeekday;
+
 
             }
             else
@@ -73,80 +74,115 @@
                 //  it's normal stuff
                 base.DecodeIncomingValue(value);
             }
-
-
-
-            base.DecodeIncomingValue(value);
         }
 
-        public int NthWeekday { get; set; } = -1;
-
-        public bool FromLast { get; set; } = true;
-        public bool Ignored { get; set; } = true;
+        public int DayOfWeek { get; set; }
+        public int WeekOfMonth { get; set; }
 
 
         public override bool IsValid(DateTime currentDate)
         {
-            if (Ignored == true)
+            switch (ComponentType)
             {
-                return true;
-            }
-            else if (FromLast == true)
-            {
-                //  it's a last N day of the month situation
-                if (Range.Contains(currentDate.Day))
-                {
-                    if (DateTime.DaysInMonth(currentDate.Year, currentDate.Month) - currentDate.Day < 7)
+                case CronComponentType.Ignored:
                     {
                         return true;
                     }
-                    else 
+                    case CronComponentType.AllowAny:
                     { 
-                        return false; 
+                        return true;
                     }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (NthWeekday > -1)
-            {
-                //  first the first of the current month
-                DateTime workDate = currentDate.AddDays(1 - currentDate.Day);
-                //  find the first Day in the range
-                while ((int)workDate.DayOfWeek != Range[0])
-                {
-                    workDate = workDate.AddDays(1);
-                }
-                //  now find the Nth DayOfWeek
-                int n = 1;
-                while (n < NthWeekday)
-                {
-                    workDate = workDate.AddDays(7);
-                    n++;
-                }
 
-                if (workDate.Day ==  currentDate.Day)
-                {
-                    return true;
-                }
-                else 
-                { 
-                    return false; 
-                }
+                case CronComponentType.DaysOfWeekFromLast:
+                    {
+                        //int lastDay = DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
+                        DateTime lastDay = currentDate.AddDays(DateTime.DaysInMonth(currentDate.Year, currentDate.Month) - currentDate.Day);
+                        while (((int)lastDay.DayOfWeek + 1) != Range[0])
+                        {
+                            lastDay = lastDay.AddDays(-1);
+                        }
+                        if (currentDate.Day == lastDay.Day)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                case CronComponentType.NthWeekday:
+                    {
+                        //  first the first of the current month
+                        DateTime workDate = currentDate.AddDays(1 - currentDate.Day);
+                        //  find the first Day in the range
+                        while (((int)workDate.DayOfWeek + 1) != DayOfWeek)
+                        {
+                            workDate = workDate.AddDays(1);
+                        }
+                        //  now find the Nth DayOfWeek
+                        int n = 1;
+                        while (n < WeekOfMonth)
+                        {
+                            workDate = workDate.AddDays(7);
+                            n++;
+                        }
 
+                        if (workDate.Day == currentDate.Day)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+
+                    }
+                default:
+                    {
+                        if (Range.Contains(((int)currentDate.DayOfWeek) + 1))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
             }
-            else
+
+        }
+
+        public override string GetPiece()
+        {
+            switch (ComponentType)
             {
-                if (Range.Contains(currentDate.Day))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                case CronComponentType.Ignored:
+                    {
+                        return "?";
+                    }
+                case CronComponentType.DaysOfWeekFromLast:
+                    {
+                        if (Range.Count == 0)
+                        {
+                            return "L";
+                        }
+                        else if (Range[0] == 7)
+                        {
+                            return "L";
+                        }
+                        else
+                        {
+                            return $"{Range[0]}L";
+                        }
+                    }
+                case CronComponentType.NthWeekday:
+                    {
+                        return $"{DayOfWeek}#{WeekOfMonth}";
+                    }
+                default:
+                    {
+                        return base.GetPiece();
+                    }
             }
 
         }

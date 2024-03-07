@@ -7,14 +7,8 @@
             this("*")
         { }
         public MonthsComponent(string value)
-            : base(value)
+            : base(value, 1, 12)
         {
-            AllowedRangeValues.Clear();
-            for (int i = 1; i <= 12; i++)
-            {
-                AllowedRangeValues.Add(i);
-            }
-
         }
 
         Dictionary<string, string> stringReplacements = new Dictionary<string, string>()
@@ -46,13 +40,20 @@
 
         public override bool IsValid(DateTime currentDate)
         {
-            if (Range.Contains(currentDate.Day))
+            switch (ComponentType)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                case CronComponentType.AllowAny:
+                    return true;
+                default:
+
+                    if (Range.Contains(currentDate.Month))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
             }
         }
 

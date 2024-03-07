@@ -7,26 +7,27 @@ namespace TaskSched.Component.Cron
             this("*")
         { }
         public SecondsComponent(string value)
-            : base(value)
+            : base(value, 0, 59)
         {
-            AllowedRangeValues.Clear();
-            for(int i = 0; i < 60; i++)
-            {
-                AllowedRangeValues.Add(i);
-            }
-
         }
 
 
         public override bool IsValid(DateTime currentDate)
         {
-            if (Range.Contains(currentDate.Second))
+            switch (ComponentType)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                case CronComponentType.AllowAny:
+                    return true;
+                default:
+
+                    if (Range.Contains(currentDate.Second))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
             }
         }
 

@@ -6,25 +6,19 @@
             this("*")
         { }
         public DaysOfMonthComponent(string value)
-            : base(value)
+            : base(value, 0, 31)
         {
-            AllowedRangeValues.Clear();
-            for (int i = 1; i < 31; i++)
-            {
-                AllowedRangeValues.Add(i);
-            }
-
         }
-
-        public bool FromLast { get; set; } = false;
-        public bool Ignored { get; set; } = false;
 
         internal override void DecodeIncomingValue(string value)
         {
-
-            if (value.Contains('L'))
+            if (value.Contains("?"))
             {
-                FromLast = true;
+                ComponentType = CronComponentType.Ignored;
+            }
+            else if (value.Contains('L'))
+            {
+
                 //  forms we can find:
                 //  L     - last day of month
                 //  3L    - last day of week of month
@@ -36,12 +30,15 @@
                 }
                 else if (value.StartsWith('L')) //  L-3 version
                 {
-                    Range.Add(int.Parse(value.Substring(1)));
+                    Range.Add(int.Parse(value.Substring(2))); //  skip the L and -
                 }
                 else
                 {
                     throw new Exception($"Day of month is invalid - {value}");
                 }
+
+                ComponentType = CronComponentType.DaysOfMonthFromLast;
+
             }
             else
             {
@@ -56,77 +53,104 @@
         /// </summary>
         /// <param name="startAt"></param>
         /// <returns></returns>
-        public override int GetNext(int startAt = -1)
+        public int GetNext(DateTime fromTime)
         {
-            //TODO we need to pass in a datetime, and return a datetime....
-            //  RESWIZZLE TIME
-
-            return base.GetNext(startAt);
+            switch(ComponentType)
+            {
+                case CronComponentType.DaysOfMonthFromLast:
+                    {
+                        int lastDayOfMonth = DateTime.DaysInMonth(fromTime.Year, fromTime.Month) - Range[0] + 1;
+                        if (fromTime.Day >= lastDayOfMonth)
+                        {
+                            return -1;
+                        }
+                        else
+                        {
+                            return lastDayOfMonth;
+                        }
+                    }
+                default:
+                    return base.GetNext(fromTime.Day);
+            }
         }
 
         public override void SetAllowAny()
         {
-            FromLast = false;
-            Ignored = false;
 
             base.SetAllowAny();
         }
 
         public override string GetPiece()
         {
-            if (FromLast == true)
+            switch (ComponentType)
             {
-                if (Range.Count == 0)
-                {
-                    return "L";
-                }
-                else
-                {
-                    if (Range[0] == 1)
+                case CronComponentType.DaysOfMonthFromLast:
                     {
-                        return "L";
+                        if (Range.Count == 0)
+                        {
+                            return "L";
+                        }
+                        else
+                        {
+                            if (Range[0] == 1)
+                            {
+                                return "L";
+                            }
+                            else
+                            {
+                                return $"L-{Range[0]}";
+                            }
+                        }
                     }
-                    else
+                case CronComponentType.Ignored:
                     {
-                        return "L-{Range[0]}";
+                        return "?";
                     }
-                }
-            }
-            else if (Ignored == true)
-            {
-                return "?";
-            }
-            else
-            {
-                return base.GetPiece();
+                default:
+                    {
+                        return base.GetPiece();
+                    }
             }
         }
 
         public override bool IsValid(DateTime currentDate)
         {
-            if (Ignored == true)
+            switch (ComponentType)
             {
-                return true;
-            }
-            else if (FromLast == true)
-            {
-                DateTime workDate = currentDate.AddDays(DateTime.DaysInMonth(currentDate.Year, currentDate.Month) - currentDate.Day - Range[0]);
-                if (workDate.Day == currentDate.Day)
-                {
-                    return true;
-                }
-                else
-                { 
-                    return false; 
-                }
-            }
-            else if (Range.Contains(currentDate.Day))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+                case CronComponentType.Ignored:
+                    {
+                        return true;
+                    }
+                case CronComponentType.AllowAny:
+                    {
+                        return true;
+                    }
+
+                case CronComponentType.DaysOfMonthFromLast:
+                    {
+
+                        int date = DateTime.DaysInMonth(currentDate.Year, currentDate.Month) - Range[0] + 1;
+                        //DateTime workDate =  currentDate.AddDays(DateTime.DaysInMonth(currentDate.Year, currentDate.Month) - Range[0]);
+                        if (currentDate.Day == date)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                default:
+                    {
+                        if (Range.Contains(currentDate.Day))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
             }
         }
     }

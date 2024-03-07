@@ -4,6 +4,10 @@
     {
         AllowAny,
         Repeating,
-        Range
+        Range,
+        DaysOfMonthFromLast,
+        DaysOfWeekFromLast,
+        Ignored,
+        NthWeekday,
     }
 }

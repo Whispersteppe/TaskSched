@@ -6,26 +6,27 @@
             this("*")
         { }
         public YearsComponent(string value)
-            : base(value)
+            : base(value, 1970, 2100)
         {
-            AllowedRangeValues.Clear();
-            for (int i = 1970; i < 2100; i++)
-            {
-                AllowedRangeValues.Add(i);
-            }
-
         }
 
         public override bool IsValid(DateTime currentDate)
         {
-            if (Range.Contains(currentDate.Day))
+            switch (ComponentType)
             {
-                return true;
+                case CronComponentType.AllowAny:
+                    return true;
+                default:
+                    if (Range.Contains(currentDate.Year))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
             }
-            else
-            {
-                return false;
-            }
+
         }
 
     }

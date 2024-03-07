@@ -12,30 +12,43 @@ namespace TaskSched.Component.Cron
     {
         #region Properties
 
-        public string Value { get; private set; }
-        public string Seconds { get; private set; }
-        public string Minutes { get; private set; }
-        public string Hours { get; private set; }
-        public string DaysOfWeek { get; private set; }
-        public string Months { get; private set; }
-        public string DaysOfMonth {  get; private set; }
-        public string Years {  get; private set; }
+        public SecondsComponent secondsComponent { get; private set; }
+        public MinutesComponent minutesComponent { get; private set; }
+        public HoursComponent hoursComponent { get; private set; }
+        public DaysOfMonthComponent daysOfMonthComponent { get; private set; }
+        public YearsComponent yearsComponent { get; private set; }
+        public MonthsComponent monthsComponent { get; private set; }
+        public DaysOfWeekComponent daysOfWeekComponent { get; private set; }
 
-        SecondsComponent secondsComponent;
-        MinutesComponent minutesComponent;
-        HoursComponent hoursComponent;
-        DaysOfMonthComponent daysOfMonthComponent;
-        YearsComponent yearsComponent;
-        MonthsComponent monthsComponent;
-        DaysOfWeekComponent daysOfWeekComponent;
+        public string Value 
+        {  get
+            {
+                List<string> valueParts =
+                [
+                    secondsComponent.GetPiece(),
+                    minutesComponent.GetPiece(),
+                    hoursComponent.GetPiece(),
+                    daysOfMonthComponent.GetPiece(),
+                    monthsComponent.GetPiece(),
+                    daysOfWeekComponent.GetPiece(),
+                    yearsComponent.GetPiece(),
+                ];
+
+                string value = string.Join(' ', valueParts.ToArray());
+                return value;
+            }
+        }
 
         #endregion
 
         public CronValue(string cronValue) 
         {
-            Value = cronValue;
+            InitializeCronValue(cronValue);
 
-            //  TODO may want to make sure there are enough parts here
+        }
+
+        private void InitializeCronValue(string cronValue)
+        {
             string[] cronParts = cronValue.Split(' ');
             secondsComponent = new SecondsComponent(cronParts[0]);
             minutesComponent = new MinutesComponent(cronParts[1]);
@@ -45,16 +58,63 @@ namespace TaskSched.Component.Cron
             daysOfWeekComponent = new DaysOfWeekComponent(cronParts[5]);
             yearsComponent = new YearsComponent(cronParts[6]);
 
-
         }
 
+        public void SetCronValue(string cronValue)
+        {
+            InitializeCronValue(cronValue);
+        }
+
+
+        public bool IsValid(DateTime time)
+        {
+            if (yearsComponent.IsValid(time) == false) return false;
+            if (monthsComponent.IsValid(time) == false) return false;
+            if (daysOfMonthComponent.IsValid(time) == false) return false;
+            if (daysOfWeekComponent.IsValid(time) == false) return false;
+            if (hoursComponent.IsValid(time) == false) return false;
+            if (minutesComponent.IsValid(time) == false) return false;
+            if (secondsComponent.IsValid(time) == false) return false;
+
+            return true;
+
+        }
 
         public DateTime NextTime()
         {
-            return NextTime(DateTime.Now);
+            return NextTimes()[0];
         }
 
         public DateTime NextTime(DateTime fromTime)
+        {
+            return NextTimes(fromTime)[0];
+        }
+
+        public List<DateTime> NextTimes(int count = 1)
+        {
+            return NextTimes(DateTime.Now, count);
+        }
+        public List<DateTime> NextTimes(DateTime fromTime, int count = 1)
+        {
+            DateTime currentTime = fromTime;
+
+            List<DateTime> times = new List<DateTime>();
+            for(int i = 0; i < count;i++)
+            {
+                if (IsValid(currentTime))
+                {
+                    currentTime = currentTime.AddSeconds(1);
+                }
+                DateTime nextTime = InternalNextTime(currentTime);
+                times.Add(nextTime);
+                currentTime = nextTime;
+            }
+
+            return times;
+
+        }
+
+        private DateTime InternalNextTime(DateTime fromTime)
         {
             DateTime workDate;
 
@@ -62,6 +122,11 @@ namespace TaskSched.Component.Cron
             if (yearsComponent.IsValid(fromTime) == false)
             {
                 int nextYear = yearsComponent.GetNext(fromTime.Year);
+                if (nextYear == -1)
+                {
+                    // we're run off the end of the year component without hitting an event
+                    return DateTime.MaxValue;
+                }
                 workDate = new DateTime(nextYear, 1, 1, 0, 0, 0);
             }
             else if (monthsComponent.IsValid(fromTime) == false)
@@ -79,7 +144,7 @@ namespace TaskSched.Component.Cron
             }
             else if (daysOfMonthComponent.IsValid(fromTime) == false)
             {
-                int nextDay = daysOfMonthComponent.GetNext(fromTime.Day);
+                int nextDay = daysOfMonthComponent.GetNext(fromTime);
                 if (nextDay == -1)
                 {
                     fromTime = fromTime.AddDays(DateTime.DaysInMonth(fromTime.Year, fromTime.Month) - fromTime.Day + 1);
@@ -95,7 +160,7 @@ namespace TaskSched.Component.Cron
                 workDate = fromTime;
                 while (daysOfWeekComponent.IsValid(workDate) == false)
                 {
-                    workDate.AddDays(1);
+                    workDate = workDate.AddDays(1);
                 }
 
                 //  and reset the time
@@ -139,7 +204,7 @@ namespace TaskSched.Component.Cron
                 }
                 else
                 {
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day, fromTime.Hour, fromTime.Second, nextSecond);
+                    workDate = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day, fromTime.Hour, fromTime.Minute, nextSecond);
                 }
 
             }
@@ -149,18 +214,11 @@ namespace TaskSched.Component.Cron
                 return fromTime;
             }
 
-            return NextTime(workDate);
+            return InternalNextTime(workDate);
 
         }
 
-        public List<DateTime> NextTimes(int count = 1) 
-        {
-            return [];
-        }
-        public List<DateTime> NextTimes(DateTime fromTime, int count = 1)
-        {
-            return [];
-        }
+
 
     }
 }

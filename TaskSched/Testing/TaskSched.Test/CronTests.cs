@@ -339,6 +339,81 @@ namespace TaskSched.Test
 
         #endregion
 
+        [Theory]
+        [InlineData(101, "* * * * * ? *", "* * * * * ? *", "1/1/2024 9:00:00", "1/1/2024 9:00:01")]
+        [InlineData(102, "0 * * * * ? *", "0 * * * * ? *", "1/1/2024 9:00:00", "1/1/2024 9:01:00" )]
+        [InlineData(103, "0/5 * * * * ? *", "0/5 * * * * ? *", "1/1/2024 9:00:00", "1/1/2024 9:00:05")]
+        [InlineData(104, "0 0/5 * * * ? *", "0 0/5 * * * ? *", "1/1/2024 9:00:00", "1/1/2024 9:05:00")]
+        [InlineData(105, "0 0 9/5 * * ? *", "0 0 9/5 * * ? *", "1/1/2024 9:00:00", "1/1/2024 14:00:00")]
+        [InlineData(106, "0 0 0 1 1/3 ? *", "0 0 0 1 1/3 ? *", "1/1/2024 9:00:00", "4/1/2024 00:00:00")]
+        [InlineData(107, "0 0 0 ? * 1 *", "0 0 0 ? * 1 *", "1/1/2024 9:00:00", "1/7/2024 00:00:00")]
+        [InlineData(108, "0 0 0 L * ? *", "0 0 0 L * ? *", "1/1/2024 9:00:00", "1/31/2024 00:00:00")]
+        [InlineData(109, "0 0 0 L-3 * ? *", "0 0 0 L-3 * ? *", "1/1/2024 9:00:00", "1/29/2024 00:00:00")]
+        [InlineData(110, "0 0 0 L-3 * ? *", "0 0 0 L-3 * ? *", "1/31/2024 9:00:00", "2/27/2024 00:00:00")]
+        [InlineData(111, "0 0 0 2,4,6 * ? *", "0 0 0 2,4,6 * ? *", "1/1/2024 9:00:00", "1/2/2024 00:00:00")]
+
+        [InlineData(112, "0 0 0 ? * L *", "0 0 0 ? * L *", "1/1/2024 9:00:00", "1/27/2024 00:00:00")]
+        [InlineData(113, "0 0 0 ? * 5L *", "0 0 0 ? * 5L *", "1/1/2024 9:00:00", "1/25/2024 00:00:00")]
+
+        [InlineData(114, "0 0 0 ? * 6#2 *", "0 0 0 ? * 6#2 *", "1/1/2024 9:00:00", "1/12/2024 00:00:00")]
+
+        public void NextDateTestIteration(int index, string cronString, string expectedCronString, string startDateString, string expectedDateString)
+        {
+            DateTime startDate = DateTime.Parse(startDateString);
+            DateTime expectedDate = DateTime.Parse(expectedDateString);
+
+            CronValue cronValue = new CronValue(cronString);
+
+            DateTime actualNextDate = cronValue.NextTime(startDate);
+
+            Assert.Equal (expectedDate, actualNextDate);
+
+            string cronStringResult = cronValue.Value;
+            Assert.Equal(expectedCronString, cronStringResult);
+
+
+        }
+
+        [Theory]
+        [InlineData(103, "0 0 8 * * ? *", "1/1/2024 9:00:00")]
+
+        public void NextDateTest(int index, string cronString, string startDateString)
+        {
+            DateTime startDate = DateTime.Parse(startDateString);
+
+            CronValue cronValue = new CronValue(cronString);
+
+            List<DateTime> actualNextDates = cronValue.NextTimes(startDate, 10);
+
+            Assert.NotEmpty (actualNextDates);
+            Assert.Equal(10, actualNextDates.Count);
+            WriteLine(actualNextDates);
+
+            //  and from today
+            var singleTime = cronValue.NextTime();
+            WriteLine(singleTime);
+
+            var datesFromNow = cronValue.NextTimes(10);
+            WriteLine (datesFromNow);
+
+
+        }
+
+        [Fact]
+        public void YearEdges()
+        {
+            DateTime startDate = DateTime.Parse("1/1/1960 9:00:00");
+            CronValue cronValue = new CronValue("0 0 8 * * ? 1970-1980");
+
+            var nextDate = cronValue.NextTime(startDate);
+
+            DateTime expectedDate = DateTime.Parse("1/1/1970 8:00:00");
+            Assert.Equal(expectedDate, nextDate);
+
+            nextDate = cronValue.NextTime(DateTime.Parse("1/1/1990 9:00:00"));
+            Assert.Equal(DateTime.MaxValue, nextDate);
+
+        }
 
     }
 }
