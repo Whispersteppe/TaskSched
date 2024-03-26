@@ -1,5 +1,8 @@
 ﻿namespace TaskSched.Component.Cron
 {
+    /// <summary>
+    /// work with the months component of the cron string
+    /// </summary>
     public class MonthsComponent : CronComponentBase, ICronComponent
     {
         //TODO allow JAN, FEB, etc
@@ -9,8 +12,15 @@
         public MonthsComponent(string value)
             : base(value, 1, 12)
         {
+            AllowedComponentTypes.Add(CronComponentType.AllowAny);
+            AllowedComponentTypes.Add(CronComponentType.Repeating);
+            AllowedComponentTypes.Add(CronComponentType.Range);
+
         }
 
+        /// <summary>
+        /// list of allowed values for text representation of months
+        /// </summary>
         Dictionary<string, string> stringReplacements = new Dictionary<string, string>()
         {
             {"JAN", "1" },
@@ -26,8 +36,18 @@
             {"NOV", "11" },
             {"DEC", "12" },
         };
+
+        /// <summary>
+        /// decode the incoming value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <remarks>
+        /// months we need to check for and replace any three letter month abbreviations.
+        /// </remarks>
         internal override void DecodeIncomingValue(string value)
         {
+            value = value.ToUpper();
+
             //  could be numbers or strings
             //  lets turn the strings into numbers, if they exist
             foreach (var item in stringReplacements)
@@ -38,6 +58,9 @@
             base.DecodeIncomingValue(value);
         }
 
+        /// <summary>
+        /// check validity of a date against the current component information
+        /// </summary>
         public override bool IsValid(DateTime currentDate)
         {
             switch (ComponentType)

@@ -24,7 +24,7 @@ namespace TaskScheduler.WinForm.Controls
         /// checks to see whether the current item can be closed or not
         /// </summary>
         /// <returns></returns>
-        bool CanClose();
+        Task LeavingItem();
 
         ITreeItem? TreeItem { get; }
 

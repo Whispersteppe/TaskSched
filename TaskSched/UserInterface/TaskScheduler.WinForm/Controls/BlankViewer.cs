@@ -83,10 +83,10 @@ namespace TaskScheduler.WinForm.Controls
         public ITreeItem? TreeItem { get; private set; }
 
 
-        public bool CanClose()
+        public async Task LeavingItem()
         {
-            return false;
         }
+
 
         public bool CanCreateChild(TreeItemTypeEnum itemType)
         {

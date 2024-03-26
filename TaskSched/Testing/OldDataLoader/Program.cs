@@ -120,35 +120,42 @@ namespace OldDataLoader
                     }
 
                     var template = config.Templates.FirstOrDefault(x => x.ID == taskItem.TemplateID);
-
-                    EventActivity activity = new EventActivity()
+                    if (template != null && template.NewId != Guid.Empty)
                     {
-                        Name = taskItem.Name,
-                        ActivityId = template.NewId,
-                        Fields = new List<EventActivityField>()
-                    };
 
-                    eventItem.Activities.Add(activity);
-
-                    foreach (var field in item.Properties)
-                    {
-                        //  find the matching template field
-                        var templateField = template.Properties.FirstOrDefault(x => x.Name == field.Key);
-
-                        var eventActivityField = new EventActivityField()
+                        EventActivity activity = new EventActivity()
                         {
-                            Name = field.Key,
-                            Value = field.Value.ToString(),
-                            ActivityFieldId = templateField.NewId,
-                            FieldType = field.Key == "Url" ? FieldTypeEnum.Url : FieldTypeEnum.String
+                            Name = taskItem.Name,
+                            ActivityId = template.NewId,
+                            Fields = new List<EventActivityField>()
                         };
 
-                        activity.Fields.Add(eventActivityField);
+                        eventItem.Activities.Add(activity);
 
+                        foreach (var field in item.Properties)
+                        {
+                            //  find the matching template field
+                            var templateField = template.Properties.FirstOrDefault(x => x.Name == field.Key);
+
+                            var eventActivityField = new EventActivityField()
+                            {
+                                Name = field.Key,
+                                Value = field.Value.ToString(),
+                                ActivityFieldId = templateField.NewId,
+                                FieldType = field.Key == "Url" ? FieldTypeEnum.Url : FieldTypeEnum.String
+                            };
+
+                            activity.Fields.Add(eventActivityField);
+
+                        }
+
+                        var rslt = await eventStore.Create(eventItem);
+                        var rsltGet = await eventStore.Get(rslt.Result);
                     }
-
-                    var rslt = await eventStore.Create(eventItem);
-                    var rsltGet = await eventStore.Get(rslt.Result);
+                    else
+                    {
+                        Console.WriteLine($"can't get activity - {eventItem.Name}");
+                    }
 
 
                 }
@@ -219,16 +226,26 @@ namespace OldDataLoader
                 }
 
                 var rsltCreate = await activityStore.Create(activity);
-                template.NewId = rsltCreate.Result;
-
-                var rsltGet = await activityStore.Get(rsltCreate.Result);
-                foreach(var field in rsltGet.Result.DefaultFields)
+                if (rsltCreate.Status == ResultMessageSeverity.OK)
                 {
-                    //  find the matching field
-                    PropertyTemplate? foundProperty = template.Properties.FirstOrDefault(x=>x.Name == field.Name);
-                    if (foundProperty != null)
+                    template.NewId = rsltCreate.Result;
+
+                    var rsltGet = await activityStore.Get(rsltCreate.Result);
+                    foreach (var field in rsltGet.Result.DefaultFields)
                     {
-                        foundProperty.NewId = field.Id;
+                        //  find the matching field
+                        PropertyTemplate? foundProperty = template.Properties.FirstOrDefault(x => x.Name == field.Name);
+                        if (foundProperty != null)
+                        {
+                            foundProperty.NewId = field.Id;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach(var msg in rsltCreate.Messages)
+                    {
+                        Console.WriteLine(msg.Message);
                     }
                 }
 

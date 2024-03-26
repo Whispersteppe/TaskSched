@@ -201,6 +201,79 @@ namespace TaskSched.DataStore
                 {
                     _dbContext.Entry(dbEntity).CurrentValues.SetValues(eventItem);
 
+                    foreach (var schedule in eventItem.Schedules)
+                    {
+                        if (schedule.Id == Guid.Empty)
+                        {
+                            db.EventSchedule dbSchedule = new db.EventSchedule()
+                            {
+                                CRONData = schedule.CRONData,
+                                Name = schedule.Name,
+                            };
+
+                            dbEntity.Schedules.Add(dbSchedule);
+
+                        }
+                        else
+                        {
+                            var dbSchedule = dbEntity.Schedules.FirstOrDefault(x => x.Id == schedule.Id);
+                            _dbContext.Entry(dbSchedule).CurrentValues.SetValues(schedule);
+                        }
+                    }
+                    List<db.EventSchedule> deletedSchedules = dbEntity.Schedules.Where(x=>eventItem.Schedules.Any(y=>y.Id == x.Id) == false).ToList();
+                    deletedSchedules.ForEach(x => dbEntity.Schedules.Remove(x));
+
+                    foreach(var activity in eventItem.Activities)
+                    {
+                        if (activity.Id == Guid.Empty)
+                        {
+                            db.EventActivity dbActivity = new db.EventActivity()
+                            {
+                                Name = activity.Name, 
+                                Fields = new List<db.EventActivityField>()
+                            };
+                            foreach(var field in activity.Fields)
+                            {
+                                var dbField = new db.EventActivityField()
+                                {
+                                    Name = field.Name,
+                                    Value = field.Value
+                                };
+                                dbActivity.Fields.Add(dbField);
+                            }
+                        }
+                        else
+                        {
+                            var dbActivity = dbEntity.Activities.FirstOrDefault(x => x.Id == activity.Id);
+                            _dbContext.Entry(dbActivity).CurrentValues.SetValues(activity);
+
+                            foreach(var field in activity.Fields)
+                            {
+                                if (field.Id == Guid.Empty)
+                                {
+                                    var dbField = new db.EventActivityField()
+                                    {
+                                        Name = field.Name,
+                                        Value = field.Value
+                                    };
+                                    dbActivity.Fields.Add(dbField);
+                                }
+                                else
+                                {
+                                    var dbField = dbActivity.Fields.FirstOrDefault(x => x.Id == field.Id);
+                                    _dbContext.Entry(dbField).CurrentValues.SetValues(field);
+                                }
+                            }
+
+                        }
+
+                        List<db.EventActivity> deletedActivities = dbEntity.Activities.Where(x => eventItem.Activities.Any(y => y.Id == x.Id) == false).ToList();
+                        deletedActivities.ForEach(x => dbEntity.Activities.Remove(x));
+
+                    }
+
+
+
                     _dbContext.Update(dbEntity);
 
                     await _dbContext.SaveChangesAsync();

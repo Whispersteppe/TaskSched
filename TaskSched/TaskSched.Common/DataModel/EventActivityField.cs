@@ -12,6 +12,11 @@ namespace TaskSched.Common.DataModel
 
         public Guid ActivityFieldId { get; set; }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
     }
 
 }

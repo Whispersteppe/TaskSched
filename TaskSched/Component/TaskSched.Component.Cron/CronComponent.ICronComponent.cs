@@ -7,14 +7,22 @@ namespace TaskSched.Component.Cron
         string GetPiece();
         CronComponentType ComponentType { get; }
 
-        void SetAllowAny();
+        public List<CronComponentType> AllowedComponentTypes { get; }
 
-        List<int> AllowedRangeValues { get; }
-        int RepeatInterval { get; set; }
-        int RepeatStart { get; set; }
-        ObservableCollection<int> Range { get; }
+        ReadOnlyCollection<int> AllowedRangeValues { get; }
+        ReadOnlyCollection<int> Range { get; }
+
+        void SetRange(IEnumerable<int> values);
+        void RemoveRange(IEnumerable<int> values);
+        void ClearRange();
+
+
+        int RepeatInterval { get;  }
+        int RepeatStart { get; }
 
         int GetNext(int startAt = -1);
+        public void SetRepeating(int repeatStart, int repeatInterval);
+        void SetAllowAny();
 
         bool IsValid(DateTime currentDate);
     }

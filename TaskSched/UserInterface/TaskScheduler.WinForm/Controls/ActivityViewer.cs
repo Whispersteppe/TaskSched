@@ -219,10 +219,11 @@ namespace TaskScheduler.WinForm.Controls
 
         #endregion
 
-        public bool CanClose()
+        public async Task LeavingItem()
         {
-            return true;
+            await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
         }
+
 
 
         private void cmbActivityHandler_SelectedValueChanged(object sender, EventArgs e)

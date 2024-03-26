@@ -38,6 +38,18 @@ namespace TaskScheduler.WinForm.Controls
             _currentCanvas = null;
         }
 
+        public async Task CloseCurrentItem()
+        {
+            if (_currentCanvas != null)
+            {
+                if (_currentCanvas is ICanvasItem canvasItem)
+                {
+                    //  clean up/save the current item
+                    await canvasItem.LeavingItem();
+                }
+            }
+        }
+
         public async Task SetScheduleManager(ScheduleManager scheduleManager)
         {
             _scheduleManager = scheduleManager;
@@ -76,11 +88,17 @@ namespace TaskScheduler.WinForm.Controls
         private async Task ViewItem(ITreeItem item, Type viewerType)
         {
             object? o = viewerType.Assembly.CreateInstance(viewerType.FullName);
+
             if (o != null)
             {
                 SuspendLayout();
                 if (_currentCanvas != null)
                 {
+                    if (_currentCanvas is ICanvasItem oldCanvasItem)
+                    {
+                        await oldCanvasItem.LeavingItem();
+                    }
+
                     panelCanvasArea.Controls.Remove(_currentCanvas);
 
                     _currentCanvas.Dispose();

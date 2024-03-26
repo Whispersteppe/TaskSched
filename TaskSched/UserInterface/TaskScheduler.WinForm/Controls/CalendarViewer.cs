@@ -60,11 +60,17 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsSave_Click(object? sender, EventArgs e)
         {
+            await Save();
+        }
+
+        private async Task Save()
+        {
             _calendarModel.Name = txtName.Text;
             _calendarModel.ParentCalendarId = _calendarModel.ParentItem.ID;
 
             var rslt = await _scheduleManager.SaveModel(_calendarModel.ParentItem, _calendarModel);
         }
+
 
         public async Task Initialize(ScheduleManager scheduleManager, CalendarModel treeItem)
         {
@@ -88,10 +94,12 @@ namespace TaskScheduler.WinForm.Controls
 
         public List<TreeItemTypeEnum> AllowedChildTypes => [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
 
-        public bool CanClose()
+        public async Task LeavingItem()
         {
-            return true;
+            await Save();
+
         }
+
 
         public bool CanCreateChild(TreeItemTypeEnum itemType)
         {

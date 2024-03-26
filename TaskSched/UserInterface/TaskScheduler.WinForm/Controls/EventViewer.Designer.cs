@@ -46,15 +46,8 @@
             btnScheduleSave = new Button();
             tabControl2 = new TabControl();
             tabScheduleTime = new TabPage();
-            label17 = new Label();
-            label16 = new Label();
-            label15 = new Label();
-            label14 = new Label();
-            label12 = new Label();
-            label9 = new Label();
-            label8 = new Label();
-            label7 = new Label();
-            label6 = new Label();
+            cronPieceHours = new CronPiece();
+            cronPieceMinutes = new CronPiece();
             tabScheduleDays = new TabPage();
             label22 = new Label();
             label21 = new Label();
@@ -274,6 +267,7 @@
             lstScheduleItems.Name = "lstScheduleItems";
             lstScheduleItems.Size = new Size(183, 379);
             lstScheduleItems.TabIndex = 1;
+            lstScheduleItems.SelectedIndexChanged += lstScheduleItems_SelectedIndexChanged;
             // 
             // btnScheduleSave
             // 
@@ -284,6 +278,7 @@
             btnScheduleSave.TabIndex = 10;
             btnScheduleSave.Text = "Save";
             btnScheduleSave.UseVisualStyleBackColor = true;
+            btnScheduleSave.Click += btnScheduleSave_Click;
             // 
             // tabControl2
             // 
@@ -300,15 +295,8 @@
             // 
             // tabScheduleTime
             // 
-            tabScheduleTime.Controls.Add(label17);
-            tabScheduleTime.Controls.Add(label16);
-            tabScheduleTime.Controls.Add(label15);
-            tabScheduleTime.Controls.Add(label14);
-            tabScheduleTime.Controls.Add(label12);
-            tabScheduleTime.Controls.Add(label9);
-            tabScheduleTime.Controls.Add(label8);
-            tabScheduleTime.Controls.Add(label7);
-            tabScheduleTime.Controls.Add(label6);
+            tabScheduleTime.Controls.Add(cronPieceHours);
+            tabScheduleTime.Controls.Add(cronPieceMinutes);
             tabScheduleTime.Location = new Point(4, 24);
             tabScheduleTime.Name = "tabScheduleTime";
             tabScheduleTime.Padding = new Padding(3);
@@ -317,86 +305,19 @@
             tabScheduleTime.Text = "Time";
             tabScheduleTime.UseVisualStyleBackColor = true;
             // 
-            // label17
+            // cronPieceHours
             // 
-            label17.AutoSize = true;
-            label17.Location = new Point(156, 60);
-            label17.Name = "label17";
-            label17.Size = new Size(86, 15);
-            label17.TabIndex = 8;
-            label17.Text = "Selected Hours";
+            cronPieceHours.Location = new Point(6, 10);
+            cronPieceHours.Name = "cronPieceHours";
+            cronPieceHours.Size = new Size(90, 283);
+            cronPieceHours.TabIndex = 1;
             // 
-            // label16
+            // cronPieceMinutes
             // 
-            label16.AutoSize = true;
-            label16.Location = new Point(149, 34);
-            label16.Name = "label16";
-            label16.Size = new Size(97, 15);
-            label16.TabIndex = 7;
-            label16.Text = "Selected Minutes";
-            // 
-            // label15
-            // 
-            label15.AutoSize = true;
-            label15.Location = new Point(139, 12);
-            label15.Name = "label15";
-            label15.Size = new Size(98, 15);
-            label15.TabIndex = 6;
-            label15.Text = "Selected Seconds";
-            // 
-            // label14
-            // 
-            label14.AutoSize = true;
-            label14.Location = new Point(9, 132);
-            label14.Name = "label14";
-            label14.Size = new Size(149, 15);
-            label14.TabIndex = 5;
-            label14.Text = "Every N seconds starting at";
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Location = new Point(17, 112);
-            label12.Name = "label12";
-            label12.Size = new Size(149, 15);
-            label12.TabIndex = 4;
-            label12.Text = "Every N minutes starting at";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(14, 84);
-            label9.Name = "label9";
-            label9.Size = new Size(136, 15);
-            label9.TabIndex = 3;
-            label9.Text = "Every N hours starting at";
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Location = new Point(9, 59);
-            label8.Name = "label8";
-            label8.Size = new Size(63, 15);
-            label8.TabIndex = 2;
-            label8.Text = "Any Hours";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Location = new Point(14, 32);
-            label7.Name = "label7";
-            label7.Size = new Size(74, 15);
-            label7.TabIndex = 1;
-            label7.Text = "Any Minutes";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Location = new Point(10, 7);
-            label6.Name = "label6";
-            label6.Size = new Size(75, 15);
-            label6.TabIndex = 0;
-            label6.Text = "Any Seconds";
+            cronPieceMinutes.Location = new Point(102, 10);
+            cronPieceMinutes.Name = "cronPieceMinutes";
+            cronPieceMinutes.Size = new Size(81, 249);
+            cronPieceMinutes.TabIndex = 0;
             // 
             // tabScheduleDays
             // 
@@ -629,6 +550,7 @@
             lstActivities.Name = "lstActivities";
             lstActivities.Size = new Size(189, 379);
             lstActivities.TabIndex = 0;
+            lstActivities.SelectedIndexChanged += lstActivities_SelectedIndexChanged;
             // 
             // splitContainer3
             // 
@@ -659,11 +581,12 @@
             lstActivityFields.Name = "lstActivityFields";
             lstActivityFields.Size = new Size(120, 379);
             lstActivityFields.TabIndex = 8;
+            lstActivityFields.SelectedIndexChanged += lstActivityFields_SelectedIndexChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(19, 21);
+            label2.Location = new Point(7, 11);
             label2.Name = "label2";
             label2.Size = new Size(39, 15);
             label2.TabIndex = 4;
@@ -671,15 +594,17 @@
             // 
             // txtFieldValue
             // 
-            txtFieldValue.Location = new Point(94, 58);
+            txtFieldValue.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtFieldValue.Location = new Point(7, 49);
+            txtFieldValue.Multiline = true;
             txtFieldValue.Name = "txtFieldValue";
-            txtFieldValue.Size = new Size(100, 23);
+            txtFieldValue.Size = new Size(239, 70);
             txtFieldValue.TabIndex = 7;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(16, 57);
+            label3.Location = new Point(7, 31);
             label3.Name = "label3";
             label3.Size = new Size(35, 15);
             label3.TabIndex = 5;
@@ -688,7 +613,7 @@
             // txtFieldName
             // 
             txtFieldName.AutoSize = true;
-            txtFieldName.Location = new Point(100, 20);
+            txtFieldName.Location = new Point(52, 11);
             txtFieldName.Name = "txtFieldName";
             txtFieldName.Size = new Size(37, 15);
             txtFieldName.TabIndex = 6;
@@ -712,7 +637,6 @@
             splitContainer1.ResumeLayout(false);
             tabControl2.ResumeLayout(false);
             tabScheduleTime.ResumeLayout(false);
-            tabScheduleTime.PerformLayout();
             tabScheduleDays.ResumeLayout(false);
             tabScheduleDays.PerformLayout();
             tabScheduleMonth.ResumeLayout(false);
@@ -765,15 +689,6 @@
         private Button btnScheduleSave;
         private TabPage tabScheduleMonth;
         private TabPage tabScheduleYear;
-        private Label label9;
-        private Label label8;
-        private Label label7;
-        private Label label6;
-        private Label label17;
-        private Label label16;
-        private Label label15;
-        private Label label14;
-        private Label label12;
         private Label label22;
         private Label label21;
         private Label label20;
@@ -790,5 +705,7 @@
         private Button btnActivityAdd;
         private SplitContainer splitContainer3;
         private Button btnActivitySave;
+        private CronPiece cronPieceMinutes;
+        private CronPiece cronPieceHours;
     }
 }

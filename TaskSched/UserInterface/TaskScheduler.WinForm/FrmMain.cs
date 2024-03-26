@@ -97,16 +97,18 @@ namespace TaskScheduler.WinForm
         {
             if (_exitClicked == false)
             {
+                //  let it ride.  we just hide things.
                 e.Cancel = true;
                 HideMainForm();
             }
             else
             {
-                //  let it ride
                 if (_engineManager.ExecutionStatus == ExecutionStatusEnum.Running)
                 {
                     await _engineManager.Stop();
                 }
+
+                await canvasSelector.CloseCurrentItem();
 
                 //  save the last location of the form
                 _config.Configuration.DisplayConfig.MainWindowLocation.Location = this.Location;

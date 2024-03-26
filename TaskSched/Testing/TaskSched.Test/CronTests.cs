@@ -23,8 +23,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(59));
 
             component = new SecondsComponent();
-            component.RepeatStart = 1;
-            component.RepeatInterval = 5;
+            component.SetRepeating(1, 5);
             Assert.Equal(CronComponentType.Repeating, component.ComponentType);
             Assert.Equal(1, component.GetNext());
             Assert.Equal(1, component.GetNext(0));
@@ -33,11 +32,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(56));
 
             component = new SecondsComponent();
-            component.Range.Add(1);
-            component.Range.Add(7);
-            component.Range.Add(29);
-            component.Range.Add(15);
-            component.Range.Add(23);
+            component.SetRange([1, 7, 29, 15, 23]);
             Assert.Equal(CronComponentType.Range, component.ComponentType);
             Assert.Equal(1, component.GetNext());
             Assert.Equal(7, component.GetNext(1));
@@ -88,8 +83,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(59));
 
             component = new MinutesComponent();
-            component.RepeatStart = 1;
-            component.RepeatInterval = 5;
+            component.SetRepeating(1, 5);
             Assert.Equal(CronComponentType.Repeating, component.ComponentType);
             Assert.Equal(1, component.GetNext());
             Assert.Equal(1, component.GetNext(0));
@@ -98,11 +92,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(56));
 
             component = new MinutesComponent();
-            component.Range.Add(1);
-            component.Range.Add(7);
-            component.Range.Add(29);
-            component.Range.Add(15);
-            component.Range.Add(23);
+            component.SetRange([1, 7, 29, 15, 23]);
             Assert.Equal(CronComponentType.Range, component.ComponentType);
             Assert.Equal(1, component.GetNext());
             Assert.Equal(7, component.GetNext(1));
@@ -154,8 +144,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(23));
 
             component = new HoursComponent();
-            component.RepeatStart = 1;
-            component.RepeatInterval = 5;
+            component.SetRepeating(1, 5);
             Assert.Equal(CronComponentType.Repeating, component.ComponentType);
             Assert.Equal(1, component.GetNext());
             Assert.Equal(1, component.GetNext(0));
@@ -164,11 +153,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(21));
 
             component = new HoursComponent();
-            component.Range.Add(1);
-            component.Range.Add(7);
-            component.Range.Add(23);
-            component.Range.Add(15);
-            component.Range.Add(9);
+            component.SetRange([1, 7, 23, 15, 9]);
             Assert.Equal(CronComponentType.Range, component.ComponentType);
             Assert.Equal(1, component.GetNext());
             Assert.Equal(7, component.GetNext(1));
@@ -220,8 +205,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(12));
 
             component = new MonthsComponent();
-            component.RepeatStart = 1;
-            component.RepeatInterval = 3;
+            component.SetRepeating(1, 3);
             Assert.Equal(CronComponentType.Repeating, component.ComponentType);
             Assert.Equal(1, component.GetNext());
             Assert.Equal(1, component.GetNext(0));
@@ -230,11 +214,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(11));
 
             component = new MonthsComponent();
-            component.Range.Add(1);
-            component.Range.Add(7);
-            component.Range.Add(3);
-            component.Range.Add(11);
-            component.Range.Add(4);
+            component.SetRange([1, 7, 3,11,4]);
             Assert.Equal(CronComponentType.Range, component.ComponentType);
             Assert.Equal(1, component.GetNext());
             Assert.Equal(3, component.GetNext(1));
@@ -249,8 +229,8 @@ namespace TaskSched.Test
         [InlineData("1/5", CronComponentType.Repeating, 1, 5, null, null)]
         [InlineData("1-5", CronComponentType.Range, null, null, "1-5", "1,2,3,4,5")]
         [InlineData("1,2,3,4,5", CronComponentType.Range, null, null, "1-5", "1,2,3,4,5")]
-        [InlineData("1-5,18,22", CronComponentType.Range, null, null, "1-5,18,22", "1,2,3,4,5,18,22")]
-        [InlineData("1-5,6,22", CronComponentType.Range, null, null, "1-6,22", "1,2,3,4,5,6,22")]
+        [InlineData("1-5,8,12", CronComponentType.Range, null, null, "1-5,8,12", "1,2,3,4,5,8,12")]
+        [InlineData("1-5,6,12", CronComponentType.Range, null, null, "1-6,12", "1,2,3,4,5,6,12")]
 
         public void ValidateMonthsAgain(
             string inData,
@@ -287,8 +267,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(2100));
 
             component = new YearsComponent();
-            component.RepeatStart = 1980;
-            component.RepeatInterval = 5;
+            component.SetRepeating(1980, 5);
             Assert.Equal(CronComponentType.Repeating, component.ComponentType);
             Assert.Equal(1980, component.GetNext());
             Assert.Equal(1985, component.GetNext(1980));
@@ -297,11 +276,7 @@ namespace TaskSched.Test
             Assert.Equal(-1, component.GetNext(2100));
 
             component = new YearsComponent();
-            component.Range.Add(1970);
-            component.Range.Add(1980);
-            component.Range.Add(2050);
-            component.Range.Add(1999);
-            component.Range.Add(2024);
+            component.SetRange([1970, 1980, 2050, 1999, 2024]);
             Assert.Equal(CronComponentType.Range, component.ComponentType);
             Assert.Equal(1970, component.GetNext());
             Assert.Equal(1980, component.GetNext(1970));
@@ -313,11 +288,10 @@ namespace TaskSched.Test
 
         [Theory]
         [InlineData("*", CronComponentType.AllowAny, null, null, null, null)]
-        [InlineData("1/5", CronComponentType.Repeating, 1, 5, null, null)]
-        [InlineData("1-5", CronComponentType.Range, null, null, "1-5", "1,2,3,4,5")]
-        [InlineData("1,2,3,4,5", CronComponentType.Range, null, null, "1-5", "1,2,3,4,5")]
-        [InlineData("1-5,18,22", CronComponentType.Range, null, null, "1-5,18,22", "1,2,3,4,5,18,22")]
-        [InlineData("1-5,6,22", CronComponentType.Range, null, null, "1-6,22", "1,2,3,4,5,6,22")]
+        [InlineData("1970/5", CronComponentType.Repeating, 1970, 5, null, null)]
+        [InlineData("1970-1975", CronComponentType.Range, null, null, "1970-1975", "1970,1971,1972,1973,1974,1975")]
+        [InlineData("1970,1971,1972,1973,1974,1975", CronComponentType.Range, null, null, "1970-1975", "1970,1971,1972,1973,1974,1975")]
+        [InlineData("1970-1975,1980,1990", CronComponentType.Range, null, null, "1970-1975,1980,1990", "1970,1971,1972,1973,1974,1975,1980,1990")]
 
         public void ValidateYearsAgain(
             string inData,
@@ -415,5 +389,36 @@ namespace TaskSched.Test
 
         }
 
+
+        [Fact]
+        public void MonthText()
+        {
+            DateTime startDate = DateTime.Parse("1/1/1960 9:00:00");
+            CronValue cronValue = new CronValue("0 0 8 * JAN-jun ? 1970-1980");
+
+            var nextDate = cronValue.NextTime(startDate);
+
+            DateTime expectedDate = DateTime.Parse("1/1/1970 8:00:00");
+            Assert.Equal(expectedDate, nextDate);
+
+            nextDate = cronValue.NextTime(DateTime.Parse("7/1/1970 9:00:00"));
+            Assert.Equal(DateTime.Parse("1/1/1971 8:00:00"), nextDate);
+
+        }
+
+        [Fact]
+        public void DayOfWeekText()
+        {
+            DateTime startDate = DateTime.Parse("1/1/1960 9:00:00");
+            CronValue cronValue = new CronValue("0 0 8 ? * mon,WED,fri 1970-1980");
+
+            Assert.Contains(2, cronValue.DaysOfWeek.Range);
+            Assert.Contains(4, cronValue.DaysOfWeek.Range);
+            Assert.Contains(6, cronValue.DaysOfWeek.Range);
+
+        }
+
     }
 }
+
+

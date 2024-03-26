@@ -1,5 +1,10 @@
-﻿namespace TaskSched.Component.Cron
+﻿using System.Text.Json.Nodes;
+
+namespace TaskSched.Component.Cron
 {
+    /// <summary>
+    /// manages days of the month
+    /// </summary>
     public class DaysOfMonthComponent : CronComponentBase, ICronComponent
     {
         public DaysOfMonthComponent() :
@@ -8,10 +13,25 @@
         public DaysOfMonthComponent(string value)
             : base(value, 0, 31)
         {
+            AllowedComponentTypes.Add(CronComponentType.AllowAny);
+            AllowedComponentTypes.Add(CronComponentType.Repeating);
+            AllowedComponentTypes.Add(CronComponentType.Range);
+            AllowedComponentTypes.Add(CronComponentType.DaysOfMonthFromLast);
+            AllowedComponentTypes.Add(CronComponentType.Ignored);
         }
 
+        /// <summary>
+        /// decodes the incoming string
+        /// </summary>
+        /// <param name="value"></param>
+        /// <exception cref="Exception"></exception>
+        /// <remarks>
+        /// we need to check for '?' and 'L' values and react accordingly.  if we don't see those, we go to the base class
+        /// </remarks>
         internal override void DecodeIncomingValue(string value)
         {
+            value = value.ToUpper();
+
             if (value.Contains("?"))
             {
                 ComponentType = CronComponentType.Ignored;
@@ -25,12 +45,13 @@
                 //  L-3   - third last day of month
                 if (value.Length ==  1) // L
                 {
-                    Range.Clear();
-                    Range.Add(1);
+                    
+                    _rangeValues.Clear();
+                    _rangeValues.Add(1);
                 }
                 else if (value.StartsWith('L')) //  L-3 version
                 {
-                    Range.Add(int.Parse(value.Substring(2))); //  skip the L and -
+                    _rangeValues.Add(int.Parse(value.Substring(2))); //  skip the L and -
                 }
                 else
                 {
@@ -49,10 +70,14 @@
         }
 
         /// <summary>
-        /// 
+        /// We need to get the next day of the month.
         /// </summary>
         /// <param name="startAt"></param>
         /// <returns></returns>
+        /// <remarks>
+        /// we need the entire date in this case, because the days in each month are different, 
+        /// like everything else, if we exceed the topmost allowed value, we return a -1.
+        /// </remarks>
         public int GetNext(DateTime fromTime)
         {
             switch(ComponentType)
@@ -70,16 +95,25 @@
                         }
                     }
                 default:
-                    return base.GetNext(fromTime.Day);
+                    {
+                        //  we need to check against the end of the month, so that we don't return February 30th
+                        int nextDay = base.GetNext(fromTime.Day);
+                        if (nextDay > DateTime.DaysInMonth(fromTime.Year, fromTime.Month))
+                        {
+                            return -1; 
+                        }
+                        else
+                        {
+                            return nextDay;
+                        }
+                    }
             }
         }
 
-        public override void SetAllowAny()
-        {
-
-            base.SetAllowAny();
-        }
-
+        /// <summary>
+        /// Get the cron string piece associated with the days of month
+        /// </summary>
+        /// <returns></returns>
         public override string GetPiece()
         {
             switch (ComponentType)
@@ -113,6 +147,11 @@
             }
         }
 
+        /// <summary>
+        /// verify that the given date is valid against this component
+        /// </summary>
+        /// <param name="currentDate"></param>
+        /// <returns></returns>
         public override bool IsValid(DateTime currentDate)
         {
             switch (ComponentType)

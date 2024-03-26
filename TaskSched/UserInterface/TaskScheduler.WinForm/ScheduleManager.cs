@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TaskSched.Common.DataModel;
+using dataModel=TaskSched.Common.DataModel;
 using TaskSched.Common.FieldValidator;
 using TaskSched.Common.Interfaces;
 using TaskSched.DataStore;
@@ -183,7 +183,7 @@ namespace TaskScheduler.WinForm
 
             foreach(var activity in getActivitiesResult.Result)
             {
-                ActivityModel model = _managerMapper.Map<Activity, ActivityModel>(activity);
+                ActivityModel model = _managerMapper.Map<dataModel.Activity, ActivityModel>(activity);
                 model.ParentItem = topModel;
                 //new ActivityModel(activity, topModel);
                 topModel.Children.Add(model);
@@ -193,14 +193,14 @@ namespace TaskScheduler.WinForm
         }
 
 
-        private void MapCalendarChildren(CalendarModel calendarModel, Calendar calendar)
+        private void MapCalendarChildren(CalendarModel calendarModel, dataModel.Calendar calendar)
         {
             calendarModel.ChildCalendars.Clear();
             calendarModel.Events.Clear();
 
             foreach(var childCalendar in calendar.ChildCalendars)
             {
-                CalendarModel childModel = _managerMapper.Map<Calendar, CalendarModel>(childCalendar);
+                CalendarModel childModel = _managerMapper.Map<dataModel.Calendar, CalendarModel>(childCalendar);
                 childModel.ParentItem = calendarModel;
                 calendarModel.ChildCalendars.Add(childModel);
 
@@ -211,7 +211,7 @@ namespace TaskScheduler.WinForm
 
             foreach(var childEvent in calendar.Events)
             {
-                EventModel eventModel = _managerMapper.Map<Event, EventModel>(childEvent);
+                EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
 
                 eventModel.ParentItem = calendarModel;
 
@@ -235,7 +235,7 @@ namespace TaskScheduler.WinForm
                     foreach(var childEvent in calendar.Events)
                     {
 
-                        EventModel eventModel = _managerMapper.Map<Event, EventModel>(childEvent);
+                        EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
 
                         eventModel.ParentItem = topModel;
 
@@ -245,7 +245,7 @@ namespace TaskScheduler.WinForm
                 }
                 else
                 {
-                    CalendarModel model = _managerMapper.Map<Calendar, CalendarModel>(calendar);
+                    CalendarModel model = _managerMapper.Map<dataModel.Calendar, CalendarModel>(calendar);
                     model.ParentItem = topModel;
 
                     topModel.Children.Add(model);
@@ -366,7 +366,7 @@ namespace TaskScheduler.WinForm
                         {
                             var rslt = await _activityStore.Create(activityModel);
                             var rsltGet = await _activityStore.Get(rslt.Result);
-                            _managerMapper.Map<Activity, ActivityModel>(rsltGet.Result, activityModel);
+                            _managerMapper.Map<dataModel.Activity, ActivityModel>(rsltGet.Result, activityModel);
 
                             item = activityModel;
                         }
@@ -374,7 +374,7 @@ namespace TaskScheduler.WinForm
                         {
                             var rslt = await _activityStore.Update(activityModel);
                             var rsltGet = await _activityStore.Get(activityModel.Id);
-                            _managerMapper.Map<Activity, ActivityModel>(rsltGet.Result, activityModel);
+                            _managerMapper.Map<dataModel.Activity, ActivityModel>(rsltGet.Result, activityModel);
 
                             item = activityModel;
 
@@ -389,7 +389,7 @@ namespace TaskScheduler.WinForm
                         {
                             var rslt = await _calendarStore.Create(calendarModel);
                             var rsltGet = await _calendarStore.Get(rslt.Result);
-                            _managerMapper.Map<Calendar, CalendarModel>(rsltGet.Result, calendarModel);
+                            _managerMapper.Map<dataModel.Calendar, CalendarModel>(rsltGet.Result, calendarModel);
 
                             item = calendarModel;
                         }
@@ -397,7 +397,7 @@ namespace TaskScheduler.WinForm
                         {
                             var rslt = await _calendarStore.Update(calendarModel);
                             var rsltGet = await _calendarStore.Get(calendarModel.Id);
-                            _managerMapper.Map<Calendar, CalendarModel>(rsltGet.Result, calendarModel);
+                            _managerMapper.Map<dataModel.Calendar, CalendarModel>(rsltGet.Result, calendarModel);
 
                             item = calendarModel;
 
@@ -412,7 +412,7 @@ namespace TaskScheduler.WinForm
                         {
                             var rslt = await _eventStore.Create(eventModel);
                             var rsltGet = await _eventStore.Get(rslt.Result);
-                            _managerMapper.Map<Event, EventModel>(rsltGet.Result, eventModel);
+                            _managerMapper.Map<dataModel.Event, EventModel>(rsltGet.Result, eventModel);
 
                             item = eventModel;
                         }
@@ -420,7 +420,7 @@ namespace TaskScheduler.WinForm
                         {
                             var rslt = await _eventStore.Update(eventModel);
                             var rsltGet = await _eventStore.Get(eventModel.Id);
-                            _managerMapper.Map<Event, EventModel>(rsltGet.Result, eventModel);
+                            _managerMapper.Map<dataModel.Event, EventModel>(rsltGet.Result, eventModel);
 
                             item = eventModel;
 
@@ -531,6 +531,26 @@ namespace TaskScheduler.WinForm
             var infoItems = await _executionStore.GetHandlerInfo();
 
             return infoItems;
+        }
+
+        public async Task LaunchEvent(EventModel eventModel)
+        {
+            var rslt = await _eventStore.Get(eventModel.Id);
+            var eventItem = rslt.Result;
+
+            foreach (var eventActivity in eventItem.Activities)
+            {
+                var rsltActivity = await _activityStore.Get(eventActivity.ActivityId);
+
+                dataModel.ActivityContext activityContext = new dataModel.ActivityContext()
+                {
+                    Activity = rsltActivity.Result,
+                    EventActivity = eventActivity,
+                    EventItem = eventItem
+                };
+
+                await _executionEngine.DoActivity(activityContext);
+            }
         }
 
     }

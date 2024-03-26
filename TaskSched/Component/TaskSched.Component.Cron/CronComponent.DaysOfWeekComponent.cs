@@ -1,9 +1,13 @@
 ﻿namespace TaskSched.Component.Cron
 {
+    /// <summary>
+    /// handles the day of week component
+    /// </summary>
     public class DaysOfWeekComponent : CronComponentBase, ICronComponent
     {
-        //TODO allow MON,TUE, WED, etc
-        //TODO allow 1-7 instead of 0-6
+        public int DayOfWeek { get; private set; }
+        public int WeekOfMonth { get; private set; }
+
 
         public DaysOfWeekComponent() :
             this("*")
@@ -11,8 +15,17 @@
         public DaysOfWeekComponent(string value)
             : base(value, 1, 7)
         {
+            AllowedComponentTypes.Add(CronComponentType.AllowAny);
+            AllowedComponentTypes.Add(CronComponentType.Range);
+            AllowedComponentTypes.Add(CronComponentType.DaysOfWeekFromLast);
+            AllowedComponentTypes.Add(CronComponentType.Ignored);
+            AllowedComponentTypes.Add(CronComponentType.NthWeekday);
+
         }
 
+        /// <summary>
+        /// list of allowed string values in the segment
+        /// </summary>
         Dictionary<string, string> stringReplacements = new Dictionary<string, string>() 
         { 
             {"SUN", "1" },
@@ -24,17 +37,28 @@
             {"SAT", "7" },
         };
 
+        /// <summary>
+        /// decode the incoming value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <remarks>
+        /// we need to replace the string references with the numeric day of the week
+        /// we then check for ?, L, and # and react accordingly.
+        /// if we don't hit thoes items, we'll do it as a normal range/iteration
+        /// </remarks>
         internal override void DecodeIncomingValue(string value)
         {
+            value = value.ToUpper();
+
             //  could be numbers or strings
             //  lets turn the strings into numbers, if they exist
-            foreach(var item in stringReplacements)
+            foreach (var item in stringReplacements)
             {
                 value = value.Replace(item.Key, item.Value);
             }
             //TODO need to handle # stuff
 
-            if (value.Contains("?"))
+            if (value.Contains('?'))
             {
                 ComponentType = CronComponentType.Ignored;
             }
@@ -46,27 +70,20 @@
                 //  7L    - last saturday of month
                 if (value == "L")
                 {
-                    Range.Add(7);
+                    SetLastWeekDayOfMonth(7);
                 }
                 else
                 {
                     //  it's the last N day of the month
-                    Range.Add(int.Parse(value.Substring(0, value.Length - 1)));
+                    SetLastWeekDayOfMonth(int.Parse(value.Substring(0, value.Length - 1)));
                 }
-
-                ComponentType = CronComponentType.DaysOfWeekFromLast;
-
             }
             else if (value.Contains('#'))
             {
                 //  handling the Nth weekday of the month
                 //  <day of week>#<iteration>
-
                 string[] parts = value.Split('#');
-                DayOfWeek = int.Parse(parts[0]);
-                WeekOfMonth = int.Parse(parts[1]);
-                ComponentType = CronComponentType.NthWeekday;
-
+                SetNthWeekDayOfMonth(int.Parse(parts[0]), int.Parse(parts[1]));
 
             }
             else
@@ -76,10 +93,25 @@
             }
         }
 
-        public int DayOfWeek { get; set; }
-        public int WeekOfMonth { get; set; }
+        public void SetLastWeekDayOfMonth(int dayOfWeek)
+        {
+            DayOfWeek = dayOfWeek;
+            ComponentType = CronComponentType.DaysOfWeekFromLast;
+        }
 
+        public void SetNthWeekDayOfMonth(int dayOfWeek, int weekOfMonth)
+        {
+            DayOfWeek = dayOfWeek; 
+            WeekOfMonth = weekOfMonth;
+            ComponentType = CronComponentType.NthWeekday;
 
+        }
+
+        /// <summary>
+        /// check validity of a date against this segment
+        /// </summary>
+        /// <param name="currentDate"></param>
+        /// <returns></returns>
         public override bool IsValid(DateTime currentDate)
         {
             switch (ComponentType)
@@ -97,7 +129,7 @@
                     {
                         //int lastDay = DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
                         DateTime lastDay = currentDate.AddDays(DateTime.DaysInMonth(currentDate.Year, currentDate.Month) - currentDate.Day);
-                        while (((int)lastDay.DayOfWeek + 1) != Range[0])
+                        while (((int)lastDay.DayOfWeek + 1) != DayOfWeek)
                         {
                             lastDay = lastDay.AddDays(-1);
                         }
@@ -139,7 +171,7 @@
                     }
                 default:
                     {
-                        if (Range.Contains(((int)currentDate.DayOfWeek) + 1))
+                        if (_rangeValues.Contains(((int)currentDate.DayOfWeek) + 1))
                         {
                             return true;
                         }
@@ -152,6 +184,10 @@
 
         }
 
+        /// <summary>
+        /// get the segment
+        /// </summary>
+        /// <returns></returns>
         public override string GetPiece()
         {
             switch (ComponentType)
@@ -162,17 +198,13 @@
                     }
                 case CronComponentType.DaysOfWeekFromLast:
                     {
-                        if (Range.Count == 0)
-                        {
-                            return "L";
-                        }
-                        else if (Range[0] == 7)
+                        if (DayOfWeek == 7)
                         {
                             return "L";
                         }
                         else
                         {
-                            return $"{Range[0]}L";
+                            return $"{DayOfWeek}L";
                         }
                     }
                 case CronComponentType.NthWeekday:
