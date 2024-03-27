@@ -50,9 +50,9 @@ namespace TaskSched.Common.Interfaces
         /// move an event to a new parent
         /// </summary>
         /// <param name="eventId"></param>
-        /// <param name="newParentCalendarId"></param>
+        /// <param name="newParentFolderId"></param>
         /// <returns></returns>
-        Task<ExpandedResult> MoveEvent(Guid eventId, Guid? newParentCalendarId);
+        Task<ExpandedResult> MoveEvent(Guid eventId, Guid? newParentFolderId);
     }
 
 }

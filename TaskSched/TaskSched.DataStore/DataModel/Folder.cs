@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace TaskSched.DataStore.DataModel
 {
-    public class Calendar
+    public class Folder
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
 
-        public Guid? ParentCalendarId { get; set; }
-        public Calendar ParentCalendar { get; set; }
+        public Guid? ParentFolderId { get; set; }
+        public Folder ParentFolder { get; set; }
         public List<Event> Events { get; set; }
-        public List<Calendar> ChildCalendars { get; set; }
+        public List<Folder> ChildFolders { get; set; }
 
     }
 

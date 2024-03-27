@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskSched.Common.DataModel;
 using TaskSched.DataStore.DataModel;
-using Calendar = TaskSched.Common.DataModel.Calendar;
+using Folder = TaskSched.Common.DataModel.Folder;
 using Event = TaskSched.Common.DataModel.Event;
 using EventActivity = TaskSched.Common.DataModel.EventActivity;
 using EventSchedule = TaskSched.Common.DataModel.EventSchedule;
@@ -77,16 +77,16 @@ namespace TaskSched.Test.Fakes
                 }
             }
 
-            public static class Calendars
+            public static class Folders
             {
-                public static Calendar Create()
+                public static Folder Create()
                 {
                     return Create(1)[0];
                 }
 
-                public static List<Calendar> Create(int count)
+                public static List<Folder> Create(int count)
                 {
-                    Bogus.Faker<Calendar> generator = new Bogus.Faker<Calendar>()
+                    Bogus.Faker<Folder> generator = new Bogus.Faker<Folder>()
                         .RuleFor(x => x.Name, f => f.Lorem.Sentence())
                         .RuleFor(x => x.Id, Guid.Empty)
                         ;

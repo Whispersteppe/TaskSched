@@ -51,8 +51,8 @@ namespace TaskSched.DataStore
                 cfg.CreateMap<model.EventSchedule, db.EventSchedule>();
                 cfg.CreateMap<db.EventSchedule, model.EventSchedule>();
 
-                cfg.CreateMap<model.Calendar, db.Calendar>();
-                cfg.CreateMap<db.Calendar, model.Calendar>();
+                cfg.CreateMap<model.Folder, db.Folder>();
+                cfg.CreateMap<db.Folder, model.Folder>();
 
             });
 

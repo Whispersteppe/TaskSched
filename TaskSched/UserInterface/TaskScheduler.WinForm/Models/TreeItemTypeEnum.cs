@@ -5,11 +5,11 @@
         Unknown,
         RootItem,
         ActivityItem,
-        CalendarItem,
+        FolderItem,
         EventItem,
 
         ActivityRootItem,
-        CalendarRootItem,
+        FolderRootItem,
         LogRootItem,
         StatusRootItem,
     }

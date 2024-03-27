@@ -4,7 +4,7 @@ using TaskSched.Common.DataModel;
 
 namespace TaskScheduler.WinForm.Models
 {
-    public class CalendarModel : Calendar, ITreeItem
+    public class FolderModel : Folder, ITreeItem
     {
 
         public string DisplayName => this.Name;
@@ -12,13 +12,13 @@ namespace TaskScheduler.WinForm.Models
 
         public virtual object? UnderlyingItem { get; set; }
 
-        public virtual TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.CalendarItem;
+        public virtual TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.FolderItem;
         public ITreeItem? ParentItem { get; set; }
 
 
-        public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.CalendarRootItem];
+        public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = [TreeItemTypeEnum.FolderItem, TreeItemTypeEnum.FolderRootItem];
 
-        public List<TreeItemTypeEnum> AllowedChildTypes { get; protected set; } = [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
+        public List<TreeItemTypeEnum> AllowedChildTypes { get; protected set; } = [TreeItemTypeEnum.FolderItem, TreeItemTypeEnum.EventItem];
 
         public List<ITreeItem> Children 
         {
@@ -26,9 +26,9 @@ namespace TaskScheduler.WinForm.Models
             {
                 List<ITreeItem> children = new List<ITreeItem>();
 
-                foreach (var childCalendar in ChildCalendars)
+                foreach (var childFolder in ChildFolders)
                 {
-                    if (childCalendar is CalendarModel model)
+                    if (childFolder is FolderModel model)
                     {
                         children.Add(model);
                     }

@@ -16,7 +16,7 @@ namespace TaskScheduler.WinForm.Models
         public ITreeItem? ParentItem { get; set; }
 
 
-        public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = [TreeItemTypeEnum.CalendarRootItem, TreeItemTypeEnum.CalendarItem];
+        public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = [TreeItemTypeEnum.FolderRootItem, TreeItemTypeEnum.FolderItem];
 
         public List<TreeItemTypeEnum> AllowedChildTypes { get; protected set; } = [];
 

@@ -12,12 +12,12 @@ using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls
 {
-    public partial class CalendarViewer : UserControl, ICanvasItem<CalendarModel>
+    public partial class FolderViewer : UserControl, ICanvasItem<FolderModel>
     {
         ScheduleManager? _scheduleManager;
-        CalendarModel _calendarModel;
+        FolderModel _folderModel;
 
-        public CalendarViewer()
+        public FolderViewer()
         {
             InitializeComponent();
         }
@@ -30,7 +30,7 @@ namespace TaskScheduler.WinForm.Controls
                 ToolStripBuilder builder = new ToolStripBuilder();
                 builder.AddButton("Save", TsSave_Click);
                 builder.AddButton("Delete", TsDelete_Click);
-                builder.AddButton("Add Calendar", TsCreateChildCalendar);
+                builder.AddButton("Add Folder", TsCreateChildFolder);
                 builder.AddButton("Add Event", TsCreateChildEvent);
 
                 return builder.ToolStripItems;
@@ -38,9 +38,9 @@ namespace TaskScheduler.WinForm.Controls
             }
         }
 
-        private async void TsCreateChildCalendar(object? sender, EventArgs e)
+        private async void TsCreateChildFolder(object? sender, EventArgs e)
         {
-            var treeItem = await _scheduleManager.CreateModel(TreeItem, TreeItemTypeEnum.CalendarItem);
+            var treeItem = await _scheduleManager.CreateModel(TreeItem, TreeItemTypeEnum.FolderItem);
         }
 
         private async void TsCreateChildEvent(object? sender, EventArgs e)
@@ -51,9 +51,9 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsDelete_Click(object? sender, EventArgs e)
         {
-            if (await _scheduleManager.CanDeleteItem(_calendarModel))
+            if (await _scheduleManager.CanDeleteItem(_folderModel))
             {
-                await _scheduleManager.DeleteItem(_calendarModel);
+                await _scheduleManager.DeleteItem(_folderModel);
 
             }
         }
@@ -65,26 +65,26 @@ namespace TaskScheduler.WinForm.Controls
 
         private async Task Save()
         {
-            _calendarModel.Name = txtName.Text;
-            _calendarModel.ParentCalendarId = _calendarModel.ParentItem.ID;
+            _folderModel.Name = txtName.Text;
+            _folderModel.ParentFolderId = _folderModel.ParentItem.ID;
 
-            var rslt = await _scheduleManager.SaveModel(_calendarModel.ParentItem, _calendarModel);
+            var rslt = await _scheduleManager.SaveModel(_folderModel.ParentItem, _folderModel);
         }
 
 
-        public async Task Initialize(ScheduleManager scheduleManager, CalendarModel treeItem)
+        public async Task Initialize(ScheduleManager scheduleManager, FolderModel treeItem)
         {
             _scheduleManager = scheduleManager;
 
             TreeItem = treeItem;
-            _calendarModel = treeItem;
+            _folderModel = treeItem;
 
             this.txtName.Text = treeItem.DisplayName;
         }
 
         public async Task Initialize(ScheduleManager scheduleManager, object treeItem)
         {
-            await Initialize(scheduleManager, treeItem as CalendarModel);
+            await Initialize(scheduleManager, treeItem as FolderModel);
 
         }
 
@@ -92,7 +92,7 @@ namespace TaskScheduler.WinForm.Controls
 
         public ITreeItem? TreeItem { get; private set; }
 
-        public List<TreeItemTypeEnum> AllowedChildTypes => [TreeItemTypeEnum.CalendarItem, TreeItemTypeEnum.EventItem];
+        public List<TreeItemTypeEnum> AllowedChildTypes => [TreeItemTypeEnum.FolderItem, TreeItemTypeEnum.EventItem];
 
         public async Task LeavingItem()
         {

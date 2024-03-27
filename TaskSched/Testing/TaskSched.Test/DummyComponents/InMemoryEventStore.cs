@@ -62,11 +62,11 @@ namespace TaskSched.Test.DummyComponents
             return rslt;
         }
 
-        public async Task<ExpandedResult> MoveEvent(Guid eventId, Guid? newParentCalendarId)
+        public async Task<ExpandedResult> MoveEvent(Guid eventId, Guid? newParentFolderId)
         {
             if (_events.ContainsKey(eventId))
             {
-                _events[eventId].CalendarId = newParentCalendarId;
+                _events[eventId].FolderId = newParentFolderId;
             }
 
             return new ExpandedResult() { };

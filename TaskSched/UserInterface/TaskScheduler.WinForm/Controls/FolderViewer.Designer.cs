@@ -1,6 +1,6 @@
 ﻿namespace TaskScheduler.WinForm.Controls
 {
-    partial class CalendarViewer
+    partial class FolderViewer
     {
         /// <summary> 
         /// Required designer variable.
@@ -48,13 +48,13 @@
             txtName.Size = new Size(178, 23);
             txtName.TabIndex = 1;
             // 
-            // CalendarViewer
+            // FolderViewer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(txtName);
             Controls.Add(label1);
-            Name = "CalendarViewer";
+            Name = "FolderViewer";
             Size = new Size(313, 189);
             ResumeLayout(false);
             PerformLayout();

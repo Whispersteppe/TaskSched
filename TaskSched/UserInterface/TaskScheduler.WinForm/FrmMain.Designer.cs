@@ -46,7 +46,7 @@
             tsExit = new ToolStripMenuItem();
             tsMenuManage = new ToolStripMenuItem();
             tsAddEvent = new ToolStripMenuItem();
-            tsMenuAddCalendar = new ToolStripMenuItem();
+            tsMenuAddFolder = new ToolStripMenuItem();
             tsMenuAddActivity = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
             schedulerTreeView = new Controls.SchedulerTreeView();
@@ -164,7 +164,7 @@
             // 
             // tsMenuManage
             // 
-            tsMenuManage.DropDownItems.AddRange(new ToolStripItem[] { tsAddEvent, tsMenuAddCalendar, tsMenuAddActivity });
+            tsMenuManage.DropDownItems.AddRange(new ToolStripItem[] { tsAddEvent, tsMenuAddFolder, tsMenuAddActivity });
             tsMenuManage.Name = "tsMenuManage";
             tsMenuManage.Size = new Size(62, 20);
             tsMenuManage.Text = "Manage";
@@ -175,11 +175,11 @@
             tsAddEvent.Size = new Size(146, 22);
             tsAddEvent.Text = "Add Event";
             // 
-            // tsMenuAddCalendar
+            // tsMenuAddFolder
             // 
-            tsMenuAddCalendar.Name = "tsMenuAddCalendar";
-            tsMenuAddCalendar.Size = new Size(146, 22);
-            tsMenuAddCalendar.Text = "Add Calendar";
+            tsMenuAddFolder.Name = "tsMenuAddFolder";
+            tsMenuAddFolder.Size = new Size(146, 22);
+            tsMenuAddFolder.Text = "Add Folder";
             // 
             // tsMenuAddActivity
             // 
@@ -267,7 +267,7 @@
         private ToolStripMenuItem tsExit;
         private ToolStripMenuItem tsMenuManage;
         private ToolStripMenuItem tsAddEvent;
-        private ToolStripMenuItem tsMenuAddCalendar;
+        private ToolStripMenuItem tsMenuAddFolder;
         private ToolStripMenuItem tsMenuAddActivity;
     }
 }

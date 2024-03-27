@@ -55,7 +55,7 @@ namespace TaskScheduler.WinForm.Controls
         private async void TsSave_Click(object? sender, EventArgs e)
         {
             _eventModel.Name = txtName.Text;
-            _eventModel.CalendarId = _eventModel.ParentItem.ID;
+            _eventModel.FolderId = _eventModel.ParentItem.ID;
             _eventModel.CatchUpOnStartup = cbCatchUpOnStartup.Checked;
             _eventModel.IsActive = cbIsActive.Checked;
 

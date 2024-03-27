@@ -1,5 +1,5 @@
 {
-  "LastSave": "2024-03-22T09:39:01.1747951-05:00",
+  "LastSave": "2024-03-27T10:09:01.1718471-05:00",
   "Defaults": {
     "NewTaskCronExpression": "0 0 8 ? * MON-FRI",
     "MainWindow": {
@@ -158,7 +158,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8,12,18 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.2761119-05:00",
+          "LastExecution": "2024-03-27T08:00:00.0304006-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "LoseIt",
           "Properties": {
@@ -214,7 +214,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 17 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.2949677-05:00",
+          "LastExecution": "2024-03-22T17:00:00.0603615-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "iCloud",
           "Properties": {
@@ -244,7 +244,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.2977573-05:00",
+              "LastExecution": "2024-03-22T14:00:00.2053476-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "CVS Health Dashboard",
               "Properties": {
@@ -258,7 +258,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.2983069-05:00",
+              "LastExecution": "2024-03-26T14:00:00.022559-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Je-Fit Tracker",
               "Properties": {
@@ -290,7 +290,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 ? * MON,WED,FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3000293-05:00",
+          "LastExecution": "2024-03-27T08:00:00.0377031-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Quorum App",
           "Properties": {
@@ -310,7 +310,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 9 * * ?"
           },
-          "LastExecution": "2024-03-22T09:00:00.0207476-05:00",
+          "LastExecution": "2024-03-27T09:00:00.0102171-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Emojic 8 ball",
           "Properties": {
@@ -324,7 +324,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 30 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:30:00.0212956-05:00",
+          "LastExecution": "2024-03-27T08:30:00.0125974-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Lifepoints Panel",
           "Properties": {
@@ -338,7 +338,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 15 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.3040194-05:00",
+          "LastExecution": "2024-03-22T15:00:00.028983-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Have I Been Pwned",
           "Properties": {
@@ -352,7 +352,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 5 8 ? * TUE,THU,SAT"
           },
-          "LastExecution": "2024-03-22T08:09:01.3046984-05:00",
+          "LastExecution": "2024-03-26T08:05:00.0402775-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "17Track",
           "Properties": {
@@ -366,7 +366,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3052715-05:00",
+          "LastExecution": "2024-03-27T08:00:00.0772032-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "The Far Side",
           "Properties": {
@@ -380,7 +380,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 2 10 ? * MON,WED,FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3059922-05:00",
+          "LastExecution": "2024-03-27T10:02:00.0246168-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "2020 resolutions",
           "Properties": {
@@ -394,7 +394,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "5 0 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3065773-05:00",
+          "LastExecution": "2024-03-27T08:00:05.0068192-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Fucking Home Page",
           "Properties": {
@@ -408,7 +408,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 12 ? * TUE,FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3071286-05:00",
+          "LastExecution": "2024-03-26T12:00:00.0246931-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Google Drive",
           "Properties": {
@@ -438,7 +438,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 10 ? * TUE,FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.308911-05:00",
+              "LastExecution": "2024-03-26T10:00:00.0247591-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Amazon Photos",
               "Properties": {
@@ -526,7 +526,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 7 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.3133741-05:00",
+              "LastExecution": "2024-03-27T07:00:00.0346616-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Godville",
               "Properties": {
@@ -540,7 +540,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 15 ? * TUE,THU"
               },
-              "LastExecution": "2024-03-22T08:09:01.3139274-05:00",
+              "LastExecution": "2024-03-26T15:00:00.0576623-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "One Page Dungeon",
               "Properties": {
@@ -628,7 +628,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 17 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:17:00.0218068-05:00",
+          "LastExecution": "2024-03-27T08:17:00.0554121-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "xkcd",
           "Properties": {
@@ -642,7 +642,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 15 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3418449-05:00",
+          "LastExecution": "2024-03-22T15:00:00.0555445-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Bayeux Tapestry Builder",
           "Properties": {
@@ -656,7 +656,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3429144-05:00",
+          "LastExecution": "2024-03-22T14:00:00.1669851-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Amazon Gaming",
           "Properties": {
@@ -746,7 +746,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 6 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3485203-05:00",
+          "LastExecution": "2024-03-27T06:00:00.0251816-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "National Day Calendar",
           "Properties": {
@@ -760,7 +760,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 15 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3490846-05:00",
+          "LastExecution": "2024-03-26T15:00:00.0548712-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Craiyon",
           "Properties": {
@@ -774,7 +774,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3496098-05:00",
+          "LastExecution": "2024-03-22T14:00:00.179648-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Dall-E",
           "Properties": {
@@ -788,7 +788,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3501393-05:00",
+          "LastExecution": "2024-03-22T14:00:00.1883103-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Second Life",
           "Properties": {
@@ -802,7 +802,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3508748-05:00",
+          "LastExecution": "2024-03-27T08:00:00.1090294-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Is Twitter Down?",
           "Properties": {
@@ -830,7 +830,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3528152-05:00",
+          "LastExecution": "2024-03-22T14:00:00.1992467-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "ChapGPT",
           "Properties": {
@@ -858,7 +858,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 17 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3549806-05:00",
+          "LastExecution": "2024-03-26T17:00:00.0458855-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Weather I",
           "Properties": {
@@ -872,7 +872,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 17 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.356823-05:00",
+          "LastExecution": "2024-03-26T17:00:00.0570869-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Weather II",
           "Properties": {
@@ -888,7 +888,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3585839-05:00",
+              "LastExecution": "2024-03-27T08:00:00.1167844-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "HBO Max",
               "Properties": {
@@ -902,7 +902,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3597566-05:00",
+              "LastExecution": "2024-03-27T08:00:00.1147777-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Amazon Prime video",
               "Properties": {
@@ -916,7 +916,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3603299-05:00",
+              "LastExecution": "2024-03-27T08:00:00.1213647-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Disney Plus",
               "Properties": {
@@ -930,7 +930,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3608815-05:00",
+              "LastExecution": "2024-03-27T08:00:00.1243436-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Spectrum",
               "Properties": {
@@ -944,7 +944,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3614748-05:00",
+              "LastExecution": "2024-03-27T08:00:00.1291011-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "MST3K Gizmoplex",
               "Properties": {
@@ -962,7 +962,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 10 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3621387-05:00",
+          "LastExecution": "2024-03-27T10:00:00.0475407-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "AI Garage Sale",
           "Properties": {
@@ -976,7 +976,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 7 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3636448-05:00",
+          "LastExecution": "2024-03-27T07:00:00.041901-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "What is today",
           "Properties": {
@@ -990,7 +990,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.3658251-05:00",
+          "LastExecution": "2024-03-27T08:00:00.1354738-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Fapello",
           "Properties": {
@@ -1004,11 +1004,25 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 10 * * ?"
           },
-          "LastExecution": "2024-03-22T08:25:55.5751276-05:00",
+          "LastExecution": "2024-03-27T10:00:00.0306638-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Fish Doorbell",
           "Properties": {
             "Url": "https://visdeurbel.nl/en/the-fish-doorbell"
+          }
+        },
+        {
+          "TemplateID": 1,
+          "IsActive": true,
+          "Trigger": {
+            "TriggerType": "CronTrigger",
+            "CronExpression": "0 0 10 * * ?"
+          },
+          "LastExecution": "2024-03-27T10:00:00.0401913-05:00",
+          "AllowLaunchOnStartup": true,
+          "Name": "Tensor Art",
+          "Properties": {
+            "Url": "https://tensor.art/"
           }
         }
       ],
@@ -1024,7 +1038,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 16 ? * TUE,FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3681167-05:00",
+          "LastExecution": "2024-03-26T16:00:00.0270265-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Acorns",
           "Properties": {
@@ -1038,7 +1052,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 13 ? * SUN,FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3692516-05:00",
+          "LastExecution": "2024-03-24T13:00:00.0779078-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Mint.com",
           "Properties": {
@@ -1052,7 +1066,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 15 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.3706664-05:00",
+          "LastExecution": "2024-03-22T15:00:00.0617807-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Collin Taxes",
           "Properties": {
@@ -1066,7 +1080,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 18 9 * * ?"
           },
-          "LastExecution": "2024-03-22T09:18:00.0209296-05:00",
+          "LastExecution": "2024-03-27T09:18:00.0091351-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Texas Lottery",
           "Properties": {
@@ -1082,7 +1096,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3745194-05:00",
+              "LastExecution": "2024-03-22T13:00:00.1098802-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "AT&T",
               "Properties": {
@@ -1096,7 +1110,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "13 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:13.0177538-05:00",
+              "LastExecution": "2024-03-27T09:00:13.0175259-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Visit Orlando",
               "Properties": {
@@ -1110,7 +1124,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "14 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:14.0093722-05:00",
+              "LastExecution": "2024-03-27T09:00:14.017345-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Nerds Ultimate Trip",
               "Properties": {
@@ -1124,7 +1138,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "28 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:28.0130732-05:00",
+              "LastExecution": "2024-03-27T09:00:28.0193937-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Caprisun nintendo",
               "Properties": {
@@ -1138,7 +1152,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "30 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:30.0214966-05:00",
+              "LastExecution": "2024-03-27T09:00:30.011-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Trolls",
               "Properties": {
@@ -1152,7 +1166,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "33 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:33.0122632-05:00",
+              "LastExecution": "2024-03-27T09:00:33.0137027-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Wonder bread",
               "Properties": {
@@ -1180,7 +1194,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "37 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:37.0186133-05:00",
+              "LastExecution": "2024-03-27T09:00:37.0330309-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Toyota Nascar",
               "Properties": {
@@ -1208,7 +1222,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "39 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:39.0132011-05:00",
+              "LastExecution": "2024-03-27T09:00:39.0058199-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "American Airlines Rangers",
               "Properties": {
@@ -1222,7 +1236,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "41 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:41.0038875-05:00",
+              "LastExecution": "2024-03-27T09:00:41.0177477-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Ghostbusters Frozen Empire",
               "Properties": {
@@ -1236,7 +1250,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "42 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:42.0106497-05:00",
+              "LastExecution": "2024-03-27T09:00:42.0079951-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Gleam Centurion PC",
               "Properties": {
@@ -1248,23 +1262,9 @@
               "IsActive": true,
               "Trigger": {
                 "TriggerType": "CronTrigger",
-                "CronExpression": "44 0 9 * * ?"
-              },
-              "LastExecution": "2024-03-22T09:00:44.0065265-05:00",
-              "AllowLaunchOnStartup": true,
-              "Name": "Steamums",
-              "Properties": {
-                "Url": "https://www.steakumm.com/giveaway/"
-              }
-            },
-            {
-              "TemplateID": 1,
-              "IsActive": true,
-              "Trigger": {
-                "TriggerType": "CronTrigger",
                 "CronExpression": "45 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:45.0064527-05:00",
+              "LastExecution": "2024-03-27T09:00:45.007438-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "FoodNetwork spring into cooking",
               "Properties": {
@@ -1278,7 +1278,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "46 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:46.0121068-05:00",
+              "LastExecution": "2024-03-27T09:00:46.0185797-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "HGTV spring into cooking",
               "Properties": {
@@ -1292,11 +1292,39 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "47 0 9 * * ?"
               },
-              "LastExecution": "2024-03-22T09:00:47.0109238-05:00",
+              "LastExecution": "2024-03-27T09:00:47.024897-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Liquid Death",
               "Properties": {
                 "Url": "https://liquiddeathpromos.com/"
+              }
+            },
+            {
+              "TemplateID": 1,
+              "IsActive": true,
+              "Trigger": {
+                "TriggerType": "CronTrigger",
+                "CronExpression": "47 0 9 * * ?"
+              },
+              "LastExecution": "2024-03-27T09:00:47.0182354-05:00",
+              "AllowLaunchOnStartup": true,
+              "Name": "Hofbrau Brewery",
+              "Properties": {
+                "Url": "https://sweepstakes.hofbrauhausimport.us/"
+              }
+            },
+            {
+              "TemplateID": 1,
+              "IsActive": true,
+              "Trigger": {
+                "TriggerType": "CronTrigger",
+                "CronExpression": "47 0 9 * * ?"
+              },
+              "LastExecution": "2024-03-27T09:00:47.0217569-05:00",
+              "AllowLaunchOnStartup": true,
+              "Name": "Gannett",
+              "Properties": {
+                "Url": "https://usatoday.gannettcontests.com/2024-Home-and-Garden-Refresh/"
               }
             }
           ],
@@ -1310,7 +1338,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 9 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T09:00:00.038697-05:00",
+          "LastExecution": "2024-03-27T09:00:00.0207556-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Sheets",
           "Properties": {
@@ -1340,7 +1368,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3889843-05:00",
+              "LastExecution": "2024-03-22T14:00:00.2298238-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Prudential",
               "Properties": {
@@ -1354,7 +1382,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.389658-05:00",
+              "LastExecution": "2024-03-22T14:00:00.2356789-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Wells Fargo",
               "Properties": {
@@ -1368,7 +1396,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3902688-05:00",
+              "LastExecution": "2024-03-22T14:00:00.2415471-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Chase",
               "Properties": {
@@ -1396,7 +1424,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3922584-05:00",
+              "LastExecution": "2024-03-22T14:00:00.2470327-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Transamerica",
               "Properties": {
@@ -1410,7 +1438,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3935138-05:00",
+              "LastExecution": "2024-03-22T14:00:00.261468-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Fidelity (ibm, eds)",
               "Properties": {
@@ -1424,7 +1452,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3941267-05:00",
+              "LastExecution": "2024-03-22T14:00:00.2677802-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "US SSA",
               "Properties": {
@@ -1438,7 +1466,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3947127-05:00",
+              "LastExecution": "2024-03-22T14:00:00.291276-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Computershare (ibm)",
               "Properties": {
@@ -1452,7 +1480,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3953132-05:00",
+              "LastExecution": "2024-03-22T14:00:00.2949454-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Computershare (Essilor)",
               "Properties": {
@@ -1466,7 +1494,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.3958345-05:00",
+              "LastExecution": "2024-03-22T14:00:00.3022655-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Human Interest (LensLock)",
               "Properties": {
@@ -1484,7 +1512,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3964213-05:00",
+          "LastExecution": "2024-03-22T14:00:00.3060989-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "105 Settlers Bend",
           "Properties": {
@@ -1498,7 +1526,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.3983287-05:00",
+          "LastExecution": "2024-03-22T14:00:00.3123071-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "1609 Chessington Lane",
           "Properties": {
@@ -1512,7 +1540,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.400089-05:00",
+          "LastExecution": "2024-03-22T14:00:00.3158117-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Anthem Health",
           "Properties": {
@@ -1526,7 +1554,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4021425-05:00",
+          "LastExecution": "2024-03-22T14:00:00.321781-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Cigna",
           "Properties": {
@@ -1546,7 +1574,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 13 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.4038668-05:00",
+          "LastExecution": "2024-03-22T13:00:00.114921-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Magellan GPS",
           "Properties": {
@@ -1560,7 +1588,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 16 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4049366-05:00",
+          "LastExecution": "2024-03-26T16:00:00.0338315-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Wundermap",
           "Properties": {
@@ -1574,7 +1602,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 13 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.4057458-05:00",
+          "LastExecution": "2024-03-22T13:00:00.1351771-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Carfax",
           "Properties": {
@@ -1588,7 +1616,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 27 9 * * ?"
           },
-          "LastExecution": "2024-03-22T09:27:00.0295216-05:00",
+          "LastExecution": "2024-03-27T09:27:00.026536-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "MapCrunch",
           "Properties": {
@@ -1604,7 +1632,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.40936-05:00",
+              "LastExecution": "2024-03-22T14:00:00.0244114-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "DVC",
               "Properties": {
@@ -1730,7 +1758,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4276036-05:00",
+              "LastExecution": "2024-03-26T14:00:00.0048125-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Tripit",
               "Properties": {
@@ -1776,7 +1804,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8,17 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4305527-05:00",
+          "LastExecution": "2024-03-27T08:00:00.0501372-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Microsoft Start Traffic",
           "Properties": {
@@ -1796,7 +1824,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 7 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4319703-05:00",
+          "LastExecution": "2024-03-27T07:00:00.0141581-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Woot Stalker",
           "Properties": {
@@ -1810,7 +1838,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 16 ? * MON,WED,FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4331948-05:00",
+          "LastExecution": "2024-03-25T16:00:00.0259543-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Geek",
           "Properties": {
@@ -1838,7 +1866,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 15 8 ? * 3"
           },
-          "LastExecution": "2024-03-22T08:09:01.4352263-05:00",
+          "LastExecution": "2024-03-27T08:15:00.0279283-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Coupons.com",
           "Properties": {
@@ -1852,7 +1880,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 30 6 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4366516-05:00",
+          "LastExecution": "2024-03-27T06:30:00.0202259-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Meh.com",
           "Properties": {
@@ -1880,7 +1908,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 30 14 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4386921-05:00",
+          "LastExecution": "2024-03-26T14:30:00.0214486-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Ali Express",
           "Properties": {
@@ -1894,7 +1922,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 30 7 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4392689-05:00",
+          "LastExecution": "2024-03-27T07:30:00.0103767-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "SlickDeals",
           "Properties": {
@@ -1908,7 +1936,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 1 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4401416-05:00",
+          "LastExecution": "2024-03-27T08:01:00.0117044-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "MorningSave Random Stuff",
           "Properties": {
@@ -1922,7 +1950,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 16 ? * MON"
           },
-          "LastExecution": "2024-03-22T08:09:01.4408096-05:00",
+          "LastExecution": "2024-03-25T16:00:00.0377227-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Culvers",
           "Properties": {
@@ -1936,7 +1964,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 5 9 ? * TUE,FRI"
           },
-          "LastExecution": "2024-03-22T09:05:00.0168294-05:00",
+          "LastExecution": "2024-03-26T09:05:00.0138326-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Kickstarter",
           "Properties": {
@@ -1950,7 +1978,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8,19 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4418144-05:00",
+          "LastExecution": "2024-03-27T08:00:00.0587134-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Amazon Todays Deals",
           "Properties": {
@@ -1964,7 +1992,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4423112-05:00",
+          "LastExecution": "2024-03-27T08:00:00.0636762-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Sidedeal Meh",
           "Properties": {
@@ -1978,7 +2006,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 13 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4428058-05:00",
+          "LastExecution": "2024-03-22T13:00:00.0232171-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "GameFound",
           "Properties": {
@@ -1992,7 +2020,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4433022-05:00",
+          "LastExecution": "2024-03-27T08:00:00.0686992-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Woot Forums",
           "Properties": {
@@ -2006,7 +2034,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 7 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4437939-05:00",
+          "LastExecution": "2024-03-27T07:00:00.0179812-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Woot",
           "Properties": {
@@ -2040,7 +2068,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 31 7 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4451859-05:00",
+          "LastExecution": "2024-03-27T07:31:00.0209512-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Tweetdeck",
           "Properties": {
@@ -2054,7 +2082,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 30 14 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4461091-05:00",
+          "LastExecution": "2024-03-26T14:30:00.0282671-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Find Friends",
           "Properties": {
@@ -2068,7 +2096,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 15 ? * 1-5"
           },
-          "LastExecution": "2024-03-22T08:09:01.4468547-05:00",
+          "LastExecution": "2024-03-26T15:00:00.0508705-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Developer Blog",
           "Properties": {
@@ -2096,7 +2124,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4490102-05:00",
+          "LastExecution": "2024-03-27T08:00:00.0736843-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Stuff I Learned Today",
           "Properties": {
@@ -2116,7 +2144,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 23 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4495317-05:00",
+          "LastExecution": "2024-03-26T23:00:00.0180442-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Solar City",
           "Properties": {
@@ -2130,7 +2158,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 25 11 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.450462-05:00",
+          "LastExecution": "2024-03-22T11:25:00.0090078-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Honeywell",
           "Properties": {
@@ -2144,7 +2172,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.4520389-05:00",
+          "LastExecution": "2024-03-22T14:00:00.0295324-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Community Crime Map",
           "Properties": {
@@ -2200,7 +2228,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4574427-05:00",
+          "LastExecution": "2024-03-22T14:00:00.0332986-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Hidden creek HOA",
           "Properties": {
@@ -2214,7 +2242,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4593612-05:00",
+          "LastExecution": "2024-03-26T14:00:00.0122377-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "House Cleaning",
           "Properties": {
@@ -2234,7 +2262,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.4613918-05:00",
+          "LastExecution": "2024-03-22T14:00:00.0423008-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "McKinney Library",
           "Properties": {
@@ -2250,7 +2278,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "25 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4625959-05:00",
+              "LastExecution": "2024-03-27T08:00:25.0142171-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Google News",
               "Properties": {
@@ -2264,7 +2292,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "30 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4633513-05:00",
+              "LastExecution": "2024-03-27T08:00:30.0063867-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Microsoft News",
               "Properties": {
@@ -2278,7 +2306,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "35 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4643449-05:00",
+              "LastExecution": "2024-03-27T08:00:35.0069273-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "ABC News",
               "Properties": {
@@ -2292,7 +2320,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "40 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4651844-05:00",
+              "LastExecution": "2024-03-27T08:00:40.008911-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "CNN",
               "Properties": {
@@ -2306,7 +2334,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "45 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4659867-05:00",
+              "LastExecution": "2024-03-27T08:00:45.0095444-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "USA Today",
               "Properties": {
@@ -2320,7 +2348,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "50 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4668629-05:00",
+              "LastExecution": "2024-03-27T08:00:50.0085283-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "BBC",
               "Properties": {
@@ -2334,7 +2362,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "55 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4677958-05:00",
+              "LastExecution": "2024-03-27T08:00:55.0163845-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "NPR",
               "Properties": {
@@ -2348,7 +2376,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 1 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4687358-05:00",
+              "LastExecution": "2024-03-27T08:01:00.0173184-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Dallas Morning News",
               "Properties": {
@@ -2362,7 +2390,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "5 1 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4701408-05:00",
+              "LastExecution": "2024-03-27T08:01:05.0045839-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Reuters",
               "Properties": {
@@ -2376,7 +2404,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "10 1 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4717578-05:00",
+              "LastExecution": "2024-03-27T08:01:10.0138983-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Associated Press",
               "Properties": {
@@ -2396,7 +2424,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 15 ? * MON,WED,FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.4729796-05:00",
+              "LastExecution": "2024-03-25T15:00:00.0255315-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Predict It",
               "Properties": {
@@ -2410,7 +2438,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 19 8 ? * MON"
               },
-              "LastExecution": "2024-03-22T08:09:01.4735225-05:00",
+              "LastExecution": "2024-03-25T08:19:00.0202826-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Is This a Coup",
               "Properties": {
@@ -2428,7 +2456,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 7 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.4740818-05:00",
+          "LastExecution": "2024-03-27T07:00:00.0233076-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Inoreader Firefox",
           "Properties": {
@@ -2470,7 +2498,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.477977-05:00",
+          "LastExecution": "2024-03-22T14:00:00.0463398-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Reddit List",
           "Properties": {
@@ -2486,7 +2514,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4790355-05:00",
+              "LastExecution": "2024-03-27T08:00:00.0799904-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Wunderground Mckinney",
               "Properties": {
@@ -2500,7 +2528,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4799202-05:00",
+              "LastExecution": "2024-03-27T08:00:00.0842377-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Tempest",
               "Properties": {
@@ -2514,7 +2542,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.480454-05:00",
+              "LastExecution": "2024-03-22T14:00:00.0570389-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "ERCOT",
               "Properties": {
@@ -2532,7 +2560,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 15 12 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4809869-05:00",
+          "LastExecution": "2024-03-26T12:15:00.0200119-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Covid TRacker",
           "Properties": {
@@ -2546,7 +2574,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 15 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4815113-05:00",
+          "LastExecution": "2024-03-22T15:00:00.0533649-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Clean up bookmarks",
           "Properties": {
@@ -2574,7 +2602,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.4828881-05:00",
+          "LastExecution": "2024-03-22T14:00:00.0613942-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Media Bias Chart",
           "Properties": {
@@ -2588,7 +2616,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 ? * SAT"
           },
-          "LastExecution": "2024-03-22T08:09:01.4834058-05:00",
+          "LastExecution": "2024-03-23T08:00:00.0899256-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "bitly",
           "Properties": {
@@ -2608,7 +2636,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 9 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T09:00:00.0292739-05:00",
+          "LastExecution": "2024-03-27T09:00:00.0149203-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Microsoft Virtual Academy",
           "Properties": {
@@ -2622,7 +2650,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 10 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.4844542-05:00",
+          "LastExecution": "2024-03-22T10:00:00.0114251-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Microsoft Learning",
           "Properties": {
@@ -2636,7 +2664,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 15 9 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T09:15:00.0150972-05:00",
+          "LastExecution": "2024-03-27T09:15:00.0261378-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Khan Academy",
           "Properties": {
@@ -2652,7 +2680,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 7 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.4854798-05:00",
+              "LastExecution": "2024-03-27T07:00:00.0287629-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Codeless Code",
               "Properties": {
@@ -2666,7 +2694,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 15 8 ? * MON,THU"
               },
-              "LastExecution": "2024-03-22T08:09:01.4860024-05:00",
+              "LastExecution": "2024-03-25T08:15:00.0237922-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "EDX education",
               "Properties": {
@@ -2680,7 +2708,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 10 ? * TUE,THU"
               },
-              "LastExecution": "2024-03-22T08:09:01.487154-05:00",
+              "LastExecution": "2024-03-26T10:00:00.0098131-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "AWS",
               "Properties": {
@@ -2698,7 +2726,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 30 9 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T09:30:00.0124813-05:00",
+          "LastExecution": "2024-03-27T09:30:00.0045033-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Azure Developer Certification",
           "Properties": {
@@ -2714,7 +2742,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "25 1 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4894009-05:00",
+              "LastExecution": "2024-03-27T08:01:25.0185996-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Dew Drop",
               "Properties": {
@@ -2728,7 +2756,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "30 1 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.4904751-05:00",
+              "LastExecution": "2024-03-27T08:01:30.0173545-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "The Morning Brew",
               "Properties": {
@@ -2830,7 +2858,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 10 9 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T09:10:00.014226-05:00",
+          "LastExecution": "2024-03-27T09:10:00.017552-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Whispersteppe GitHub",
           "Properties": {
@@ -2846,7 +2874,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 20 10 ? * 5"
               },
-              "LastExecution": "2024-03-22T08:09:01.5049795-05:00",
+              "LastExecution": "2024-03-22T10:20:00.011312-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "All 3D",
               "Properties": {
@@ -2860,7 +2888,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 ? * 5"
               },
-              "LastExecution": "2024-03-22T08:09:01.5162841-05:00",
+              "LastExecution": "2024-03-22T13:00:00.0319999-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Thingiverse",
               "Properties": {
@@ -2888,7 +2916,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 10 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.5213428-05:00",
+              "LastExecution": "2024-03-22T10:00:00.0154517-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "MyMiniFactory",
               "Properties": {
@@ -2908,7 +2936,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.5224023-05:00",
+              "LastExecution": "2024-03-22T14:00:00.0649727-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Band",
               "Properties": {
@@ -2922,7 +2950,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "20 1 8 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5229734-05:00",
+              "LastExecution": "2024-03-27T08:01:20.0173515-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "McKinneyISD Help Center",
               "Properties": {
@@ -2936,7 +2964,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.523516-05:00",
+              "LastExecution": "2024-03-22T14:00:00.0718159-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "McKinney ISD Portal",
               "Properties": {
@@ -2956,7 +2984,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.5240945-05:00",
+              "LastExecution": "2024-03-26T14:00:00.0115556-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Remind",
               "Properties": {
@@ -2974,7 +3002,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 10 ? * MON-FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.5246405-05:00",
+          "LastExecution": "2024-03-27T10:00:00.0241874-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Backend Developer Roadmay",
           "Properties": {
@@ -2988,7 +3016,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 10 ? * MON,WED,FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.5251785-05:00",
+          "LastExecution": "2024-03-27T10:00:00.0346512-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "ByteByteGo System Design",
           "Properties": {
@@ -3002,7 +3030,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 8 ? * TUE"
           },
-          "LastExecution": "2024-03-22T08:09:01.5268223-05:00",
+          "LastExecution": "2024-03-26T08:00:00.0664088-05:00",
           "AllowLaunchOnStartup": true,
           "Name": ".Net Foundation",
           "Properties": {
@@ -3016,7 +3044,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 17 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.529268-05:00",
+          "LastExecution": "2024-03-26T17:00:00.0333072-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Comedy Driving",
           "Properties": {
@@ -3036,7 +3064,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * 1"
           },
-          "LastExecution": "2024-03-22T08:09:01.5302286-05:00",
+          "LastExecution": "2024-03-25T14:00:00.0275314-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Troop 406",
           "Properties": {
@@ -3050,7 +3078,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 20 10 ? * 1"
           },
-          "LastExecution": "2024-03-22T08:09:01.5309807-05:00",
+          "LastExecution": "2024-03-25T10:20:00.0169882-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "US Scouts",
           "Properties": {
@@ -3064,7 +3092,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 15 8 ? * MON,FRI"
           },
-          "LastExecution": "2024-03-22T08:15:00.0970312-05:00",
+          "LastExecution": "2024-03-25T08:15:00.0348988-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Trails End Popcorn",
           "Properties": {
@@ -3078,7 +3106,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 11 ? * 5"
           },
-          "LastExecution": "2024-03-22T08:09:01.5330265-05:00",
+          "LastExecution": "2024-03-22T11:00:00.018242-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Geocaching",
           "Properties": {
@@ -3106,7 +3134,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 13 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.5351771-05:00",
+          "LastExecution": "2024-03-22T13:00:00.0349249-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Lone Star District",
           "Properties": {
@@ -3120,7 +3148,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.5363127-05:00",
+          "LastExecution": "2024-03-22T14:00:00.117313-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Circle 10 Events",
           "Properties": {
@@ -3229,7 +3257,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 ? * 1"
           },
-          "LastExecution": "2024-03-22T08:09:01.5453074-05:00",
+          "LastExecution": "2024-03-25T14:00:00.0326109-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Troop 406",
           "Properties": {
@@ -3245,7 +3273,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.5464488-05:00",
+              "LastExecution": "2024-03-22T13:00:00.0385099-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Program Updates",
               "Properties": {
@@ -3259,7 +3287,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * MON,WED,FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.5477191-05:00",
+              "LastExecution": "2024-03-25T14:00:00.0369974-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Rank Requirements",
               "Properties": {
@@ -3273,7 +3301,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 30 8 ? * MON,FRI"
               },
-              "LastExecution": "2024-03-22T08:30:00.0254626-05:00",
+              "LastExecution": "2024-03-25T08:30:00.0201998-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Scoutbook",
               "Properties": {
@@ -3287,7 +3315,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 14 ? * FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.5499771-05:00",
+              "LastExecution": "2024-03-22T14:00:00.1266251-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Boy Scout Training",
               "Properties": {
@@ -3301,7 +3329,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 ? * MON,WED,FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.552411-05:00",
+              "LastExecution": "2024-03-25T13:00:00.0206165-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Citizenship in Society",
               "Properties": {
@@ -3403,7 +3431,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.565284-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0204586-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Indeed Architect",
               "Properties": {
@@ -3417,7 +3445,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5664994-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0298234-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Monster SE",
               "Properties": {
@@ -3431,7 +3459,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5675885-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0353703-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Indeed SE",
               "Properties": {
@@ -3445,7 +3473,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5687151-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0439084-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Monster Architectt",
               "Properties": {
@@ -3459,7 +3487,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5695865-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0481652-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Be Seen@Indeed",
               "Properties": {
@@ -3473,7 +3501,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5709973-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0568027-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Zip Recruiter",
               "Properties": {
@@ -3487,7 +3515,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.571941-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0523177-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "CareerBuilder Architect",
               "Properties": {
@@ -3501,7 +3529,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5733055-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0612533-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Dice",
               "Properties": {
@@ -3515,7 +3543,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.574443-05:00",
+              "LastExecution": "2024-03-26T13:00:00.064555-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Dice .Net architect",
               "Properties": {
@@ -3529,7 +3557,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5755288-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0709144-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Jobot .Net architect",
               "Properties": {
@@ -3543,7 +3571,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5765485-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0760959-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Jobot .Net Developer",
               "Properties": {
@@ -3557,7 +3585,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5776128-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0780358-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Upward.Careers",
               "Properties": {
@@ -3571,7 +3599,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5785504-05:00",
+              "LastExecution": "2024-03-26T13:00:00.0814821-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "LinkedIn Jobs",
               "Properties": {
@@ -3585,7 +3613,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "1 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5796016-05:00",
+              "LastExecution": "2024-03-26T13:00:01.0121828-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Hack a job",
               "Properties": {
@@ -3599,7 +3627,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "1 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5804452-05:00",
+              "LastExecution": "2024-03-26T13:00:01.0182747-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Hired.com",
               "Properties": {
@@ -3613,7 +3641,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "1 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5816341-05:00",
+              "LastExecution": "2024-03-26T13:00:01.0221053-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Opptly",
               "Properties": {
@@ -3627,7 +3655,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "2 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5824957-05:00",
+              "LastExecution": "2024-03-26T13:00:02.0085047-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "CMP",
               "Properties": {
@@ -3641,7 +3669,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "3 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.583509-05:00",
+              "LastExecution": "2024-03-26T13:00:03.0127658-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Ladders Recommended",
               "Properties": {
@@ -3655,7 +3683,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "4 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5846237-05:00",
+              "LastExecution": "2024-03-26T13:00:04.0168317-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Experis .net developer",
               "Properties": {
@@ -3669,7 +3697,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "5 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5856183-05:00",
+              "LastExecution": "2024-03-26T13:00:05.0137753-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Jack Henry",
               "Properties": {
@@ -3683,7 +3711,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "5 0 13 * * ?"
               },
-              "LastExecution": "2024-03-22T08:09:01.5866366-05:00",
+              "LastExecution": "2024-03-26T13:00:05.0170422-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Amdocs",
               "Properties": {
@@ -3715,7 +3743,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 10 ? * FRI"
           },
-          "LastExecution": "2024-03-22T08:09:01.5890051-05:00",
+          "LastExecution": "2024-03-22T10:00:00.0439598-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Credly",
           "Properties": {
@@ -3729,7 +3757,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.5899113-05:00",
+          "LastExecution": "2024-03-26T14:00:00.014701-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Hacker Rank",
           "Properties": {
@@ -4119,7 +4147,7 @@
             "TriggerType": "CronTrigger",
             "CronExpression": "0 0 14 * * ?"
           },
-          "LastExecution": "2024-03-22T08:09:01.6395709-05:00",
+          "LastExecution": "2024-03-26T14:00:00.0190177-05:00",
           "AllowLaunchOnStartup": true,
           "Name": "Crossover",
           "Properties": {
@@ -4149,7 +4177,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.6421815-05:00",
+              "LastExecution": "2024-03-27T08:00:00.0937995-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Wordpress Site",
               "Properties": {
@@ -4163,7 +4191,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.6432599-05:00",
+              "LastExecution": "2024-03-27T08:00:00.0904443-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "Wordpress Editor",
               "Properties": {
@@ -4189,7 +4217,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.6443194-05:00",
+              "LastExecution": "2024-03-27T08:00:00.1017859-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "ScopeMeister Issues",
               "Properties": {
@@ -4203,7 +4231,7 @@
                 "TriggerType": "CronTrigger",
                 "CronExpression": "0 0 8 ? * MON-FRI"
               },
-              "LastExecution": "2024-03-22T08:09:01.6451291-05:00",
+              "LastExecution": "2024-03-27T08:00:00.1057954-05:00",
               "AllowLaunchOnStartup": true,
               "Name": "dev.azure",
               "Properties": {

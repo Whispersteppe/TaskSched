@@ -1,9 +1,9 @@
 ﻿namespace TaskSched.Common.Interfaces
 {
     /// <summary>
-    /// retrieval parameters for get all calendars
+    /// retrieval parameters for get all folders
     /// </summary>
-    public class CalendarRetrievalParameters
+    public class FolderRetrievalParameters
     {
         public bool AsTree { get; set; }
         public bool AddChildFolders { get; set; }

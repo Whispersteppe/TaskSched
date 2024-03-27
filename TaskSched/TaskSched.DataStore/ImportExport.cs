@@ -11,13 +11,13 @@ namespace TaskSched.DataStore
     public class ImportExport : IImportExport
     {
         IEventStore _eventStore; 
-        ICalendarStore _calendarStore; 
+        IFolderStore _folderStore; 
         IActivityStore _activityStore;
 
-        public ImportExport(IEventStore eventStore, ICalendarStore calendarStore, IActivityStore activityStore) 
+        public ImportExport(IEventStore eventStore, IFolderStore folderStore, IActivityStore activityStore) 
         {
             _eventStore = eventStore;
-            _calendarStore = calendarStore;
+            _folderStore = folderStore;
             _activityStore = activityStore;
 
         }
@@ -29,7 +29,7 @@ namespace TaskSched.DataStore
                 Result = new ExportData()
                 {
                     Activities = new List<Activity>(),
-                    Calendars = new List<Calendar>(),
+                    Folders = new List<Folder>(),
                     Events = new List<Event>()
                 }
             };
@@ -42,9 +42,9 @@ namespace TaskSched.DataStore
             var getEventResult = await _eventStore.GetAll();
             result.Result.Events.AddRange(getEventResult.Result);
 
-            //  get calendars
-            var getCalendarResult = await _calendarStore.GetAll(new CalendarRetrievalParameters() { AddChildEvents = false, AsTree = true});
-            result.Result.Calendars.AddRange(getCalendarResult.Result);
+            //  get folders
+            var getFolderResult = await _folderStore.GetAll(new FolderRetrievalParameters() { AddChildEvents = false, AsTree = true});
+            result.Result.Folders.AddRange(getFolderResult.Result);
 
             return result;
 
@@ -61,7 +61,7 @@ namespace TaskSched.DataStore
 
             }
 
-            foreach(var calendar in data.Calendars)
+            foreach(var folder in data.Folders)
             {
 
             }

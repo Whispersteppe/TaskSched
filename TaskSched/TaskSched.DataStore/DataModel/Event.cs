@@ -19,8 +19,8 @@ namespace TaskSched.DataStore.DataModel
         public List<EventSchedule> Schedules { get; set; }
         public List<EventActivity> Activities { get; set; }
 
-        public Guid? CalendarId { get; set; }
-        public Calendar? Calendar { get; set; }
+        public Guid? FolderId { get; set; }
+        public Folder? Folder { get; set; }
 
 
     }

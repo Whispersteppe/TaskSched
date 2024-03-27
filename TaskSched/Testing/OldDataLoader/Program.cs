@@ -49,33 +49,33 @@ namespace OldDataLoader
             IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
             IEventStore eventStore = new EventStore(contextFactory, mapper, fieldValidatorSet);
             IActivityStore activityStore = new ActivityStore(contextFactory, mapper, fieldValidatorSet);
-            ICalendarStore calendarStore = new CalendarStore(contextFactory, mapper);
+            IFolderStore folderStore = new FolderStore(contextFactory, mapper);
 
             List<Activity> activities = await LoadActivities(config, activityStore);
 
             Debug.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(activities, Newtonsoft.Json.Formatting.Indented));
 
-            List<Calendar> calendars = await LoadEvents(config, calendarStore, eventStore);
-            Debug.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(calendars, Newtonsoft.Json.Formatting.Indented));
+            List<Folder> folders = await LoadEvents(config, folderStore, eventStore);
+            Debug.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(folders, Newtonsoft.Json.Formatting.Indented));
 
 
 
         }
 
-        private static async Task<List<Calendar>> LoadEvents(TaskRunnerConfig config, ICalendarStore calendarStore, IEventStore eventStore)
+        private static async Task<List<Folder>> LoadEvents(TaskRunnerConfig config, IFolderStore folderStore, IEventStore eventStore)
         { 
-            await LoadBaseTaskList(config, calendarStore, eventStore, config.Tasks);
+            await LoadBaseTaskList(config, folderStore, eventStore, config.Tasks);
 
-            var rslt = await calendarStore.GetAll(new CalendarRetrievalParameters() { AddChildEvents = true, AsTree = true, AddChildFolders = true });
+            var rslt = await folderStore.GetAll(new FolderRetrievalParameters() { AddChildEvents = true, AsTree = true, AddChildFolders = true });
 
             return rslt.Result;
         }
 
         private static async Task LoadBaseTaskList(TaskRunnerConfig config, 
-            ICalendarStore calendarStore, 
+            IFolderStore folderStore, 
             IEventStore eventStore, 
             List<TaskBaseConfig>? taskList, 
-            Guid? parentCalendarId = null)
+            Guid? parentFolderId = null)
         {
             if (taskList == null || taskList.Count == 0) return;
 
@@ -83,17 +83,17 @@ namespace OldDataLoader
             {
                 if (item is TaskFolderConfig taskFolder)
                 {
-                    Calendar calendar = new Calendar()
+                    Folder folder = new Folder()
                     {
                         Name = taskFolder.Name,
-                        ParentCalendarId = parentCalendarId,
+                        ParentFolderId = parentFolderId,
                     };
 
-                    var rsltCreateCalendar = await calendarStore.Create(calendar);
+                    var rsltCreateFolder = await folderStore.Create(folder);
 
                     //  now to check the children
 
-                    await LoadBaseTaskList(config, calendarStore, eventStore, taskFolder.ChildItems, rsltCreateCalendar.Result);
+                    await LoadBaseTaskList(config, folderStore, eventStore, taskFolder.ChildItems, rsltCreateFolder.Result);
 
                 }
                 else if (item is TaskConfig taskItem)
@@ -102,7 +102,7 @@ namespace OldDataLoader
                     {
                         Name = taskItem.Name,
                         IsActive = taskItem.IsActive,
-                        CalendarId = parentCalendarId,
+                        FolderId = parentFolderId,
                         CatchUpOnStartup = taskItem.AllowLaunchOnStartup,
                         LastExecution = taskItem.LastExecution,
                         NextExecution = DateTime.Now,

@@ -40,7 +40,7 @@ namespace TaskScheduler.WinForm
         IExecutionStore _executionStore;
         IActivityStore _activityStore;
         IEventStore _eventStore;
-        ICalendarStore _calendarStore;
+        IFolderStore _folderStore;
 
         IFieldValidatorSet _fieldValidators;
 
@@ -88,7 +88,7 @@ namespace TaskScheduler.WinForm
 
             _eventStore = new EventStore(_dbContextFactory, _mapper, _fieldValidators);
             _activityStore = new ActivityStore(_dbContextFactory, _mapper, _fieldValidators);
-            _calendarStore = new CalendarStore(_dbContextFactory, _mapper);
+            _folderStore = new FolderStore(_dbContextFactory, _mapper);
 
             _executionStore = new TaskSched.ExecutionStore.ExecutionStore(_loggerFactory.CreateLogger<TaskSched.ExecutionStore.ExecutionStore>());
 
@@ -194,46 +194,46 @@ namespace TaskScheduler.WinForm
         }
 
 
-        private void MapCalendarChildren(CalendarModel calendarModel, dataModel.Calendar calendar)
+        private void MapFolderChildren(FolderModel folderModel, dataModel.Folder folder)
         {
-            calendarModel.ChildCalendars.Clear();
-            calendarModel.Events.Clear();
+            folderModel.ChildFolders.Clear();
+            folderModel.Events.Clear();
 
-            foreach(var childCalendar in calendar.ChildCalendars)
+            foreach(var childFolder in folder.ChildFolders)
             {
-                CalendarModel childModel = _managerMapper.Map<dataModel.Calendar, CalendarModel>(childCalendar);
-                childModel.ParentItem = calendarModel;
-                calendarModel.ChildCalendars.Add(childModel);
+                FolderModel childModel = _managerMapper.Map<dataModel.Folder, FolderModel>(childFolder);
+                childModel.ParentItem = folderModel;
+                folderModel.ChildFolders.Add(childModel);
 
                 //  map all the children
-                MapCalendarChildren(childModel, childCalendar);
+                MapFolderChildren(childModel, childFolder);
 
             }
 
-            foreach(var childEvent in calendar.Events)
+            foreach(var childEvent in folder.Events)
             {
                 EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
 
-                eventModel.ParentItem = calendarModel;
+                eventModel.ParentItem = folderModel;
 
-                calendarModel.Events.Add(eventModel);
+                folderModel.Events.Add(eventModel);
 
             }
         }
 
-        public async Task<CalendarRootModel> GetCalendarModels()
+        public async Task<FolderRootModel> GetFolderModels()
         {
-            CalendarRootModel topModel = new CalendarRootModel(null);
+            FolderRootModel topModel = new FolderRootModel(null);
 
-            var calendars = await _calendarStore.GetAll(new CalendarRetrievalParameters() { AddChildEvents = true, AddChildFolders = true, AsTree = true }); 
-            foreach (var calendar in calendars.Result)
+            var folders = await _folderStore.GetAll(new FolderRetrievalParameters() { AddChildEvents = true, AddChildFolders = true, AsTree = true }); 
+            foreach (var folder in folders.Result)
             {
 
-                if (calendar.Id == Guid.Empty)
+                if (folder.Id == Guid.Empty)
                 {
                     //  we've got the unassigned folder.  lets unravel these separately
-                    //  there won't be any calendars.  those already fall at the top
-                    foreach(var childEvent in calendar.Events)
+                    //  there won't be any folders.  those already fall at the top
+                    foreach (var childEvent in folder.Events)
                     {
 
                         EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
@@ -246,13 +246,13 @@ namespace TaskScheduler.WinForm
                 }
                 else
                 {
-                    CalendarModel model = _managerMapper.Map<dataModel.Calendar, CalendarModel>(calendar);
+                    FolderModel model = _managerMapper.Map<dataModel.Folder, FolderModel>(folder);
                     model.ParentItem = topModel;
 
                     topModel.Children.Add(model);
 
                     //  map all the children
-                    MapCalendarChildren(model, calendar);
+                    MapFolderChildren(model, folder);
 
                 }
 
@@ -284,7 +284,7 @@ namespace TaskScheduler.WinForm
         {
             List<ITreeItem> rootItems = new List<ITreeItem>()
             {
-                await GetCalendarModels(),
+                await GetFolderModels(),
                 await GetActivityModels(),
                 await GetStatusModels(),
                 await GetLogModels()
@@ -342,19 +342,19 @@ namespace TaskScheduler.WinForm
                         newItem = model;
                         break;
                     }
-                case TreeItemTypeEnum.CalendarItem:
+                case TreeItemTypeEnum.FolderItem:
                     {
 
-                        Calendar calendar = new Calendar()
+                        Folder folder = new Folder()
                         {
-                            Name = "New Calendar",
-                            ParentCalendarId = parentItem != null && parentItem is RootModel == false ? parentItem.ID : null,
+                            Name = "New Folder",
+                            ParentFolderId = parentItem != null && parentItem is RootModel == false ? parentItem.ID : null,
                         };
 
-                        var rsltCreate = await _calendarStore.Create(calendar);
-                        var rsltGet = await _calendarStore.Get(rsltCreate.Result);
+                        var rsltCreate = await _folderStore.Create(folder);
+                        var rsltGet = await _folderStore.Get(rsltCreate.Result);
 
-                        var model = _managerMapper.Map<CalendarModel>(rsltGet.Result);
+                        var model = _managerMapper.Map<FolderModel>(rsltGet.Result);
                         model.ParentItem = parentItem;
                         newItem = model;
                         break;
@@ -369,8 +369,8 @@ namespace TaskScheduler.WinForm
                         {
                             CatchUpOnStartup = false, 
                             Name = "New Item", 
-                            IsActive = false,  
-                            CalendarId = parentItem != null && parentItem is RootModel == false ? parentItem.ID : null,
+                            IsActive = false,
+                            FolderId = parentItem != null && parentItem is RootModel == false ? parentItem.ID : null,
                             LastExecution = DateTime.Now, 
                             NextExecution = DateTime.Now, 
                             Activities = new List<EventActivity>()
@@ -453,25 +453,25 @@ namespace TaskScheduler.WinForm
                         }
                         break;
                     }
-                case TreeItemTypeEnum.CalendarItem:
+                case TreeItemTypeEnum.FolderItem:
                     {
-                        CalendarModel calendarModel = item as CalendarModel;
+                        FolderModel folderModel = item as FolderModel;
 
-                        if (calendarModel.Id == Guid.Empty)
+                        if (folderModel.Id == Guid.Empty)
                         {
-                            var rslt = await _calendarStore.Create(calendarModel);
-                            var rsltGet = await _calendarStore.Get(rslt.Result);
-                            _managerMapper.Map<dataModel.Calendar, CalendarModel>(rsltGet.Result, calendarModel);
+                            var rslt = await _folderStore.Create(folderModel);
+                            var rsltGet = await _folderStore.Get(rslt.Result);
+                            _managerMapper.Map<dataModel.Folder, FolderModel>(rsltGet.Result, folderModel);
 
-                            item = calendarModel;
+                            item = folderModel;
                         }
                         else
                         {
-                            var rslt = await _calendarStore.Update(calendarModel);
-                            var rsltGet = await _calendarStore.Get(calendarModel.Id);
-                            _managerMapper.Map<dataModel.Calendar, CalendarModel>(rsltGet.Result, calendarModel);
+                            var rslt = await _folderStore.Update(folderModel);
+                            var rsltGet = await _folderStore.Get(folderModel.Id);
+                            _managerMapper.Map<dataModel.Folder, FolderModel>(rsltGet.Result, folderModel);
 
-                            item = calendarModel;
+                            item = folderModel;
 
                         }
                         break;
@@ -540,10 +540,10 @@ namespace TaskScheduler.WinForm
 
                         return true;
                     }
-                case TreeItemTypeEnum.CalendarItem:
+                case TreeItemTypeEnum.FolderItem:
                     {
-                        CalendarModel calendarModel = model as CalendarModel;
-                        if (calendarModel.Events.Count == 0 && calendarModel.ChildCalendars.Count == 0)
+                        FolderModel folderModel = model as FolderModel;
+                        if (folderModel.Events.Count == 0 && folderModel.ChildFolders.Count == 0)
                         {
                             return true;
                         }
@@ -574,9 +574,9 @@ namespace TaskScheduler.WinForm
 
                         break;
                     }
-                case TreeItemTypeEnum.CalendarItem:
+                case TreeItemTypeEnum.FolderItem:
                     {
-                        var rslt = await _calendarStore.Delete(model.ID);
+                        var rslt = await _folderStore.Delete(model.ID);
                         break;
                     }
                 case TreeItemTypeEnum.EventItem:

@@ -1,4 +1,5 @@
 using Bogus;
+using TaskSched.Common.DataModel;
 using TaskSched.Common.FieldValidator;
 using TaskSched.Common.Interfaces;
 using TaskSched.DataStore;
@@ -104,36 +105,36 @@ namespace TaskSched.Test
 
 
         [Fact]
-        public async Task CalendarCRUD()
+        public async Task FolderCRUD()
         {
             var factory = CollectionFixture.RepositoryFactory;
 
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            ICalendarStore calendarStore = new TaskSched.DataStore.CalendarStore(factory, mapper);
+            IFolderStore folderStore = new TaskSched.DataStore.FolderStore(factory, mapper);
 
 
-            var calendar = Fakes.TaskSchedFaker.Model.Calendars.Create();
+            var folder = Fakes.TaskSchedFaker.Model.Folders.Create();
 
 
-            var rsltCreate = await calendarStore.Create(calendar);
+            var rsltCreate = await folderStore.Create(folder);
             Assert.NotNull(rsltCreate);
 
-            var rsltGet = await calendarStore.Get(rsltCreate.Result);
+            var rsltGet = await folderStore.Get(rsltCreate.Result);
             Assert.NotNull(rsltGet);
 
-            CalendarRetrievalParameters retrievalParameters = new CalendarRetrievalParameters()
+            FolderRetrievalParameters retrievalParameters = new FolderRetrievalParameters()
             {
                 AddChildEvents = true,
                 AsTree = true,
                 AddChildFolders = true
             };
 
-            var rsltGetAll = await calendarStore.GetAll(retrievalParameters);
+            var rsltGetAll = await folderStore.GetAll(retrievalParameters);
 
             Assert.NotNull(rsltGetAll);
 
 
-            var rsltDelete = calendarStore.Delete(rsltCreate.Result);
+            var rsltDelete = folderStore.Delete(rsltCreate.Result);
             Assert.NotNull(rsltDelete);
 
         }
@@ -141,7 +142,7 @@ namespace TaskSched.Test
 
         #region helpers
 
-        internal async Task<Event> CreateEvent()
+        internal async Task<DataStore.DataModel.Event> CreateEvent()
         {
             var db = this.CollectionFixture.Repository;
 
@@ -156,7 +157,7 @@ namespace TaskSched.Test
 
         }
 
-        internal async Task DeleteEvent(Event task)
+        internal async Task DeleteEvent(DataStore.DataModel.Event task)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -170,7 +171,7 @@ namespace TaskSched.Test
             Assert.Null(taskAfterDelete);
         }
 
-        internal async Task<EventSchedule> CreateEventSchedule(Guid itemId)
+        internal async Task<DataStore.DataModel.EventSchedule> CreateEventSchedule(Guid itemId)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -185,7 +186,7 @@ namespace TaskSched.Test
 
         }
 
-        internal async Task DeleteEventSchedule(EventSchedule task)
+        internal async Task DeleteEventSchedule(DataStore.DataModel.EventSchedule task)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -199,7 +200,7 @@ namespace TaskSched.Test
             Assert.Null(taskAfterDelete);
         }
 
-        internal async Task<Activity> CreateActivity()
+        internal async Task<DataStore.DataModel.Activity> CreateActivity()
         {
             var db = this.CollectionFixture.Repository;
 
@@ -214,7 +215,7 @@ namespace TaskSched.Test
 
         }
 
-        internal async Task DeleteActivity(Activity task)
+        internal async Task DeleteActivity(DataStore.DataModel.Activity task)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -229,7 +230,7 @@ namespace TaskSched.Test
         }
 
 
-        internal async Task<ActivityField> CreateActivityField(Guid itemId)
+        internal async Task<DataStore.DataModel.ActivityField> CreateActivityField(Guid itemId)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -244,7 +245,7 @@ namespace TaskSched.Test
 
         }
 
-        internal async Task DeleteActivityField(ActivityField task)
+        internal async Task DeleteActivityField(DataStore.DataModel.ActivityField task)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -259,7 +260,7 @@ namespace TaskSched.Test
         }
 
 
-        internal async Task<EventActivity> CreateEventActivity(Guid itemId, Guid actionId)
+        internal async Task<DataStore.DataModel.EventActivity> CreateEventActivity(Guid itemId, Guid actionId)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -274,7 +275,7 @@ namespace TaskSched.Test
 
         }
 
-        internal async Task DeleteEventActivity(EventActivity task)
+        internal async Task DeleteEventActivity(DataStore.DataModel.EventActivity task)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -289,7 +290,7 @@ namespace TaskSched.Test
         }
 
 
-        internal async Task<EventActivityField> CreateEventActivityField(Guid actionId, Guid actionFieldId)
+        internal async Task<DataStore.DataModel.EventActivityField> CreateEventActivityField(Guid actionId, Guid actionFieldId)
         {
             var db = this.CollectionFixture.Repository;
 
@@ -304,7 +305,7 @@ namespace TaskSched.Test
 
         }
 
-        internal async Task DeleteEventActivityField(EventActivityField task)
+        internal async Task DeleteEventActivityField(DataStore.DataModel.EventActivityField task)
         {
             var db = this.CollectionFixture.Repository;
 

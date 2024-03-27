@@ -291,7 +291,7 @@ namespace TaskSched.DataStore
 
         }
 
-        public async Task<ExpandedResult> MoveEvent(Guid eventId, Guid? newParentCalendarId)
+        public async Task<ExpandedResult> MoveEvent(Guid eventId, Guid? newParentFolderId)
         {
             using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
             {
@@ -300,7 +300,7 @@ namespace TaskSched.DataStore
 
                 if (eventItem != null)
                 {
-                    eventItem.CalendarId = newParentCalendarId;
+                    eventItem.FolderId = newParentFolderId;
                     _dbContext.Events.Update(eventItem);
                     await _dbContext.SaveChangesAsync();
 

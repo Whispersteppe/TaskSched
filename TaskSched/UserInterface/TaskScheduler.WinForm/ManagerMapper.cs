@@ -31,8 +31,8 @@ namespace TaskScheduler.WinForm
                 cfg.CreateMap<internalModel.Activity, externalModel.ActivityModel>();
                 cfg.CreateMap<externalModel.ActivityModel, internalModel.Activity>();
 
-                cfg.CreateMap<internalModel.Calendar, externalModel.CalendarModel>();
-                cfg.CreateMap<externalModel.CalendarModel, internalModel.Calendar>();
+                cfg.CreateMap<internalModel.Folder, externalModel.FolderModel>();
+                cfg.CreateMap<externalModel.FolderModel, internalModel.Folder>();
 
 
                 cfg.CreateMap<internalModel.ActivityField, internalModel.ActivityField>();

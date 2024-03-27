@@ -12,7 +12,7 @@ namespace TaskSched.Common.Interfaces
     {
         public List<Event> Events { get; set; }
         public List<Activity> Activities { get; set; }
-        public List<Calendar> Calendars { get; set; }
+        public List<Folder> Folders { get; set; }
     }
 
 }

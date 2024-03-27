@@ -30,7 +30,7 @@ namespace TaskSched.DataStore
         public DbSet<EventActivityField> EventActivityFields { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ActivityField> ActivityFields { get; set; }
-        public DbSet<Calendar> Calendars { get; set; }
+        public DbSet<Folder> Folders { get; set; }
 
         TaskSchedDbContextConfiguration _config;
 

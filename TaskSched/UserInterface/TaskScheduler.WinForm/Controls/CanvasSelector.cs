@@ -29,10 +29,10 @@ namespace TaskScheduler.WinForm.Controls
 
             _canvasItems.Add(typeof(ActivityModel), typeof(ActivityViewer));
             _canvasItems.Add(typeof(EventModel), typeof(EventViewer));
-            _canvasItems.Add(typeof(CalendarModel), typeof(CalendarViewer));
+            _canvasItems.Add(typeof(FolderModel), typeof(FolderViewer));
             _canvasItems.Add(typeof(LogRootModel), typeof(BlankViewer));
             _canvasItems.Add(typeof(StatusRootModel), typeof(BlankViewer));
-            _canvasItems.Add(typeof(CalendarRootModel), typeof(BlankViewer));
+            _canvasItems.Add(typeof(FolderRootModel), typeof(BlankViewer));
             _canvasItems.Add(typeof(ActivityRootModel), typeof(BlankViewer));
 
             _currentCanvas = null;

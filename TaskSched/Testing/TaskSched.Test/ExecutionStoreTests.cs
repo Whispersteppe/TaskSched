@@ -95,7 +95,7 @@ namespace TaskSched.Test
             Event eventItem = new Event()
             {
                 Activities = new List<EventActivity>() { eventActivity },
-                CalendarId = Guid.NewGuid(),
+                FolderId = Guid.NewGuid(),
                 CatchUpOnStartup = true,
                 Id = Guid.NewGuid(),
                 IsActive = true,
