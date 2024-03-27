@@ -135,6 +135,42 @@ namespace TaskSched.DataStore
             }
         }
 
+        public async Task<ExpandedResult<Activity>> GetDefault()
+        {
+
+            using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
+            {
+                var entities = await _dbContext
+                .Activities
+                .Include(x => x.DefaultFields)
+                .Include(x=>x.TaskActions)
+                .ToListAsync();
+                ;
+
+                //  now lets get the one with the most tasks associated with it
+
+                var selectedEntity = entities.FirstOrDefault();
+                foreach(var entity in entities)
+                {
+                    if (entity.TaskActions.Count > selectedEntity.TaskActions.Count)
+                    {
+                        selectedEntity = entity;
+                    }
+                }
+
+
+                Model.ExpandedResult<Model.Activity> rslt = new Model.ExpandedResult<Model.Activity>()
+                {
+                    Result = _mapper.Map<Model.Activity>(selectedEntity), 
+                    Messages= new List<Model.ResultMessage>()
+                };
+
+                return rslt;
+
+            }
+
+        }
+
         public async Task<Model.ExpandedResult<List<Model.Activity>>> GetAll()
         {
             using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())

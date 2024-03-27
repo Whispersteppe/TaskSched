@@ -52,6 +52,23 @@ namespace TaskSched.Test.Console
             }
         }
 
+        public async Task<ExpandedResult<Activity>> GetDefault()
+        {
+            return null;  //  this is not un use here.
+
+            //using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
+            //{
+            //    var entities = await _dbContext
+            //    .Activities
+            //    .Include(x => x.DefaultFields)
+            //    .ToListAsync();
+            //    ;
+
+            //    Model.ExpandedResult<List<Model.Activity>> rslt = new Model.ExpandedResult<List<Model.Activity>>();
+
+            //}
+
+        }
         public async Task<ExpandedResult<List<Activity>>> GetAll()
         {
             var rslt = new ExpandedResult<List<Activity>>() { Result = new List<Activity>()  };

@@ -14,6 +14,7 @@ using TaskSched.ExecutionEngine;
 using TaskSched.SchedulerEngine;
 using TaskScheduler.WinForm.Configuration;
 using TaskScheduler.WinForm.Models;
+using TaskSched.Common.DataModel;
 
 namespace TaskScheduler.WinForm
 {
@@ -317,23 +318,94 @@ namespace TaskScheduler.WinForm
             {
                 case TreeItemTypeEnum.ActivityItem:
                     {
-                        ActivityModel model = new ActivityModel();
-                        model.ParentItem = parentItem;
+                        var handlerInfo = await _executionStore.GetHandlerInfo();
+
+                        Activity activity = new Activity()
+                        {
+                            Name = "New Activity",
+                            ActivityHandlerId = handlerInfo[0].HandlerId,
+                            DefaultFields = new List<ActivityField>(
+                                handlerInfo[0].RequiredFields.Select(x => new ActivityField()
+                                {
+                                    FieldType = x.FieldType,
+                                    Value = "new value",
+                                    Name = x.Name,
+                                    IsReadOnly = true
+                                })
+                                )
+
+                        };
+                        var rsltCreate = await _activityStore.Create(activity);
+                        var rsltGet = await _activityStore.Get(rsltCreate.Result);
+                        var model = _managerMapper.Map<ActivityModel>(rsltGet.Result);
 
                         newItem = model;
                         break;
                     }
                 case TreeItemTypeEnum.CalendarItem:
                     {
-                        CalendarModel model = new CalendarModel();
+
+                        Calendar calendar = new Calendar()
+                        {
+                            Name = "New Calendar",
+                            ParentCalendarId = parentItem != null && parentItem is RootModel == false ? parentItem.ID : null,
+                        };
+
+                        var rsltCreate = await _calendarStore.Create(calendar);
+                        var rsltGet = await _calendarStore.Get(rsltCreate.Result);
+
+                        var model = _managerMapper.Map<CalendarModel>(rsltGet.Result);
                         model.ParentItem = parentItem;
                         newItem = model;
                         break;
                     }
                 case TreeItemTypeEnum.EventItem:
                     {
-                        EventModel model = new EventModel();
+                        //  get the default activity
+
+                        var rsltActivity = await _activityStore.GetDefault();
+                        var defaultActivity = rsltActivity.Result;
+                        Event eventItem = new Event()
+                        {
+                            CatchUpOnStartup = false, 
+                            Name = "New Item", 
+                            IsActive = false,  
+                            CalendarId = parentItem != null && parentItem is RootModel == false ? parentItem.ID : null,
+                            LastExecution = DateTime.Now, 
+                            NextExecution = DateTime.Now, 
+                            Activities = new List<EventActivity>()
+                            {
+                                 new EventActivity()
+                                 {
+                                     Name = "New Activity",
+                                     ActivityId = defaultActivity.Id, 
+                                     Fields = new List<EventActivityField>(
+                                         defaultActivity.DefaultFields.Where(x=>x.IsReadOnly == false).Select(x => 
+                                         new EventActivityField()
+                                         { 
+                                             ActivityFieldId = x.Id, 
+                                             Name = x.Name, 
+                                             Value = x.Value,
+                                             FieldType = x.FieldType}))
+                                 }
+                            },
+                            Schedules = new List<EventSchedule>()
+                            {
+                                new EventSchedule()
+                                {
+                                     Name = "8 am each day",
+                                      CRONData = "0 0 8 * * ? *"
+                                }
+                            }
+                        };
+
+                        var rsltCreate = await _eventStore.Create(eventItem);
+                        var rsltGet = await _eventStore.Get(rsltCreate.Result);
+
+
+                        EventModel model = _managerMapper.Map<EventModel>(rsltGet.Result);
                         model.ParentItem = parentItem;
+
                         newItem = model;
                         break;
                     }
@@ -407,24 +479,27 @@ namespace TaskScheduler.WinForm
                 case TreeItemTypeEnum.EventItem:
                     {
                         EventModel eventModel = item as EventModel;
+                        Event eventItem;
+                        Guid currentId;
 
                         if (eventModel.Id == Guid.Empty)
                         {
                             var rslt = await _eventStore.Create(eventModel);
-                            var rsltGet = await _eventStore.Get(rslt.Result);
-                            _managerMapper.Map<dataModel.Event, EventModel>(rsltGet.Result, eventModel);
-
-                            item = eventModel;
+                            currentId = rslt.Result;
                         }
                         else
                         {
                             var rslt = await _eventStore.Update(eventModel);
-                            var rsltGet = await _eventStore.Get(eventModel.Id);
-                            _managerMapper.Map<dataModel.Event, EventModel>(rsltGet.Result, eventModel);
-
-                            item = eventModel;
-
+                            currentId = eventModel.Id;
                         }
+
+                        var rsltGet = await _eventStore.Get(currentId);
+                        _managerMapper.Map<dataModel.Event, EventModel>(rsltGet.Result, eventModel);
+                        eventItem = rsltGet.Result;
+
+                        item = eventModel;
+                        await _schedulerEngine.UpdateEvent(eventItem);
+
                         break;
                     }
                 default:
@@ -506,6 +581,7 @@ namespace TaskScheduler.WinForm
                     }
                 case TreeItemTypeEnum.EventItem:
                     {
+                        await _schedulerEngine.DeleteEvent(model.ID);
                         var rslt = await _eventStore.Delete(model.ID);
                         break;
                     }

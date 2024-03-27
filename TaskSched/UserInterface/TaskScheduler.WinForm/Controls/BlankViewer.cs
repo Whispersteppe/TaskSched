@@ -29,39 +29,12 @@ namespace TaskScheduler.WinForm.Controls
                 ToolStripBuilder builder = new ToolStripBuilder();
                 foreach(TreeItemTypeEnum type in TreeItem.AllowedChildTypes)
                 {
-                    var button = builder.AddButton("Add", TsAdd_Click);
+                    var button = builder.AddButton($"Add {type}", TsAdd_Click);
                     button.Tag = type;
                 }
 
                 return builder.ToolStripItems;
 
-                //builder.AddButton("Delete", TsDelete_Click);
-
-
-                //List<ToolStripItem> toolItems = new List<ToolStripItem>();
-
-                //foreach(var addItem in TreeItem.AllowedChildTypes)
-                //{
-                //    ToolStripButton tsAdd;
-
-                //    tsAdd = new ToolStripButton();
-
-                //    tsAdd.DisplayStyle = ToolStripItemDisplayStyle.Text;
-
-                //    tsAdd.ImageTransparentColor = Color.Magenta;
-                //    tsAdd.Name = "tsAdd";
-                //    tsAdd.Size = new Size(42, 22);
-                //    tsAdd.Text = "Add";
-                //    tsAdd.Tag = addItem;
-
-                //    toolItems.Add(tsAdd);
-
-                //    tsAdd.Click += TsAdd_Click;
-
-                //}
-
-
-                //return toolItems;
             }
         }
 

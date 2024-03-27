@@ -113,14 +113,20 @@ namespace TaskScheduler.WinForm.Controls
                 lstScheduleItems.Items.Add(schedule);
             }
 
-            lstScheduleItems.SelectedIndex = 0;
+            if (lstScheduleItems.Items.Count > 0)
+            { 
+                lstScheduleItems.SelectedIndex = 0;
+            }
 
             foreach (var activity in o.Activities)
             {
                 lstActivities.Items.Add(activity);
             }
 
-            lstActivities.SelectedIndex = 0;
+            if (lstActivities.Items.Count > 0)
+            {
+                lstActivities.SelectedIndex = 0;
+            }
 
 
         }

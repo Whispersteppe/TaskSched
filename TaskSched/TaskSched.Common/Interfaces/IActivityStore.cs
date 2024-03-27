@@ -5,6 +5,7 @@ namespace TaskSched.Common.Interfaces
     public interface IActivityStore
     {
         Task<ExpandedResult<Activity?>> Get(Guid activityId);
+        Task<ExpandedResult<Activity>> GetDefault();
         Task<ExpandedResult<List<Activity>>> GetAll();
         Task<ExpandedResult> Update(Activity activity);
         Task<ExpandedResult> Delete(Guid activityId);

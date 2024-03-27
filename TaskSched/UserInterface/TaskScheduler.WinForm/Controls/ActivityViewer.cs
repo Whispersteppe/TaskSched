@@ -221,6 +221,8 @@ namespace TaskScheduler.WinForm.Controls
 
         public async Task LeavingItem()
         {
+            //todo - there's more that needs to go in here.  look at EventViewer for more details
+            _activityModel.Name = txtName.Text;
             await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
         }
 

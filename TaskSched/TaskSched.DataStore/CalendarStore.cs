@@ -25,7 +25,7 @@ namespace TaskSched.DataStore
 
         public async Task<Model.ExpandedResult<Guid>> Create(Model.Calendar calendar)
         {
-             Db.Calendar item = _mapper.Map<Db.Calendar>(calendar);
+            Db.Calendar item = _mapper.Map<Db.Calendar>(calendar);
 
             item.Id = Guid.Empty;
 

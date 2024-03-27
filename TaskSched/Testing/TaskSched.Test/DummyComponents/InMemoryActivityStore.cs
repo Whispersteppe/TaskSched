@@ -63,6 +63,17 @@ namespace TaskSched.Test.DummyComponents
             return rslt;
         }
 
+        public async Task<ExpandedResult<Activity>> GetDefault()
+        {
+            var activity = new Activity()
+            { Name = "Default", Id = Guid.NewGuid(), ActivityHandlerId = Guid.NewGuid(), DefaultFields = new List<ActivityField>() };
+
+            var created = await this.Create(activity);
+
+            return await Get(created.Result);
+
+        }
+
         public async Task<ExpandedResult> Update(Activity activity)
         {
             _activities[activity.Id] = activity;
