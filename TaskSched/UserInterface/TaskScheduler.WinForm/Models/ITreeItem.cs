@@ -14,7 +14,7 @@ namespace TaskScheduler.WinForm.Models
         /// text that will get displayed on the treeview
         /// </summary>
         string DisplayName { get; }
-        Guid ID { get; }
+        Guid? ID { get; }
 
         ITreeItem? ParentItem { get; }
 

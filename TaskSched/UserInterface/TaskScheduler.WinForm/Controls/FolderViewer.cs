@@ -65,10 +65,13 @@ namespace TaskScheduler.WinForm.Controls
 
         private async Task Save()
         {
-            _folderModel.Name = txtName.Text;
-            _folderModel.ParentFolderId = _folderModel.ParentItem.ID;
+            if (_folderModel.Name != txtName.Text || _folderModel.ParentFolderId != _folderModel.ParentItem.ID)
+            {
+                _folderModel.Name = txtName.Text;
+                _folderModel.ParentFolderId = _folderModel.ParentItem.ID;
 
-            var rslt = await _scheduleManager.SaveModel(_folderModel.ParentItem, _folderModel);
+                var rslt = await _scheduleManager.SaveModel(_folderModel.ParentItem, _folderModel);
+            }
         }
 
 

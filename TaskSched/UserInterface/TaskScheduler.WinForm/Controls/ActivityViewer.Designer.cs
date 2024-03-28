@@ -71,6 +71,7 @@
             txtName.Name = "txtName";
             txtName.Size = new Size(255, 23);
             txtName.TabIndex = 2;
+            txtName.TextChanged += txtName_TextChanged;
             // 
             // cmbActivityHandler
             // 

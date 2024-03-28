@@ -25,7 +25,7 @@ namespace TaskScheduler.WinForm.Models
 
         public List<ITreeItem> Children {get;protected set; } = new List<ITreeItem>();
 
-        public virtual Guid ID {get;protected set; }
+        public virtual Guid? ID {get;protected set; }
 
 
         public RootModel(ITreeItem? parentItem, object underlyingItem)

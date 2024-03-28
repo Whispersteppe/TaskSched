@@ -8,7 +8,7 @@ namespace TaskScheduler.WinForm.Models
     {
 
         public string DisplayName => this.Name;
-        public virtual Guid ID => this.Id;
+        public virtual Guid? ID => this.Id;
 
         public virtual object? UnderlyingItem { get; set; }
 

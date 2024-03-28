@@ -610,19 +610,19 @@ namespace TaskScheduler.WinForm
             {
                 case TreeItemTypeEnum.ActivityItem:
                     {
-                        var rslt = await _activityStore.Delete(model.ID);
+                        var rslt = await _activityStore.Delete(model.ID.GetValueOrDefault());
 
                         break;
                     }
                 case TreeItemTypeEnum.FolderItem:
                     {
-                        var rslt = await _folderStore.Delete(model.ID);
+                        var rslt = await _folderStore.Delete(model.ID.GetValueOrDefault());
                         break;
                     }
                 case TreeItemTypeEnum.EventItem:
                     {
-                        await _schedulerEngine.DeleteEvent(model.ID);
-                        var rslt = await _eventStore.Delete(model.ID);
+                        await _schedulerEngine.DeleteEvent(model.ID.GetValueOrDefault());
+                        var rslt = await _eventStore.Delete(model.ID.GetValueOrDefault());
                         break;
                     }
                 default:

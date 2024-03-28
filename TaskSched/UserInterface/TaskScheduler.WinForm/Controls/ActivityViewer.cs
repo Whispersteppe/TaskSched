@@ -24,6 +24,7 @@ namespace TaskScheduler.WinForm.Controls
         ScheduleManager? _scheduleManager;
 
         ActivityField _currentActivityField;
+        bool _modelChanged;
 
 
         public ActivityViewer()
@@ -88,9 +89,7 @@ namespace TaskScheduler.WinForm.Controls
                 cmbActivityHandler.SelectedIndex = 0;
             }
 
-
-
-
+            _modelChanged = false;
 
         }
 
@@ -101,8 +100,6 @@ namespace TaskScheduler.WinForm.Controls
 
         public List<ToolStripItem> ToolStripItems
         {
-
-
             get
             {
                 ToolStripBuilder builder = new ToolStripBuilder();
@@ -136,8 +133,6 @@ namespace TaskScheduler.WinForm.Controls
             {
                 cmbActivityHandler.Items.Add(infoItem);
             }
-
-
         }
 
 
@@ -155,13 +150,13 @@ namespace TaskScheduler.WinForm.Controls
                 Value = "not set"
             };
 
-
             _activity.DefaultFields.Add(field);
             lstFields.Items.Add(field);
             lstFields.SelectedItem = field;
 
             _currentActivityField = field;
 
+            _modelChanged = true;
         }
 
         private void btnDeleteField_Click(object sender, EventArgs e)
@@ -181,34 +176,14 @@ namespace TaskScheduler.WinForm.Controls
                         {
                             activity.DefaultFields.Remove(field);
                         }
+
+                        _modelChanged = true;
                     }
                 }
 
             }
 
         }
-
-        //private void lstFields_SelectedValueChanged(object sender, EventArgs e)
-        //{
-        //    if (lstFields.SelectedItem != null)
-        //    {
-        //        if (lstFields.SelectedItem is ActivityField field)
-        //        {
-        //            txtFieldName.Text = field.Name;
-        //            cmbFieldType.SelectedItem = field.FieldType;
-        //            txtFieldDefault.Text = field.Value;
-        //            chkFieldRequiredByHandler.Checked = field.IsReadOnly;
-        //        }
-
-        //    }
-        //    else
-        //    {
-        //        txtFieldName.Text = "";
-        //        cmbFieldType.SelectedItem = FieldTypeEnum.String;
-        //        txtFieldDefault.Text = "";
-        //        chkFieldRequiredByHandler.Checked = false;
-        //    }
-        //}
 
         private void lstFields_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -218,7 +193,13 @@ namespace TaskScheduler.WinForm.Controls
             {
                 if (lstFields.SelectedItem is ActivityField field)
                 {
-
+                    if (txtFieldName.Text != field.Name ||
+                        (FieldTypeEnum)cmbFieldType.SelectedItem != field.FieldType ||
+                        chkFieldRequiredByHandler.Checked != field.IsReadOnly ||
+                        txtFieldDefault.Text != field.Value)
+                    {
+                        _modelChanged = true;
+                    }
                     txtFieldName.Text = field.Name;
                     cmbFieldType.SelectedItem = field.FieldType;
                     chkFieldRequiredByHandler.Checked = field.IsReadOnly;
@@ -251,6 +232,14 @@ namespace TaskScheduler.WinForm.Controls
             {
                 if (lstFields.SelectedItem is ActivityField field)
                 {
+                    if (txtFieldName.Text != field.Name ||
+                        (FieldTypeEnum)cmbFieldType.SelectedItem != field.FieldType ||
+                        chkFieldRequiredByHandler.Checked != field.IsReadOnly ||
+                        txtFieldDefault.Text != field.Value)
+                    {
+                        _modelChanged = true;
+                    }
+
                     field.Name = txtFieldName.Text;
                     field.FieldType = (cmbFieldType.SelectedItem is FieldTypeEnum) ? (FieldTypeEnum)cmbFieldType.SelectedItem : FieldTypeEnum.String;
                     field.Value = txtFieldDefault.Text;
@@ -268,9 +257,13 @@ namespace TaskScheduler.WinForm.Controls
         {
             SaveActivityField();
 
-            //todo - there's more that needs to go in here.  look at EventViewer for more details
-            _activityModel.Name = txtName.Text;
-            await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
+            if (_modelChanged == true)
+            {
+
+                _activityModel.Name = txtName.Text;
+                await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
+            }
+
         }
 
 
@@ -317,6 +310,8 @@ namespace TaskScheduler.WinForm.Controls
                         _activity.DefaultFields.Add(field);
                         lstFields.Items.Add(field);
                         lstFields.SelectedItem = field;
+
+                        _modelChanged = true;
                     }
 
                 }
@@ -330,6 +325,13 @@ namespace TaskScheduler.WinForm.Controls
         {
             if (_currentActivityField != null)
             {
+                if (txtFieldName.Text != _currentActivityField.Name ||
+                    (FieldTypeEnum)cmbFieldType.SelectedItem != _currentActivityField.FieldType ||
+                    chkFieldRequiredByHandler.Checked != _currentActivityField.IsReadOnly ||
+                    txtFieldDefault.Text != _currentActivityField.Value)
+                {
+                    _modelChanged = true;
+                }
 
                 _currentActivityField.Value = txtFieldDefault.Text;
                 _currentActivityField.Name = txtFieldName.Text;
@@ -338,5 +340,9 @@ namespace TaskScheduler.WinForm.Controls
             }
         }
 
+        private void txtName_TextChanged(object sender, EventArgs e)
+        {
+            _modelChanged = true;
+        }
     }
 }

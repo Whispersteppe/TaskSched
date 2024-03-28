@@ -22,7 +22,7 @@ namespace TaskScheduler.WinForm.Controls
         EventActivity? _currentActivity;
         EventSchedule? _currentSchedule;
         EventActivityField? _currentActivityField;
-
+        bool _modelChanged;
 
         public EventViewer()
         {
@@ -54,39 +54,10 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsSave_Click(object? sender, EventArgs e)
         {
-            _eventModel.Name = txtName.Text;
-            _eventModel.FolderId = _eventModel.ParentItem.ID;
-            _eventModel.CatchUpOnStartup = cbCatchUpOnStartup.Checked;
-            _eventModel.IsActive = cbIsActive.Checked;
 
-            //  activities
-            //  schedules
-            //  add the new ones
-            foreach (var scheduleItem in lstScheduleItems.Items)
-            {
-                if (scheduleItem is EventSchedule eventSchedule)
-                {
-                    if (_eventModel.Schedules.Contains(eventSchedule) == false)
-                    {
-                        _eventModel.Schedules.Add(eventSchedule);
-                    }
-                }
-            }
-            List<EventSchedule> deleteSchedules = new List<EventSchedule>();
-            //  remove the old ones
-            foreach (var scheduleItem in _eventModel.Schedules)
-            {
-                if (lstScheduleItems.Items.Contains(scheduleItem) == false)
-                {
-                    deleteSchedules.Add(scheduleItem);
-                }
-            }
-            foreach (var schedule in deleteSchedules)
-            {
-                _eventModel.Schedules.Remove(schedule);
-            }
+            await Save();
 
-            var rslt = await _scheduleManager.SaveModel(_eventModel.ParentItem, _eventModel);
+
         }
 
         public async Task Initialize(ScheduleManager scheduleManager, EventModel o)
@@ -128,6 +99,7 @@ namespace TaskScheduler.WinForm.Controls
                 lstActivities.SelectedIndex = 0;
             }
 
+            _modelChanged = false;
 
         }
 
@@ -146,7 +118,7 @@ namespace TaskScheduler.WinForm.Controls
 
         private void txtScheduleCRON_TextChanged(object sender, EventArgs e)
         {
-
+            _modelChanged = true;
         }
 
         private void lstScheduleItems_SelectedIndexChanged(object sender, EventArgs e)
@@ -198,6 +170,12 @@ namespace TaskScheduler.WinForm.Controls
         {
             if (_currentSchedule != null)
             {
+                if (_currentSchedule.CRONData != txtScheduleCRON.Text ||
+                    _currentSchedule.Name != txtScheduleCRON.Text ||
+                    txtScheduleName.Text != _currentSchedule.Name)
+                {
+                    _modelChanged = true;
+                }
 
                 _currentSchedule.CRONData = txtScheduleCRON.Text;
                 _currentSchedule.Name = txtScheduleCRON.Text;
@@ -213,6 +191,10 @@ namespace TaskScheduler.WinForm.Controls
             {
                 if (_currentActivityField != null)
                 {
+                    if (_currentActivityField.Value != txtFieldValue.Text)
+                    {
+                        _modelChanged = true;
+                    }
 
                     _currentActivityField.Value = txtFieldValue.Text;
 
@@ -228,6 +210,7 @@ namespace TaskScheduler.WinForm.Controls
             {
                 if (lstActivityFields.SelectedItem is EventActivityField field)
                 {
+
                     txtFieldValue.Text = field.Value;
                     txtFieldName.Text = field.Name;
 
@@ -238,20 +221,83 @@ namespace TaskScheduler.WinForm.Controls
 
         }
 
-
         private async Task Save()
         {
-            if (_eventModel != null)
+            if (_eventModel.Name != txtName.Text ||
+                _eventModel.FolderId != _eventModel.ParentItem.ID ||
+                _eventModel.CatchUpOnStartup != cbCatchUpOnStartup.Checked ||
+                _eventModel.IsActive != cbIsActive.Checked)
             {
-
-                _eventModel.IsActive = cbIsActive.Checked;
-                _eventModel.CatchUpOnStartup = cbCatchUpOnStartup.Checked;
-
-                SaveSchedule();
-                SaveActivity();
-
-                await _scheduleManager.SaveModel(_eventModel.ParentItem, _eventModel);
+                _modelChanged = true;
             }
+
+            _eventModel.Name = txtName.Text;
+            _eventModel.FolderId = _eventModel.ParentItem.ID;
+            _eventModel.CatchUpOnStartup = cbCatchUpOnStartup.Checked;
+            _eventModel.IsActive = cbIsActive.Checked;
+
+            SaveSchedule();
+            SaveActivity();
+
+            //  activities
+            //  schedules
+            //  add the new ones
+            foreach (var scheduleItem in lstScheduleItems.Items)
+            {
+                if (scheduleItem is EventSchedule eventSchedule)
+                {
+                    if (_eventModel.Schedules.Contains(eventSchedule) == false)
+                    {
+                        _eventModel.Schedules.Add(eventSchedule);
+                        _modelChanged = true;
+                    }
+                }
+            }
+            List<EventSchedule> deleteSchedules = new List<EventSchedule>();
+            //  remove the old ones
+            foreach (var scheduleItem in _eventModel.Schedules)
+            {
+                if (lstScheduleItems.Items.Contains(scheduleItem) == false)
+                {
+                    deleteSchedules.Add(scheduleItem);
+                    _modelChanged = true;
+                }
+            }
+            foreach (var schedule in deleteSchedules)
+            {
+                _eventModel.Schedules.Remove(schedule);
+            }
+
+            if (_modelChanged == true)
+            {
+                var rslt = await _scheduleManager.SaveModel(_eventModel.ParentItem, _eventModel);
+            }
+
+
+
+            //if (_eventModel != null)
+            //{
+            //    if (_eventModel.Name != txtName.Text ||
+            //        _eventModel.FolderId != _eventModel.ParentItem.ID ||
+            //        _eventModel.CatchUpOnStartup != cbCatchUpOnStartup.Checked ||
+            //        _eventModel.IsActive != cbIsActive.Checked)
+            //    {
+            //        _modelChanged = true;
+            //    }
+
+            //    _eventModel.Name = txtName.Text;
+            //    _eventModel.FolderId = _eventModel.ParentItem.ID;
+            //    _eventModel.IsActive = cbIsActive.Checked;
+            //    _eventModel.CatchUpOnStartup = cbCatchUpOnStartup.Checked;
+
+            //    SaveSchedule();
+            //    SaveActivity();
+
+            //    if (_modelChanged == true)
+            //    {
+            //        await _scheduleManager.SaveModel(_eventModel.ParentItem, _eventModel);
+            //    }
+            //}
         }
 
         private async void btnScheduleSave_Click(object sender, EventArgs e)

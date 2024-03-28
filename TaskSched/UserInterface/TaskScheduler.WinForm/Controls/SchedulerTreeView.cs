@@ -107,8 +107,10 @@ namespace TaskScheduler.WinForm.Controls
 
         
 
-        private ITreeItem? FindItemByID(Guid ID)
+        private ITreeItem? FindItemByID(Guid? ID)
         {
+            if (ID == null) return null;
+
             foreach (ITreeItem item in _list)
             {
                 if (item.ID == ID)
@@ -130,8 +132,10 @@ namespace TaskScheduler.WinForm.Controls
 
         }
 
-        private ITreeItem? FindItemByID(ITreeItem parentItem, Guid ID)
+        private ITreeItem? FindItemByID(ITreeItem parentItem, Guid? ID)
         {
+            if (ID == null) return null;
+
             foreach (ITreeItem item in parentItem.Children)
             {
                 if (ID == item.ID)
