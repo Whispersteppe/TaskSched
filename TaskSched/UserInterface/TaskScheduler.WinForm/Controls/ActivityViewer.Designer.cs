@@ -33,6 +33,7 @@
             txtName = new TextBox();
             cmbActivityHandler = new ComboBox();
             groupBox1 = new GroupBox();
+            cmbFieldType = new ComboBox();
             btnSaveField = new Button();
             btnDeleteField = new Button();
             btnAddField = new Button();
@@ -43,7 +44,6 @@
             label4 = new Label();
             label3 = new Label();
             lstFields = new ListBox();
-            cmbFieldType = new ComboBox();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -102,6 +102,15 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "groupFields";
             // 
+            // cmbFieldType
+            // 
+            cmbFieldType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFieldType.FormattingEnabled = true;
+            cmbFieldType.Location = new Point(241, 56);
+            cmbFieldType.Name = "cmbFieldType";
+            cmbFieldType.Size = new Size(121, 23);
+            cmbFieldType.TabIndex = 13;
+            // 
             // btnSaveField
             // 
             btnSaveField.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
@@ -139,6 +148,7 @@
             // 
             chkFieldRequiredByHandler.AutoSize = true;
             chkFieldRequiredByHandler.CheckAlign = ContentAlignment.MiddleRight;
+            chkFieldRequiredByHandler.Enabled = false;
             chkFieldRequiredByHandler.Location = new Point(181, 84);
             chkFieldRequiredByHandler.Name = "chkFieldRequiredByHandler";
             chkFieldRequiredByHandler.Size = new Size(76, 19);
@@ -198,16 +208,7 @@
             lstFields.Name = "lstFields";
             lstFields.Size = new Size(120, 124);
             lstFields.TabIndex = 0;
-            lstFields.SelectedValueChanged += lstFields_SelectedValueChanged;
-            // 
-            // cmbFieldType
-            // 
-            cmbFieldType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbFieldType.FormattingEnabled = true;
-            cmbFieldType.Location = new Point(241, 56);
-            cmbFieldType.Name = "cmbFieldType";
-            cmbFieldType.Size = new Size(121, 23);
-            cmbFieldType.TabIndex = 13;
+            lstFields.SelectedIndexChanged += lstFields_SelectedIndexChanged;
             // 
             // ActivityViewer
             // 

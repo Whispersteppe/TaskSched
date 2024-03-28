@@ -73,8 +73,8 @@
             lstActivities = new ListBox();
             splitContainer3 = new SplitContainer();
             lstActivityFields = new ListBox();
-            label2 = new Label();
             txtFieldValue = new TextBox();
+            label2 = new Label();
             label3 = new Label();
             txtFieldName = new Label();
             tabControl1.SuspendLayout();
@@ -564,8 +564,8 @@
             // 
             // splitContainer3.Panel2
             // 
-            splitContainer3.Panel2.Controls.Add(label2);
             splitContainer3.Panel2.Controls.Add(txtFieldValue);
+            splitContainer3.Panel2.Controls.Add(label2);
             splitContainer3.Panel2.Controls.Add(label3);
             splitContainer3.Panel2.Controls.Add(txtFieldName);
             splitContainer3.Size = new Size(379, 419);
@@ -583,6 +583,16 @@
             lstActivityFields.TabIndex = 8;
             lstActivityFields.SelectedIndexChanged += lstActivityFields_SelectedIndexChanged;
             // 
+            // txtFieldValue
+            // 
+            txtFieldValue.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtFieldValue.Location = new Point(7, 49);
+            txtFieldValue.Multiline = true;
+            txtFieldValue.Name = "txtFieldValue";
+            txtFieldValue.ScrollBars = ScrollBars.Vertical;
+            txtFieldValue.Size = new Size(239, 333);
+            txtFieldValue.TabIndex = 7;
+            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -591,15 +601,6 @@
             label2.Size = new Size(39, 15);
             label2.TabIndex = 4;
             label2.Text = "Name";
-            // 
-            // txtFieldValue
-            // 
-            txtFieldValue.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtFieldValue.Location = new Point(7, 49);
-            txtFieldValue.Multiline = true;
-            txtFieldValue.Name = "txtFieldValue";
-            txtFieldValue.Size = new Size(239, 70);
-            txtFieldValue.TabIndex = 7;
             // 
             // label3
             // 
@@ -672,7 +673,6 @@
         private ListBox lstActivities;
         private CheckBox cbCatchUpOnStartup;
         private CheckBox cbIsActive;
-        private TextBox txtFieldValue;
         private Label txtFieldName;
         private Label label3;
         private Label label2;
@@ -707,5 +707,6 @@
         private Button btnActivitySave;
         private CronPiece cronPieceMinutes;
         private CronPiece cronPieceHours;
+        private TextBox txtFieldValue;
     }
 }

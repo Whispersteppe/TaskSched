@@ -225,6 +225,30 @@ namespace TaskSched.DataStore
                 {
                     _dbContext.Entry(dbActivity).CurrentValues.SetValues(activity);
 
+                    //  do the fields
+                    foreach (var field in activity.DefaultFields)
+                    {
+                        if (field.Id == Guid.Empty)
+                        {
+                            var dbField = new DB.ActivityField()
+                            {
+                                Name = field.Name,
+                                Value = field.Value, 
+                                FieldType = field.FieldType, 
+                                IsReadOnly = field.IsReadOnly,
+                            };
+                            dbActivity.DefaultFields.Add(dbField);
+                        }
+                        else
+                        {
+                            var dbField = dbActivity.DefaultFields.FirstOrDefault(x => x.Id == field.Id);
+                            _dbContext.Entry(dbField).CurrentValues.SetValues(field);
+                        }
+                    }
+
+                    List<DB.ActivityField> deletedFields = dbActivity.DefaultFields.Where(x => activity.DefaultFields.Any(y => y.Id == x.Id) == false).ToList();
+                    deletedFields.ForEach(x => dbActivity.DefaultFields.Remove(x));
+
                     _dbContext.Update(dbActivity);
 
                     await _dbContext.SaveChangesAsync();

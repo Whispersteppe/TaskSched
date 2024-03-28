@@ -37,17 +37,24 @@
             txtSearch.Dock = DockStyle.Top;
             txtSearch.Location = new Point(0, 0);
             txtSearch.Name = "txtSearch";
+            txtSearch.PlaceholderText = "Search";
             txtSearch.Size = new Size(150, 23);
             txtSearch.TabIndex = 0;
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // treeScheduler
             // 
+            treeScheduler.AllowDrop = true;
             treeScheduler.Dock = DockStyle.Fill;
             treeScheduler.Location = new Point(0, 23);
             treeScheduler.Name = "treeScheduler";
             treeScheduler.Size = new Size(150, 166);
             treeScheduler.TabIndex = 1;
+            treeScheduler.ItemDrag += treeScheduler_ItemDrag;
             treeScheduler.AfterSelect += treeScheduler_AfterSelect;
+            treeScheduler.DragDrop += treeScheduler_DragDrop;
+            treeScheduler.DragEnter += treeScheduler_DragEnter;
+            treeScheduler.DragOver += treeScheduler_DragOver;
             // 
             // SchedulerTreeView
             // 

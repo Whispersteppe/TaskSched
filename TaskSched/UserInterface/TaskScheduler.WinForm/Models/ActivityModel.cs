@@ -39,7 +39,7 @@ namespace TaskScheduler.WinForm.Models
 
         public bool CanMoveItem(ITreeItem possibleNewParent)
         {
-            if (CanAddCreateChild(possibleNewParent.TreeItemType))
+            if (possibleNewParent.CanAddCreateChild(TreeItemType))
             {
                 return true;
             }
@@ -88,24 +88,17 @@ namespace TaskScheduler.WinForm.Models
         }
 
 
+        public bool ContainsText(string text)
+        {
+            if (this.DisplayName.Contains(text, StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (this.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)) return true;
+            foreach(var field in this.DefaultFields)
+            {
+                if (field.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)) return true;
+                if (field.Value.Contains(text, StringComparison.InvariantCultureIgnoreCase)) return true;
+            }
+            return false;
+        }
     }
 
-    //public class ActivityFieldModel : ActivityField
-    //{
-
-    //}
-
-    //public class EventActivityModel : EventActivity
-    //{
-
-    //}
-
-    //public class EventActivityFieldModel : EventActivityField
-    //{
-
-    //}
-
-    //public class EventScheduleModel : EventSchedule
-    //{
-    //}
 }

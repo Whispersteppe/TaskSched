@@ -47,7 +47,7 @@ namespace TaskScheduler.WinForm.Models
 
         public virtual bool CanMoveItem(ITreeItem possibleNewParent)
         {
-            if (CanAddCreateChild(possibleNewParent.TreeItemType))
+            if (possibleNewParent.CanAddCreateChild(TreeItemType))
             {
                 return true;
             }
@@ -95,7 +95,10 @@ namespace TaskScheduler.WinForm.Models
             return false;
         }
 
-
+        public bool ContainsText(string text)
+        {
+            return false;
+        }
     }
 
 }

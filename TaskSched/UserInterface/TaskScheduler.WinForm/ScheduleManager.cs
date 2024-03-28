@@ -425,6 +425,46 @@ namespace TaskScheduler.WinForm
 
         }
 
+        public async Task MoveItem(ITreeItem landingItem, ITreeItem movingItem)
+        {
+            switch (movingItem.TreeItemType)
+            {
+                case TreeItemTypeEnum.ActivityItem:
+                    {
+                        ActivityModel activityModel = movingItem as ActivityModel;
+
+                        //  currently there isn't any movemen of activities
+
+                        break;
+                    }
+                case TreeItemTypeEnum.FolderItem:
+                    {
+                        FolderModel folderModel = movingItem as FolderModel;
+                        folderModel.ParentFolderId = landingItem.ID;
+                        Folder folder = _managerMapper.Map<dataModel.Folder>(folderModel);
+
+                        await _folderStore.Update(folder);
+
+                        break;
+                    }
+                case TreeItemTypeEnum.EventItem:
+                    {
+                        EventModel eventModel = movingItem as EventModel;
+                        eventModel.FolderId = landingItem.ID;
+                        Event eventItem = _managerMapper.Map<dataModel.Event>(eventModel);
+
+                        await _eventStore.Update(eventItem);
+
+
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
+        }
+
         public async Task<ITreeItem> SaveModel(ITreeItem? parentTreeItem, ITreeItem item)
         {
 

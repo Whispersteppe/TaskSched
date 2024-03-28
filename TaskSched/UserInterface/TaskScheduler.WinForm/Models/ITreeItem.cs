@@ -34,6 +34,7 @@ namespace TaskScheduler.WinForm.Models
 
         bool CanEdit();
 
+        bool ContainsText(string text);
 
     }
 

@@ -23,6 +23,9 @@ namespace TaskScheduler.WinForm.Controls
         Activity _activity;
         ScheduleManager? _scheduleManager;
 
+        ActivityField _currentActivityField;
+
+
         public ActivityViewer()
         {
             InitializeComponent();
@@ -54,7 +57,7 @@ namespace TaskScheduler.WinForm.Controls
 
             if (lstFields.Items.Count > 0)
             {
-                lstFields.SelectedItem = lstFields.Items[0];
+                lstFields.SelectedIndex = 0;
             }
 
 
@@ -62,7 +65,7 @@ namespace TaskScheduler.WinForm.Controls
             //cmbActivityHandler
             cmbActivityHandler.Items.Clear();
 
-            foreach(var handler in await _scheduleManager.GetHandlerInfo())
+            foreach (var handler in await _scheduleManager.GetHandlerInfo())
             {
                 cmbActivityHandler.Items.Add(handler);
             }
@@ -120,8 +123,7 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsSave_Click(object? sender, EventArgs e)
         {
-            _activityModel.Name = txtName.Text;
-            var rslt = await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
+            await Save();
         }
 
         public async Task SetScheduleManager(ScheduleManager scheduleManager)
@@ -153,9 +155,13 @@ namespace TaskScheduler.WinForm.Controls
                 Value = "not set"
             };
 
+
             _activity.DefaultFields.Add(field);
             lstFields.Items.Add(field);
             lstFields.SelectedItem = field;
+
+            _currentActivityField = field;
+
         }
 
         private void btnDeleteField_Click(object sender, EventArgs e)
@@ -164,8 +170,11 @@ namespace TaskScheduler.WinForm.Controls
             {
                 if (lstFields.SelectedItem is ActivityField field)
                 {
+
                     if (field.IsReadOnly == false)
                     {
+                        _currentActivityField = null;
+
                         //  remove it
                         lstFields.Items.Remove(lstFields.SelectedItem);
                         if (TreeItem is Activity activity)
@@ -179,27 +188,63 @@ namespace TaskScheduler.WinForm.Controls
 
         }
 
-        private void lstFields_SelectedValueChanged(object sender, EventArgs e)
+        //private void lstFields_SelectedValueChanged(object sender, EventArgs e)
+        //{
+        //    if (lstFields.SelectedItem != null)
+        //    {
+        //        if (lstFields.SelectedItem is ActivityField field)
+        //        {
+        //            txtFieldName.Text = field.Name;
+        //            cmbFieldType.SelectedItem = field.FieldType;
+        //            txtFieldDefault.Text = field.Value;
+        //            chkFieldRequiredByHandler.Checked = field.IsReadOnly;
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        txtFieldName.Text = "";
+        //        cmbFieldType.SelectedItem = FieldTypeEnum.String;
+        //        txtFieldDefault.Text = "";
+        //        chkFieldRequiredByHandler.Checked = false;
+        //    }
+        //}
+
+        private void lstFields_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SaveActivityField();
+
             if (lstFields.SelectedItem != null)
             {
                 if (lstFields.SelectedItem is ActivityField field)
                 {
+
                     txtFieldName.Text = field.Name;
                     cmbFieldType.SelectedItem = field.FieldType;
-                    txtFieldDefault.Text = field.Value;
                     chkFieldRequiredByHandler.Checked = field.IsReadOnly;
-                }
+                    txtFieldDefault.Text = field.Value;
 
-            }
-            else
-            {
-                txtFieldName.Text = "";
-                cmbFieldType.SelectedItem = FieldTypeEnum.String;
-                txtFieldDefault.Text = "";
-                chkFieldRequiredByHandler.Checked = false;
+                    if (field.IsReadOnly)
+                    {
+                        txtFieldName.Enabled = false;
+                        cmbFieldType.Enabled = false;
+
+                    }
+                    else
+                    {
+                        txtFieldName.Enabled = true;
+                        cmbFieldType.Enabled = true;
+                    }
+
+
+                    _currentActivityField = field;
+
+                }
             }
         }
+
+
+
         private void btnSaveField_Click(object sender, EventArgs e)
         {
             if (lstFields.SelectedItem != null)
@@ -207,7 +252,7 @@ namespace TaskScheduler.WinForm.Controls
                 if (lstFields.SelectedItem is ActivityField field)
                 {
                     field.Name = txtFieldName.Text;
-                    field.FieldType = TaskSched.Common.FieldValidator.FieldTypeEnum.String; //TODO will probably want a dropdown here
+                    field.FieldType = (cmbFieldType.SelectedItem is FieldTypeEnum) ? (FieldTypeEnum)cmbFieldType.SelectedItem : FieldTypeEnum.String;
                     field.Value = txtFieldDefault.Text;
                     field.IsReadOnly = chkFieldRequiredByHandler.Checked;
                 }
@@ -219,11 +264,19 @@ namespace TaskScheduler.WinForm.Controls
 
         #endregion
 
-        public async Task LeavingItem()
+        public async Task Save()
         {
+            SaveActivityField();
+
             //todo - there's more that needs to go in here.  look at EventViewer for more details
             _activityModel.Name = txtName.Text;
             await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
+        }
+
+
+        public async Task LeavingItem()
+        {
+            await Save();
         }
 
 
@@ -234,11 +287,11 @@ namespace TaskScheduler.WinForm.Controls
 
             if (cmbActivityHandler.SelectedItem is ExecutionHandlerInfo handlerInfo)
             {
-                foreach(var requiredfield in handlerInfo.RequiredFields)
+                foreach (var requiredfield in handlerInfo.RequiredFields)
                 {
                     bool foundField = false;
                     //  find in the current field list
-                    foreach(var field in lstFields.Items)
+                    foreach (var field in lstFields.Items)
                     {
                         if (field is ActivityField activityField)
                         {
@@ -265,12 +318,24 @@ namespace TaskScheduler.WinForm.Controls
                         lstFields.Items.Add(field);
                         lstFields.SelectedItem = field;
                     }
-                    
+
                 }
 
             }
 
 
+        }
+
+        private void SaveActivityField()
+        {
+            if (_currentActivityField != null)
+            {
+
+                _currentActivityField.Value = txtFieldDefault.Text;
+                _currentActivityField.Name = txtFieldName.Text;
+                _currentActivityField.FieldType = (cmbFieldType.SelectedItem is FieldTypeEnum) ? (FieldTypeEnum)cmbFieldType.SelectedItem : FieldTypeEnum.String;
+                _currentActivityField.IsReadOnly = chkFieldRequiredByHandler.Checked;
+            }
         }
 
     }

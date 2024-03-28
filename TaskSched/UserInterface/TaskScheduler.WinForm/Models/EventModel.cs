@@ -32,7 +32,7 @@ namespace TaskScheduler.WinForm.Models
 
         public virtual bool CanMoveItem(ITreeItem possibleNewParent)
         {
-            if (CanAddCreateChild(possibleNewParent.TreeItemType))
+            if (possibleNewParent.CanAddCreateChild(TreeItemType))
             {
                 return true;
             }
@@ -80,6 +80,20 @@ namespace TaskScheduler.WinForm.Models
             return false;
         }
 
+        public bool ContainsText(string text)
+        {
+            if (this.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)) return true;
+            foreach(var activity in this.Activities)
+            {
+                if (activity.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)) return true;
+                foreach(var field in activity.Fields)
+                {
+                    if (field.Value.Contains(text, StringComparison.InvariantCultureIgnoreCase)) return true;
+                }
+            }
+
+            return false;
+        }
 
     }
 }
