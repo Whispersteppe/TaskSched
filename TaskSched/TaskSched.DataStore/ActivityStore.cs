@@ -18,12 +18,14 @@ namespace TaskSched.DataStore
         TaskSchedDbContextFactory _contextFactory;
         IDataStoreMapper _mapper;
         IFieldValidatorSet _fieldValidatorSet;
+        ILogger _logger;
 
-        public ActivityStore(TaskSchedDbContextFactory contextFactory, IDataStoreMapper mapper, IFieldValidatorSet fieldValidatorSet) 
+        public ActivityStore(TaskSchedDbContextFactory contextFactory, IDataStoreMapper mapper, IFieldValidatorSet fieldValidatorSet, ILogger<ActivityStore> logger) 
         { 
             _contextFactory = contextFactory;
             _mapper = mapper;
             _fieldValidatorSet = fieldValidatorSet;
+            _logger = logger;
         }
 
 
@@ -75,6 +77,8 @@ namespace TaskSched.DataStore
 
                 rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Activity created" });
 
+                _logger.LogInformation($"Creating Activity {activity.Name}, ID={item.Id}");
+
                 return rslt;
             }
         }
@@ -96,10 +100,13 @@ namespace TaskSched.DataStore
                     await _dbContext.SaveChangesAsync();
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Activity deleted" });
 
+                    _logger.LogInformation($"Deleting Activity {entity.Name}, ID={activityId}");
+
                 }
                 else
                 {
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Activity not found.  no deletion occurred" });
+                    _logger.LogWarning($"Activity not found - ID={activityId}");
                 }
 
                 return rslt;
@@ -129,6 +136,7 @@ namespace TaskSched.DataStore
                 else
                 {
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Activity not found." });
+                    _logger.LogWarning($"Activity not found - ID={eventId}");
                 }
 
                 return rslt;
@@ -194,6 +202,7 @@ namespace TaskSched.DataStore
                 else
                 {
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Activities not found." });
+                    _logger.LogWarning($"Activities not found");
                 }
 
                 return rslt;
@@ -255,10 +264,13 @@ namespace TaskSched.DataStore
 
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Activity updated" });
 
+                    _logger.LogInformation($"Activity updated {activity.Name} - ID={activity.Id}");
+
                 }
                 else
                 {
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Error, Message = "Activity not found.  no update occurred" });
+                    _logger.LogWarning($"Activity not found {activity.Name} - ID={activity.Id}");
                 }
 
                 return rslt;

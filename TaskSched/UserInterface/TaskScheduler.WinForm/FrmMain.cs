@@ -41,7 +41,7 @@ namespace TaskScheduler.WinForm
 
             tsStop.Enabled = false;
 
-            _engineManager = new ScheduleManager(_config.Configuration, _loggerWrapper.LoggerFactory);
+            _engineManager = new ScheduleManager(_config.Configuration, _loggerWrapper.LoggerFactory, _loggerWrapper.LogEmitter);
 
             _logger.LogInformation("Starting the application");
         }

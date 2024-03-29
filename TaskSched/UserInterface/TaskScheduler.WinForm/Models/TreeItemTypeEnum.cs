@@ -12,5 +12,9 @@
         FolderRootItem,
         LogRootItem,
         StatusRootItem,
+
+        LogViewItem,
+        SchedulerStatusItem,
+        ExecutionEngineStatusItem,
     }
 }

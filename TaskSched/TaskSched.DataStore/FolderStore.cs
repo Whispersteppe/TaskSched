@@ -9,6 +9,7 @@ using TaskSched.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaskSched.Common.DataModel;
+using TaskSched.DataStore.DataModel;
 
 namespace TaskSched.DataStore
 {
@@ -16,11 +17,13 @@ namespace TaskSched.DataStore
     {
         TaskSchedDbContextFactory _contextFactory;
         IDataStoreMapper _mapper;
+        ILogger _logger;
 
-        public FolderStore(TaskSchedDbContextFactory contextFactory, IDataStoreMapper mapper) 
+        public FolderStore(TaskSchedDbContextFactory contextFactory, IDataStoreMapper mapper, ILogger<FolderStore> logger) 
         { 
             _contextFactory = contextFactory;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<Model.ExpandedResult<Guid>> Create(Model.Folder folder)
@@ -42,6 +45,7 @@ namespace TaskSched.DataStore
 
                 rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Folder created" });
 
+                _logger.LogInformation($"Created {folder.Name}, ID={item.Id}");
                 return rslt;
             }
         }
@@ -64,11 +68,13 @@ namespace TaskSched.DataStore
 
                     await _dbContext.SaveChangesAsync();
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Folder deleted" });
+                    _logger.LogInformation($"Deleted {entity.Name}, ID={entity.Id}");
 
                 }
                 else
                 {
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Folder not found.  no deletion occurred" });
+                    _logger.LogWarning($"Folder not found.  no deletion occurred. ID={folderId}");
                 }
 
                 return rslt;
@@ -97,6 +103,7 @@ namespace TaskSched.DataStore
                 else
                 {
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Folder not found." });
+                    _logger.LogWarning($"Folder not found.  ID={folderId}");
                 }
 
                 return rslt;
@@ -210,6 +217,7 @@ namespace TaskSched.DataStore
                 else
                 {
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Warning, Message = "Folders not found." });
+                    _logger.LogWarning($"Folders not found.");
                 }
 
                 return rslt;
@@ -241,11 +249,13 @@ namespace TaskSched.DataStore
                     await _dbContext.SaveChangesAsync();
 
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.OK, Message = "Folder updated" });
+                    _logger.LogInformation($"Folder {folder.Name} updated ID={folder.Id}");
 
                 }
                 else
                 {
                     rslt.Messages.Add(new Model.ResultMessage() { Severity = Model.ResultMessageSeverity.Error, Message = "Folder not found.  no update occurred" });
+                    _logger.LogWarning($"Folder not found.  no update occurred. ID={folder.Id}");
                 }
 
                 return rslt;
@@ -267,11 +277,13 @@ namespace TaskSched.DataStore
                     _dbContext.Folders.Update(folder);
                     await _dbContext.SaveChangesAsync();
 
+                    _logger.LogInformation($"Folder {folderId} moved to {newParentFolderId}");
                     return new ExpandedResult() { Messages = new List<Model.ResultMessage>() { new ResultMessage() { Message = "Folder moved", Severity = ResultMessageSeverity.OK } } };
 
                 }
                 else
                 {
+                    _logger.LogWarning($"Folder not found.  no move occurred. ID={folderId}");
                     return new ExpandedResult() { Messages = new List<Model.ResultMessage>() { new ResultMessage() { Message = "Folder was not found", Severity = ResultMessageSeverity.Error } } };
                 }
             }

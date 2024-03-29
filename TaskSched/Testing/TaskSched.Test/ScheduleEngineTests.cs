@@ -34,10 +34,10 @@ namespace TaskSched.Test
             var factory = CollectionFixture.RepositoryFactory;
 
             IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
-
+            
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            IEventStore eventStore = new TaskSched.DataStore.EventStore(factory, mapper, fieldValidatorSet);
-            IActivityStore activityStore = new TaskSched.DataStore.ActivityStore(factory, mapper, fieldValidatorSet);
+            IEventStore eventStore = new TaskSched.DataStore.EventStore(factory, mapper, fieldValidatorSet, this.GetLogger<EventStore>());
+            IActivityStore activityStore = new TaskSched.DataStore.ActivityStore(factory, mapper, fieldValidatorSet, this.GetLogger<ActivityStore>());
 
 
             ISchedulerEngine scheduleEngine = new SchedulerEngine.SchedulerEngine(executionEngine, eventStore, activityStore, logger);

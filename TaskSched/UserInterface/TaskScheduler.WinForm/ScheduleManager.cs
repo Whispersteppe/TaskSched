@@ -15,6 +15,7 @@ using TaskSched.SchedulerEngine;
 using TaskScheduler.WinForm.Configuration;
 using TaskScheduler.WinForm.Models;
 using TaskSched.Common.DataModel;
+using TaskScheduler.WinForm.NLogCustom;
 
 namespace TaskScheduler.WinForm
 {
@@ -46,6 +47,7 @@ namespace TaskScheduler.WinForm
 
         ILoggerFactory _loggerFactory;
         ILogger _logger;
+        ILogEmitter _logEmitter;
 
         IExecutionEngine _executionEngine;
         ISchedulerEngine _schedulerEngine;
@@ -71,10 +73,12 @@ namespace TaskScheduler.WinForm
         /// <param name="loggerFactory"></param>
         public ScheduleManager(
             ScheduleManagerConfig configuration, 
-            ILoggerFactory loggerFactory) 
+            ILoggerFactory loggerFactory,
+            ILogEmitter logEmitter) 
         {
             _config = configuration;
             _loggerFactory = loggerFactory;
+            _logEmitter = logEmitter;
             _logger = loggerFactory.CreateLogger<ScheduleManager>();
             _managerMapper = new ManagerMapper();
 
@@ -86,9 +90,9 @@ namespace TaskScheduler.WinForm
             _fieldValidators = new FieldValidatorSet();
 
 
-            _eventStore = new EventStore(_dbContextFactory, _mapper, _fieldValidators);
-            _activityStore = new ActivityStore(_dbContextFactory, _mapper, _fieldValidators);
-            _folderStore = new FolderStore(_dbContextFactory, _mapper);
+            _eventStore = new EventStore(_dbContextFactory, _mapper, _fieldValidators, loggerFactory.CreateLogger<EventStore>());
+            _activityStore = new ActivityStore(_dbContextFactory, _mapper, _fieldValidators, loggerFactory.CreateLogger<ActivityStore>()) ;
+            _folderStore = new FolderStore(_dbContextFactory, _mapper, loggerFactory.CreateLogger<FolderStore>());
 
             _executionStore = new TaskSched.ExecutionStore.ExecutionStore(_loggerFactory.CreateLogger<TaskSched.ExecutionStore.ExecutionStore>());
 
@@ -266,7 +270,11 @@ namespace TaskScheduler.WinForm
         {
             StatusRootModel topModel = new StatusRootModel(null);
 
+            SchedulerStatusModel schedulerStatus = new SchedulerStatusModel();
+            ExecutionEngineStatusModel executionStatus = new ExecutionEngineStatusModel();
 
+            topModel.Children.Add(schedulerStatus);
+            topModel.Children.Add(executionStatus);
 
             return topModel;
         }
@@ -275,6 +283,79 @@ namespace TaskScheduler.WinForm
         {
             LogRootModel topModel = new LogRootModel(null);
 
+            LogViewModelConfig _configError = new LogViewModelConfig { MaxLogCount = 200, MinLogLevel = NLog.LogLevel.Error, Name = "Error Log" };
+            LogViewModel logviewError = new LogViewModel(_configError, _logEmitter);
+            topModel.Children.Add(logviewError);
+
+            LogViewModelConfig _configWarning = new LogViewModelConfig { MaxLogCount = 200, MinLogLevel = NLog.LogLevel.Warn, Name = "Warning Log" };
+            LogViewModel logviewWarning = new LogViewModel(_configWarning, _logEmitter);
+            topModel.Children.Add(logviewWarning);
+
+
+            LogViewModelConfig _configScheduler = new LogViewModelConfig 
+            { 
+                MaxLogCount = 200, 
+                MinLogLevel = NLog.LogLevel.Trace, 
+                Name = "Scheduler Log", 
+                AllowedLoggerNames = ["Quartz", "TaskSched.SchedulerEngine"] 
+            };
+            LogViewModel logviewScheduler = new LogViewModel(_configScheduler, _logEmitter);
+            topModel.Children.Add(logviewScheduler);
+
+            LogViewModelConfig _configExecution = new LogViewModelConfig
+            {
+                MaxLogCount = 200,
+                MinLogLevel = NLog.LogLevel.Trace,
+                Name = "Execution Log",
+                AllowedLoggerNames = ["TaskSched.ExecutionEngine"]
+            };
+            LogViewModel logviewExecution = new LogViewModel(_configExecution, _logEmitter);
+            topModel.Children.Add(logviewExecution);
+
+            LogViewModelConfig _datastoreConfig = new LogViewModelConfig
+            {
+                MaxLogCount = 200,
+                MinLogLevel = NLog.LogLevel.Trace,
+                Name = "Datastore Log",
+                AllowedLoggerNames = ["TaskSched.DataStore"]
+            };
+            LogViewModel datastoreScheduler = new LogViewModel(_datastoreConfig, _logEmitter);
+            topModel.Children.Add(datastoreScheduler);
+
+            LogViewModelConfig _uiConfig = new LogViewModelConfig
+            {
+                MaxLogCount = 200,
+                MinLogLevel = NLog.LogLevel.Trace,
+                Name = "UI Log",
+                AllowedLoggerNames = ["TaskScheduler.WinForm"]
+            };
+            LogViewModel logviewUI = new LogViewModel(_uiConfig, _logEmitter);
+            topModel.Children.Add(logviewUI);
+
+            LogViewModelConfig _configTrace = new LogViewModelConfig
+            {
+                MaxLogCount = 200,
+                MinLogLevel = NLog.LogLevel.Trace,
+                Name = "Miscellaneous Log",
+                DeniedLoggerNames = [
+                    "Quartz",
+                    "TaskSched.DataStore",
+                    "TaskSched.ExecutionEngine",
+                    "TaskSched.SchedulerEngine",
+                    "TaskScheduler.WinForm"
+                    ]
+            };
+            LogViewModel logviewTrace = new LogViewModel(_configTrace, _logEmitter);
+            topModel.Children.Add(logviewTrace);
+
+            LogViewModelConfig _allConfig = new LogViewModelConfig
+            {
+                MaxLogCount = 200,
+                MinLogLevel = NLog.LogLevel.Trace,
+                Name = "All Logs"
+            };
+            LogViewModel logviewAll = new LogViewModel(_allConfig, _logEmitter);
+            topModel.Children.Add(logviewAll);
 
 
             return topModel;

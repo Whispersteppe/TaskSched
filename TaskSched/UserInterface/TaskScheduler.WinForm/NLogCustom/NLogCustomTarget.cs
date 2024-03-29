@@ -9,26 +9,49 @@ using System.Threading.Tasks;
 
 namespace TaskScheduler.WinForm.NLogCustom
 {
-    [Target("InternalLogTarget")]
-    public class NLogCustomTarget :TargetWithLayout
-    {
 
-        List<LogEventInfo> _logs;
+    public delegate void OnLogMessage(LogEventInfoExtended logEventInfo);
+
+    public class LogEventInfoExtended
+    {
+        public LogEventInfoExtended(LogEventInfo logInfo, string message) 
+        { 
+            Message = message;
+            Extended = logInfo;
+        }
+
+        public string Message { get; set; }
+        public LogEventInfo Extended { get; set; }
+    }
+
+    public interface ILogEmitter
+    {
+        event OnLogMessage OnLogMessage;
+
+    }
+
+
+    [Target("InternalLogTarget")]
+    public class NLogCustomTarget :TargetWithLayout, ILogEmitter
+    {
+        public event OnLogMessage OnLogMessage;
+
+        List<LogEventInfoExtended> _logs;
 
         public NLogCustomTarget()
         {
-            _logs = new List<LogEventInfo>();
+            _logs = new List<LogEventInfoExtended>();
         }
 
 
-        public List<LogEventInfo> Logs()
+        public List<LogEventInfoExtended> Logs()
         {
             return _logs;
         }
 
-        public List<LogEventInfo> Logs(LogLevel minLevel)
+        public List<LogEventInfoExtended> Logs(LogLevel minLevel)
         {
-            var selectedLogs = _logs.Where(x => x.Level >= minLevel).ToList();
+            var selectedLogs = _logs.Where(x => x.Extended.Level >= minLevel).ToList();
 
             return selectedLogs;
         }
@@ -36,7 +59,12 @@ namespace TaskScheduler.WinForm.NLogCustom
 
         protected override void Write(LogEventInfo logEvent)
         {
-            _logs.Add(logEvent);
+
+            string logMessage = RenderLogEvent(this.Layout, logEvent);
+            LogEventInfoExtended logInfo = new LogEventInfoExtended(logEvent, logMessage);
+
+
+            _logs.Add(logInfo);
 
             //  remove the oldest items
             while (_logs.Count > 1000)
@@ -44,18 +72,10 @@ namespace TaskScheduler.WinForm.NLogCustom
                 _logs.RemoveAt(0);
             }
 
+            OnLogMessage?.Invoke(logInfo);
 
-            string logMessage = RenderLogEvent(this.Layout, logEvent);
-
-            SendMessage(logMessage);    
         }
 
-        private void SendMessage(string message)
-        {
 
-            Debug.WriteLine(message);
-            // TODO - write me 
-            //  do my callouts here
-        }
     }
 }

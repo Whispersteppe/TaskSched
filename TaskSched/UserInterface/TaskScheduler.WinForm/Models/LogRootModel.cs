@@ -19,6 +19,11 @@ namespace TaskScheduler.WinForm.Models
             DisplayName = "Logs";
         }
 
+        public override bool CanHaveChildren()
+        {
+            return true;
+        }
+
 
     }
 

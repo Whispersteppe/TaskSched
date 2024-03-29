@@ -33,7 +33,7 @@ namespace TaskSched.Test
 
             IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            IEventStore eventStore = new TaskSched.DataStore.EventStore(factory, mapper, fieldValidatorSet);
+            IEventStore eventStore = new TaskSched.DataStore.EventStore(factory, mapper, fieldValidatorSet, this.GetLogger<EventStore>());
 
 
             var eventItem = Fakes.TaskSchedFaker.Model.Events.Create(3, 3);
@@ -73,7 +73,7 @@ namespace TaskSched.Test
 
             IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            IActivityStore activityStore = new TaskSched.DataStore.ActivityStore(factory, mapper, fieldValidatorSet);
+            IActivityStore activityStore = new TaskSched.DataStore.ActivityStore(factory, mapper, fieldValidatorSet, this.GetLogger<ActivityStore>());
 
 
             var activity = Fakes.TaskSchedFaker.Model.Activities.Create();
@@ -110,7 +110,7 @@ namespace TaskSched.Test
             var factory = CollectionFixture.RepositoryFactory;
 
             IDataStoreMapper mapper = new TaskSched.DataStore.DataStoreMapper();
-            IFolderStore folderStore = new TaskSched.DataStore.FolderStore(factory, mapper);
+            IFolderStore folderStore = new TaskSched.DataStore.FolderStore(factory, mapper, this.GetLogger<FolderStore>());
 
 
             var folder = Fakes.TaskSchedFaker.Model.Folders.Create();

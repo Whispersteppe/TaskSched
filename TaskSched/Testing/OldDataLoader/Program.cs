@@ -46,10 +46,11 @@ namespace OldDataLoader
             await dbContext.Database.EnsureCreatedAsync();
 
             //  create my event stores
+
             IFieldValidatorSet fieldValidatorSet = new FieldValidatorSet();
-            IEventStore eventStore = new EventStore(contextFactory, mapper, fieldValidatorSet);
-            IActivityStore activityStore = new ActivityStore(contextFactory, mapper, fieldValidatorSet);
-            IFolderStore folderStore = new FolderStore(contextFactory, mapper);
+            IEventStore eventStore = new EventStore(contextFactory, mapper, fieldValidatorSet, new DummyConsoleLogger<EventStore>()) ;
+            IActivityStore activityStore = new ActivityStore(contextFactory, mapper, fieldValidatorSet, new DummyConsoleLogger<ActivityStore>());
+            IFolderStore folderStore = new FolderStore(contextFactory, mapper, new DummyConsoleLogger<FolderStore>());
 
             List<Activity> activities = await LoadActivities(config, activityStore);
 

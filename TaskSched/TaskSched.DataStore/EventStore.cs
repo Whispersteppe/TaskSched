@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaskSched.Common.DataModel;
 using TaskSched.Common.FieldValidator;
+using TaskSched.DataStore.DataModel;
 
 namespace TaskSched.DataStore
 {
@@ -18,18 +19,20 @@ namespace TaskSched.DataStore
         IDataStoreMapper _mapper;
         IFieldValidatorSet _fieldValidatorSet;
         TaskSchedDbContextFactory _contextFactory;
+        ILogger _logger;
 
         public EventStore(
             TaskSchedDbContextFactory contextFactory, 
             IDataStoreMapper mapper, 
-            IFieldValidatorSet fieldValidators) 
+            IFieldValidatorSet fieldValidators, ILogger<EventStore> logger) 
         { 
             _contextFactory = contextFactory;
             _mapper = mapper;
             _fieldValidatorSet = fieldValidators;
+            _logger = logger;
         }
 
-        private ExpandedResult ValidateEvent(Event eventItem) 
+        private ExpandedResult ValidateEvent(model.Event eventItem) 
         { 
 
             ExpandedResult result = new ExpandedResult();
@@ -84,6 +87,9 @@ namespace TaskSched.DataStore
 
                 rslt.Messages.Add(new model.ResultMessage() { Severity = model.ResultMessageSeverity.OK, Message = "Event created" });
 
+                _logger.LogInformation($"Created Event {eventItem.Name} ID = {item.Id}");
+
+
                 return rslt;
             }
         }
@@ -104,11 +110,14 @@ namespace TaskSched.DataStore
 
                     await _dbContext.SaveChangesAsync();
                     rslt.Messages.Add(new model.ResultMessage() { Severity = model.ResultMessageSeverity.OK, Message = "Event deleted" });
+                    _logger.LogInformation($"Deleted Event {entity.Name} ID = {entity.Id}");
 
                 }
                 else
                 {
                     rslt.Messages.Add(new model.ResultMessage() { Severity = model.ResultMessageSeverity.Warning, Message = "Event not found.  no deletion occurred" });
+                    _logger.LogWarning($"Cannot delete {eventId}. ID not found.");
+
                 }
 
                 return rslt;
@@ -139,6 +148,7 @@ namespace TaskSched.DataStore
                 else
                 {
                     rslt.Messages.Add(new model.ResultMessage() { Severity = model.ResultMessageSeverity.Warning, Message = "Event not found." });
+                    _logger.LogWarning($"Cannot get {eventId}. ID not found.");
                 }
 
                 return rslt;
@@ -169,6 +179,7 @@ namespace TaskSched.DataStore
                 else
                 {
                     rslt.Messages.Add(new model.ResultMessage() { Severity = model.ResultMessageSeverity.Warning, Message = "Events not found." });
+                    _logger.LogWarning($"No events found");
                 }
 
                 return rslt;
@@ -284,6 +295,8 @@ namespace TaskSched.DataStore
                 else
                 {
                     rslt.Messages.Add(new model.ResultMessage() { Severity = model.ResultMessageSeverity.Error, Message = "Event not found.  no update occurred" });
+                    _logger.LogWarning($"Cannot update {eventItem.Name} ID = {eventItem.Id}. ID not found.");
+
                 }
 
                 return rslt;
@@ -309,6 +322,7 @@ namespace TaskSched.DataStore
                 }
                 else
                 {
+                    _logger.LogWarning($"Cannot move {eventItem.Name} ID = {eventItem.Id}. ID not found.");
                     return new ExpandedResult() { Messages = new List<ResultMessage>() { new ResultMessage() { Message = "Event was not found", Severity = ResultMessageSeverity.Error } } };
                 }
 

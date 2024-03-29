@@ -11,6 +11,11 @@
 
         }
 
+        public override bool CanHaveChildren()
+        {
+            return true;
+        }
+
     }
 
 }

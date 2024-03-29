@@ -31,12 +31,14 @@ namespace TaskScheduler.WinForm.NLogCustom
 
         }
 
-        public List<LogEventInfo> GetLogs()
+        public ILogEmitter LogEmitter { get => _internalLogTarget; }
+
+        public List<LogEventInfoExtended> GetLogs()
         {
             return _internalLogTarget.Logs();
         }
 
-        public List<LogEventInfo> GetLogs(NLog.LogLevel minLevel)
+        public List<LogEventInfoExtended> GetLogs(NLog.LogLevel minLevel)
         {
             return _internalLogTarget.Logs(minLevel);
         }

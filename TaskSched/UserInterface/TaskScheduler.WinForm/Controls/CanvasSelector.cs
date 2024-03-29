@@ -27,13 +27,19 @@ namespace TaskScheduler.WinForm.Controls
 
             _canvasItems.Clear();
 
-            _canvasItems.Add(typeof(ActivityModel), typeof(ActivityViewer));
+            _canvasItems.Add(typeof(FolderRootModel), typeof(BlankViewer));
             _canvasItems.Add(typeof(EventModel), typeof(EventViewer));
             _canvasItems.Add(typeof(FolderModel), typeof(FolderViewer));
-            _canvasItems.Add(typeof(LogRootModel), typeof(BlankViewer));
-            _canvasItems.Add(typeof(StatusRootModel), typeof(BlankViewer));
-            _canvasItems.Add(typeof(FolderRootModel), typeof(BlankViewer));
+
             _canvasItems.Add(typeof(ActivityRootModel), typeof(BlankViewer));
+            _canvasItems.Add(typeof(ActivityModel), typeof(ActivityViewer));
+
+            _canvasItems.Add(typeof(LogRootModel), typeof(BlankViewer));
+            _canvasItems.Add(typeof(LogViewModel), typeof(LogViewer));
+
+            _canvasItems.Add(typeof(StatusRootModel), typeof(BlankViewer));
+            _canvasItems.Add(typeof(SchedulerStatusModel), typeof(SchedulerStatusViewer));
+            _canvasItems.Add(typeof(ExecutionEngineStatusModel), typeof(ExecutionEngineStatusViewer));
 
             _currentCanvas = null;
         }
