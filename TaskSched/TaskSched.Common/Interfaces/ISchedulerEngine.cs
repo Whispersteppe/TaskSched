@@ -16,6 +16,8 @@ namespace TaskSched.Common.Interfaces
 
         ExecutionStatusEnum ExecutionStatus { get; }
 
+        Task ExecuteNow(Event eventItem);
+
 
     }
 }

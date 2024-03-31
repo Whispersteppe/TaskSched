@@ -16,6 +16,7 @@ using TaskScheduler.WinForm.Configuration;
 using TaskScheduler.WinForm.Models;
 using TaskSched.Common.DataModel;
 using TaskScheduler.WinForm.NLogCustom;
+using SQLitePCL;
 
 namespace TaskScheduler.WinForm
 {
@@ -89,7 +90,6 @@ namespace TaskScheduler.WinForm
             _mapper = new DataStoreMapper();
             _fieldValidators = new FieldValidatorSet();
 
-
             _eventStore = new EventStore(_dbContextFactory, _mapper, _fieldValidators, loggerFactory.CreateLogger<EventStore>());
             _activityStore = new ActivityStore(_dbContextFactory, _mapper, _fieldValidators, loggerFactory.CreateLogger<ActivityStore>()) ;
             _folderStore = new FolderStore(_dbContextFactory, _mapper, loggerFactory.CreateLogger<FolderStore>());
@@ -102,9 +102,6 @@ namespace TaskScheduler.WinForm
 
 
         }
-
-        
-
 
         public async Task Start()
         {
@@ -140,9 +137,19 @@ namespace TaskScheduler.WinForm
                 await _schedulerEngine.Stop();
                 await _executionEngine.Stop();
 
+                using (var _dbContext = _dbContextFactory.GetConnection())
+                {
+                    string backupFileName = String.Concat(_config.DatabaseConfig.DataSource, ".backup");
+
+                    await _dbContext.BackupDatabase(backupFileName);
+                    await _dbContext.CompactDatabase();
+                }
+
                 ExecutionStatus = ExecutionStatusEnum.Stopped;
 
                 _logger.LogInformation($"Manager stopped");
+
+
 
             }
 
@@ -378,6 +385,8 @@ namespace TaskScheduler.WinForm
 
         public async Task SelectTreeViewItem(ITreeItem treeItem)
         {
+
+
             if (OnTreeItemSelected != null)
             {
                 await OnTreeItemSelected(treeItem);
@@ -389,6 +398,41 @@ namespace TaskScheduler.WinForm
 
         #region data manipulation items
 
+        public async Task<ITreeItem> RefreshModel(ITreeItem treeItem)
+        {
+            ITreeItem refreshedItem = treeItem;
+
+            if (treeItem.ID == null) return treeItem; //  no id - maybe a root
+            if (treeItem.ID == Guid.Empty) return treeItem; //  no id - maybe a root
+            switch(treeItem.TreeItemType)
+            {
+                case (TreeItemTypeEnum.EventItem):
+                    {
+                        var rsltGet = await _eventStore.Get(treeItem.ID.Value);
+                        refreshedItem = _managerMapper.Map<EventModel>(rsltGet.Result);
+                        refreshedItem.ParentItem = treeItem.ParentItem;
+                        break;
+                    }
+                case (TreeItemTypeEnum.ActivityItem):
+                    {
+                        var rsltGet = await _activityStore.Get(treeItem.ID.Value);
+                        refreshedItem = _managerMapper.Map<ActivityModel>(rsltGet.Result);
+                        refreshedItem.ParentItem = treeItem.ParentItem;
+                        break;
+                    }
+                case (TreeItemTypeEnum.FolderItem):
+                    {
+                        var rsltGet = await _folderStore.Get(treeItem.ID.Value);
+                        refreshedItem = _managerMapper.Map<FolderModel>(rsltGet.Result);
+                        refreshedItem.ParentItem = treeItem.ParentItem;
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            return refreshedItem;
+        }
 
         public async Task<ITreeItem> CreateModel(ITreeItem? parentItem, TreeItemTypeEnum modelType)
         {
@@ -735,19 +779,21 @@ namespace TaskScheduler.WinForm
             var rslt = await _eventStore.Get(eventModel.Id);
             var eventItem = rslt.Result;
 
-            foreach (var eventActivity in eventItem.Activities)
-            {
-                var rsltActivity = await _activityStore.Get(eventActivity.ActivityId);
+            await _schedulerEngine.ExecuteNow(eventItem);
 
-                dataModel.ActivityContext activityContext = new dataModel.ActivityContext()
-                {
-                    Activity = rsltActivity.Result,
-                    EventActivity = eventActivity,
-                    EventItem = eventItem
-                };
+            //foreach (var eventActivity in eventItem.Activities)
+            //{
+            //    var rsltActivity = await _activityStore.Get(eventActivity.ActivityId);
 
-                await _executionEngine.DoActivity(activityContext);
-            }
+            //    dataModel.ActivityContext activityContext = new dataModel.ActivityContext()
+            //    {
+            //        Activity = rsltActivity.Result,
+            //        EventActivity = eventActivity,
+            //        EventItem = eventItem
+            //    };
+
+            //    await _executionEngine.DoActivity(activityContext);
+            //}
         }
 
     }

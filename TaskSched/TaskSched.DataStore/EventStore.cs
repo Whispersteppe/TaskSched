@@ -289,6 +289,7 @@ namespace TaskSched.DataStore
 
                     await _dbContext.SaveChangesAsync();
 
+                    _logger.LogInformation($"Updated event {eventItem.Name}, ID={eventItem.Id}");
                     rslt.Messages.Add(new model.ResultMessage() { Severity = model.ResultMessageSeverity.OK, Message = "Event updated" });
 
                 }

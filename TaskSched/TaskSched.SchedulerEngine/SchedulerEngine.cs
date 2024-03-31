@@ -305,6 +305,16 @@ namespace TaskSched.SchedulerEngine
             }
         }
 
+        public async Task ExecuteNow(Event eventItem)
+        {
+            var jobKey = eventItem.JobKey();
+            if (await _scheduler.CheckExists(jobKey) == true)
+            {
+                await _scheduler.TriggerJob(jobKey);
+            }
+
+        }
+
         #endregion
     }
 

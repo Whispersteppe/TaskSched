@@ -167,6 +167,7 @@ namespace TaskScheduler.WinForm.Controls
             if (node != null)
             {
                 node.Text = treeItem.DisplayName;
+                node.Tag = treeItem;
             }
         }
 
@@ -267,7 +268,10 @@ namespace TaskScheduler.WinForm.Controls
             {
                 if (_scheduleManager != null)
                 {
-                    await _scheduleManager.SelectTreeViewItem(item);
+                    ITreeItem refreshedModel = await _scheduleManager.RefreshModel(item);
+                    e.Node.Tag = refreshedModel;
+
+                    await _scheduleManager.SelectTreeViewItem(refreshedModel);
                 }
             }
         }

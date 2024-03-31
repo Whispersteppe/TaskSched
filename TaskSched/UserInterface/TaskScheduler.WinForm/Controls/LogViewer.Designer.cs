@@ -33,9 +33,10 @@
             colSeverity = new ColumnHeader();
             colTime = new ColumnHeader();
             colMessage = new ColumnHeader();
-            Location = new ColumnHeader();
+            logDetails = new PropertyGrid();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
@@ -49,20 +50,26 @@
             // splitContainer1.Panel1
             // 
             splitContainer1.Panel1.Controls.Add(lvLogMessage);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(logDetails);
             splitContainer1.Size = new Size(469, 295);
             splitContainer1.SplitterDistance = 156;
             splitContainer1.TabIndex = 0;
             // 
             // lvLogMessage
             // 
-            lvLogMessage.Columns.AddRange(new ColumnHeader[] { colSeverity, colTime, Location, colMessage });
+            lvLogMessage.Columns.AddRange(new ColumnHeader[] { colSeverity, colTime, colMessage });
             lvLogMessage.Dock = DockStyle.Fill;
+            lvLogMessage.FullRowSelect = true;
             lvLogMessage.Location = new Point(0, 0);
             lvLogMessage.Name = "lvLogMessage";
             lvLogMessage.Size = new Size(469, 156);
             lvLogMessage.TabIndex = 0;
             lvLogMessage.UseCompatibleStateImageBehavior = false;
             lvLogMessage.View = View.Details;
+            lvLogMessage.SelectedIndexChanged += lvLogMessage_SelectedIndexChanged;
             // 
             // colSeverity
             // 
@@ -74,13 +81,15 @@
             // 
             // colMessage
             // 
-            colMessage.DisplayIndex = 2;
             colMessage.Text = "Message";
             // 
-            // Location
+            // logDetails
             // 
-            Location.DisplayIndex = 3;
-            Location.Text = "Location";
+            logDetails.Dock = DockStyle.Fill;
+            logDetails.Location = new Point(0, 0);
+            logDetails.Name = "logDetails";
+            logDetails.Size = new Size(469, 135);
+            logDetails.TabIndex = 0;
             // 
             // LogViewer
             // 
@@ -90,6 +99,7 @@
             Name = "LogViewer";
             Size = new Size(469, 295);
             splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
@@ -102,6 +112,6 @@
         private ColumnHeader colSeverity;
         private ColumnHeader colTime;
         private ColumnHeader colMessage;
-        private ColumnHeader Location;
+        private PropertyGrid logDetails;
     }
 }

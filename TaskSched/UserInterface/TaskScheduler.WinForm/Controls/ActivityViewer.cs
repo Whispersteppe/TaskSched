@@ -193,13 +193,13 @@ namespace TaskScheduler.WinForm.Controls
             {
                 if (lstFields.SelectedItem is ActivityField field)
                 {
-                    if (txtFieldName.Text != field.Name ||
-                        (FieldTypeEnum)cmbFieldType.SelectedItem != field.FieldType ||
-                        chkFieldRequiredByHandler.Checked != field.IsReadOnly ||
-                        txtFieldDefault.Text != field.Value)
-                    {
-                        _modelChanged = true;
-                    }
+                    //if (txtFieldName.Text != field.Name ||
+                    //    (FieldTypeEnum)cmbFieldType.SelectedItem != field.FieldType ||
+                    //    chkFieldRequiredByHandler.Checked != field.IsReadOnly ||
+                    //    txtFieldDefault.Text != field.Value)
+                    //{
+                    //    _modelChanged = true;
+                    //}
                     txtFieldName.Text = field.Name;
                     cmbFieldType.SelectedItem = field.FieldType;
                     chkFieldRequiredByHandler.Checked = field.IsReadOnly;

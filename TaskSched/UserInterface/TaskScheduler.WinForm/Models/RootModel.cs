@@ -16,7 +16,7 @@ namespace TaskScheduler.WinForm.Models
         public virtual object? UnderlyingItem { get; set; }
 
         public virtual TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.Unknown;
-        public ITreeItem? ParentItem {get;private set;}
+        public ITreeItem? ParentItem {get; set;}
 
 
         public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = new List<TreeItemTypeEnum>();

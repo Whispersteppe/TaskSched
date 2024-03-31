@@ -68,5 +68,20 @@ namespace TaskSched.DataStore
         {
             await Database.EnsureCreatedAsync();
         }
+
+        public async Task CompactDatabase()
+        {
+            await Database.ExecuteSqlAsync($"VACUUM;");
+        }
+
+        public async Task BackupDatabase(string toFileName)
+        {
+            if (File.Exists(toFileName))
+            {
+                File.Delete(toFileName);
+            }
+
+            await Database.ExecuteSqlAsync($"VACUUM INTO {toFileName};");
+        }
     }
 }

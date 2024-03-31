@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TaskScheduler.WinForm.Models;
+using TaskScheduler.WinForm.NLogCustom;
 
 namespace TaskScheduler.WinForm.Controls
 {
@@ -49,18 +50,19 @@ namespace TaskScheduler.WinForm.Controls
             }
 
             ListViewItem logItem = new ListViewItem(logEventInfo.Extended.Level.ToString());
+            logItem.Tag = logEventInfo;
 
             logItem.SubItems.Add(logEventInfo.Extended.TimeStamp.ToString());
-            logItem.SubItems.Add(logEventInfo.Extended.LoggerName);
+            //            logItem.SubItems.Add(logEventInfo.Extended.LoggerName);
             logItem.SubItems.Add(logEventInfo.Extended.FormattedMessage);
 
             lvLogMessage.Items.Insert(0, logItem);
 
-            foreach(ColumnHeader col in lvLogMessage.Columns)
+            foreach (ColumnHeader col in lvLogMessage.Columns)
             {
                 Size t = TextRenderer.MeasureText(logItem.SubItems[col.Index].Text, logItem.SubItems[col.Index].Font);
-                if (t.Width + 8 > col.Width) 
-                { 
+                if (t.Width + 8 > col.Width)
+                {
                     col.Width = t.Width + 8;
                 }
             }
@@ -82,6 +84,17 @@ namespace TaskScheduler.WinForm.Controls
         public async Task LeavingItem()
         {
             _logViewModel.OnLogMessage -= _logViewModel_OnLogMessage;
+        }
+
+        private void lvLogMessage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvLogMessage.SelectedItems.Count > 0)
+            {
+                if (lvLogMessage.SelectedItems[0].Tag is LogEventInfoExtended logEvent) 
+                {
+                    logDetails.SelectedObject = logEvent;
+                }
+            }
         }
     }
 }
