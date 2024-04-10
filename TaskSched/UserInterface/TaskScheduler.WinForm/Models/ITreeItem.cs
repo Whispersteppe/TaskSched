@@ -16,7 +16,7 @@ namespace TaskScheduler.WinForm.Models
         string DisplayName { get; }
         Guid? ID { get; }
 
-        ITreeItem? ParentItem { get; set; }
+        Guid? ParentId { get; }
 
         TreeItemTypeEnum TreeItemType { get; }
 

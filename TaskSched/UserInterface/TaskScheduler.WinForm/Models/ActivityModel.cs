@@ -1,41 +1,100 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using TaskSched.Common.DataModel;
 using TaskSched.Common.FieldValidator;
+using TaskSched.Common.Interfaces;
+using TaskScheduler.WinForm.Controls.PropertyGridHelper;
 
 namespace TaskScheduler.WinForm.Models
 {
 
-    public class ActivityModel : Activity, ITreeItem
+    public class ActivityModel : ITreeItem
     {
 
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
+        public Guid Id { get; set; }
+
+        [ReadOnly(false)]
+        [Browsable(false)]
+        [Category("ID")]
+        public Guid ActivityHandlerId { get; set; }
+
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [TypeConverter(typeof(ExecutionHandlerInfoConverter))]
+        public string ExecutionHandlerName
+        { 
+            get
+            {
+                var items = ScheduleManager.GlobalInstance.GetExecutionHandlerInfo().Result;
+                var selectedItem = items.FirstOrDefault(x=>x.HandlerId == ActivityHandlerId);
+                return selectedItem.Name;
+            }
+            set
+            {
+                var items = ScheduleManager.GlobalInstance.GetExecutionHandlerInfo().Result;
+                var selectedItem = items.FirstOrDefault(x => x.Name == value);
+                ActivityHandlerId = selectedItem.HandlerId;
+            }
+        }
+
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [Category("ID")]
+        public string Name { get; set; } = "New Activity";
+
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [Category("Fields")]
+        public ObservableCollection<ActivityFieldModel>? DefaultFields { get; set; } = new ObservableCollection<ActivityFieldModel>();
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
+        public Guid? ParentId { get => null; }
+
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
         public string DisplayName => this.Name;
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
         public virtual Guid? ID => this.Id;
+
+
         public ActivityModel()
         {
         }
 
+  
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
 
-        public  TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.ActivityItem;
-        public ITreeItem? ParentItem { get; set; }
-
-
+        public TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.ActivityItem;
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
         public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = [];
 
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
         public List<TreeItemTypeEnum> AllowedChildTypes { get; protected set; } = [];
 
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
         public List<ITreeItem> Children { get; protected set; } = new List<ITreeItem>();
 
-
-
-
-
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string name = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
 
         public bool CanMoveItem(ITreeItem possibleNewParent)
         {
@@ -99,6 +158,44 @@ namespace TaskScheduler.WinForm.Models
             }
             return false;
         }
+    }
+
+    public class ActivityFieldModel : INotifyPropertyChanged
+    {
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        [Category("ID")]
+        public Guid Id { get; set; }
+
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [Category("ID")]
+        public string Name { get; set; }
+
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [Category("ID")]
+        public string Value { get; set; }
+
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [Category("ID")]
+        public FieldTypeEnum FieldType { get; set; }
+
+
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [Category("ID")]
+        public bool IsReadOnly { get; set; } //  read only makes it fixed for the activity, such as an executable path.
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
     }
 
 }

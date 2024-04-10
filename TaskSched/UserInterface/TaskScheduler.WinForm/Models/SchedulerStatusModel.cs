@@ -14,7 +14,7 @@ namespace TaskScheduler.WinForm.Models
 
         public Guid? ID => Guid.Empty;
 
-        public ITreeItem? ParentItem {get;set;}
+        public Guid? ParentId { get => null; }
 
         public TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.SchedulerStatusItem;
 
@@ -68,7 +68,7 @@ namespace TaskScheduler.WinForm.Models
 
         public Guid? ID => Guid.Empty;
 
-        public ITreeItem? ParentItem { get; set; }
+        public Guid? ParentId { get => null; }
 
         public TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.ExecutionEngineStatusItem;
 

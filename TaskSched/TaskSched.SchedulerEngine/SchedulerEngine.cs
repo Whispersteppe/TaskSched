@@ -307,10 +307,21 @@ namespace TaskSched.SchedulerEngine
 
         public async Task ExecuteNow(Event eventItem)
         {
+            _logger.LogInformation($"Manual triggering of {eventItem.Name}");
+
             var jobKey = eventItem.JobKey();
             if (await _scheduler.CheckExists(jobKey) == true)
             {
                 await _scheduler.TriggerJob(jobKey);
+            }
+            else
+            {
+                _logger.LogError($"{eventItem.Name} has no schedule.  Look at warnings to see the cause");
+            }
+
+            if (eventItem.IsActive == false)
+            {
+                _logger.LogWarning($"{eventItem.Name} is not active");
             }
 
         }

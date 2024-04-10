@@ -25,6 +25,8 @@ namespace TaskScheduler.WinForm.Models
         public string DisplayName { get => _config.Name; }
         public virtual Guid? ID => Guid.Empty;
 
+        public Guid? ParentId { get => null; }
+
 
         LogViewModelConfig _config;
         ILogEmitter _logEmitter;
@@ -84,8 +86,6 @@ namespace TaskScheduler.WinForm.Models
         }
 
         public  TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.LogViewItem;
-        public ITreeItem? ParentItem { get; set; }
-
 
         public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = [];
 

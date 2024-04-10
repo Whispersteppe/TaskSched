@@ -1,4 +1,6 @@
-﻿using System;
+﻿using KellermanSoftware.CompareNetObjects;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,10 +22,10 @@ namespace TaskScheduler.WinForm.Controls
 
         public ITreeItem TreeItem { get; private set; }
         ActivityModel _activityModel;
-        Activity _activity;
+        ActivityModel _activity;
         ScheduleManager? _scheduleManager;
 
-        ActivityField _currentActivityField;
+        ActivityFieldModel _currentActivityField;
         bool _modelChanged;
 
 
@@ -32,62 +34,20 @@ namespace TaskScheduler.WinForm.Controls
             InitializeComponent();
         }
 
+        //JObject _objectModel;
 
         public async Task Initialize(ScheduleManager scheduleManager, ActivityModel o)
         {
+
+            //_objectModel = JObject.FromObject(o);
+
             _scheduleManager = scheduleManager;
             _activityModel = o;
             TreeItem = o;
 
             _activity = _activityModel;
 
-            this.txtName.Text = o.Name;
-
-            //cmbFieldType
-            cmbFieldType.Items.Clear();
-            foreach (var fieldType in Enum.GetValues<FieldTypeEnum>())
-            {
-                cmbFieldType.Items.Add(fieldType);
-            }
-
-            //lvFields 
-            foreach (var field in _activity.DefaultFields)
-            {
-                lstFields.Items.Add(field);
-            }
-
-            if (lstFields.Items.Count > 0)
-            {
-                lstFields.SelectedIndex = 0;
-            }
-
-
-
-            //cmbActivityHandler
-            cmbActivityHandler.Items.Clear();
-
-            foreach (var handler in await _scheduleManager.GetHandlerInfo())
-            {
-                cmbActivityHandler.Items.Add(handler);
-            }
-
-
-            foreach (var item in cmbActivityHandler.Items)
-            {
-                if (item is ExecutionHandlerInfo handlerInfo)
-                {
-                    if (handlerInfo.HandlerId == _activity.ActivityHandlerId)
-                    {
-                        cmbActivityHandler.SelectedItem = item;
-                        break;
-                    }
-                }
-            }
-
-            if (cmbActivityHandler.SelectedItem == null)
-            {
-                cmbActivityHandler.SelectedIndex = 0;
-            }
+            grdActivityProperties.SelectedObject = _activity;
 
             _modelChanged = false;
 
@@ -120,134 +80,14 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsSave_Click(object? sender, EventArgs e)
         {
+            _modelChanged = true;
             await Save();
         }
-
-        public async Task SetScheduleManager(ScheduleManager scheduleManager)
-        {
-            _scheduleManager = scheduleManager;
-
-            var infoItems = await _scheduleManager.GetHandlerInfo();
-
-            foreach (var infoItem in infoItems)
-            {
-                cmbActivityHandler.Items.Add(infoItem);
-            }
-        }
-
 
         #region handlers
 
         #region field handlers
 
-        private void btnAddField_Click(object sender, EventArgs e)
-        {
-            ActivityField field = new ActivityField()
-            {
-                FieldType = TaskSched.Common.FieldValidator.FieldTypeEnum.String,
-                IsReadOnly = false,
-                Name = "not set",
-                Value = "not set"
-            };
-
-            _activity.DefaultFields.Add(field);
-            lstFields.Items.Add(field);
-            lstFields.SelectedItem = field;
-
-            _currentActivityField = field;
-
-            _modelChanged = true;
-        }
-
-        private void btnDeleteField_Click(object sender, EventArgs e)
-        {
-            if (lstFields.SelectedItem != null)
-            {
-                if (lstFields.SelectedItem is ActivityField field)
-                {
-
-                    if (field.IsReadOnly == false)
-                    {
-                        _currentActivityField = null;
-
-                        //  remove it
-                        lstFields.Items.Remove(lstFields.SelectedItem);
-                        if (TreeItem is Activity activity)
-                        {
-                            activity.DefaultFields.Remove(field);
-                        }
-
-                        _modelChanged = true;
-                    }
-                }
-
-            }
-
-        }
-
-        private void lstFields_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SaveActivityField();
-
-            if (lstFields.SelectedItem != null)
-            {
-                if (lstFields.SelectedItem is ActivityField field)
-                {
-                    //if (txtFieldName.Text != field.Name ||
-                    //    (FieldTypeEnum)cmbFieldType.SelectedItem != field.FieldType ||
-                    //    chkFieldRequiredByHandler.Checked != field.IsReadOnly ||
-                    //    txtFieldDefault.Text != field.Value)
-                    //{
-                    //    _modelChanged = true;
-                    //}
-                    txtFieldName.Text = field.Name;
-                    cmbFieldType.SelectedItem = field.FieldType;
-                    chkFieldRequiredByHandler.Checked = field.IsReadOnly;
-                    txtFieldDefault.Text = field.Value;
-
-                    if (field.IsReadOnly)
-                    {
-                        txtFieldName.Enabled = false;
-                        cmbFieldType.Enabled = false;
-
-                    }
-                    else
-                    {
-                        txtFieldName.Enabled = true;
-                        cmbFieldType.Enabled = true;
-                    }
-
-
-                    _currentActivityField = field;
-
-                }
-            }
-        }
-
-
-
-        private void btnSaveField_Click(object sender, EventArgs e)
-        {
-            if (lstFields.SelectedItem != null)
-            {
-                if (lstFields.SelectedItem is ActivityField field)
-                {
-                    if (txtFieldName.Text != field.Name ||
-                        (FieldTypeEnum)cmbFieldType.SelectedItem != field.FieldType ||
-                        chkFieldRequiredByHandler.Checked != field.IsReadOnly ||
-                        txtFieldDefault.Text != field.Value)
-                    {
-                        _modelChanged = true;
-                    }
-
-                    field.Name = txtFieldName.Text;
-                    field.FieldType = (cmbFieldType.SelectedItem is FieldTypeEnum) ? (FieldTypeEnum)cmbFieldType.SelectedItem : FieldTypeEnum.String;
-                    field.Value = txtFieldDefault.Text;
-                    field.IsReadOnly = chkFieldRequiredByHandler.Checked;
-                }
-
-            }
-        }
 
         #endregion
 
@@ -255,13 +95,19 @@ namespace TaskScheduler.WinForm.Controls
 
         public async Task Save()
         {
-            SaveActivityField();
+            //JObject newModel = JObject.FromObject(_objectModel);
+            //CompareLogic compareLogic = new CompareLogic();
+            //ComparisonResult compareResult = compareLogic.Compare(_objectModel, newModel);
+            //if (compareResult.AreEqual == false)
+            //{
+            //    _modelChanged = true;
+            //}
+
 
             if (_modelChanged == true)
             {
 
-                _activityModel.Name = txtName.Text;
-                await _scheduleManager.SaveModel(_activityModel.ParentItem, _activityModel);
+                await _scheduleManager.SaveModel(_activityModel);
             }
 
         }
@@ -272,77 +118,5 @@ namespace TaskScheduler.WinForm.Controls
             await Save();
         }
 
-
-
-        private void cmbActivityHandler_SelectedValueChanged(object sender, EventArgs e)
-        {
-            //make sure the properties on the selected handler in the combobox exist in the field list
-
-            if (cmbActivityHandler.SelectedItem is ExecutionHandlerInfo handlerInfo)
-            {
-                foreach (var requiredfield in handlerInfo.RequiredFields)
-                {
-                    bool foundField = false;
-                    //  find in the current field list
-                    foreach (var field in lstFields.Items)
-                    {
-                        if (field is ActivityField activityField)
-                        {
-                            if (activityField.Name == requiredfield.Name)
-                            {
-                                //  we've found this one.
-                                foundField = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (foundField == false)
-                    {
-                        ActivityField field = new ActivityField()
-                        {
-                            FieldType = requiredfield.FieldType,
-                            IsReadOnly = true,
-                            Name = requiredfield.Name,
-                            Value = "not set"
-                        };
-
-                        _activity.DefaultFields.Add(field);
-                        lstFields.Items.Add(field);
-                        lstFields.SelectedItem = field;
-
-                        _modelChanged = true;
-                    }
-
-                }
-
-            }
-
-
-        }
-
-        private void SaveActivityField()
-        {
-            if (_currentActivityField != null)
-            {
-                if (txtFieldName.Text != _currentActivityField.Name ||
-                    (FieldTypeEnum)cmbFieldType.SelectedItem != _currentActivityField.FieldType ||
-                    chkFieldRequiredByHandler.Checked != _currentActivityField.IsReadOnly ||
-                    txtFieldDefault.Text != _currentActivityField.Value)
-                {
-                    _modelChanged = true;
-                }
-
-                _currentActivityField.Value = txtFieldDefault.Text;
-                _currentActivityField.Name = txtFieldName.Text;
-                _currentActivityField.FieldType = (cmbFieldType.SelectedItem is FieldTypeEnum) ? (FieldTypeEnum)cmbFieldType.SelectedItem : FieldTypeEnum.String;
-                _currentActivityField.IsReadOnly = chkFieldRequiredByHandler.Checked;
-            }
-        }
-
-        private void txtName_TextChanged(object sender, EventArgs e)
-        {
-            _modelChanged = true;
-        }
     }
 }

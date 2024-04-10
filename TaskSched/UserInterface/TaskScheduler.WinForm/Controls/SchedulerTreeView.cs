@@ -49,8 +49,7 @@ namespace TaskScheduler.WinForm.Controls
             }
 
 
-
-            ITreeItem parentItem = FindItemByID(treeItem.ParentItem.ID);
+            ITreeItem parentItem = FindItemByID(treeItem.ParentId);
             if (parentItem != null)
             {
                 parentItem.Children.Remove(treeItem);
@@ -186,6 +185,9 @@ namespace TaskScheduler.WinForm.Controls
 
                     node.Tag = childItem;
                     parentNode.Nodes.Add(node);
+
+                    //  select the new node
+                    treeScheduler.SelectedNode = node;
                 }
 
                 ITreeItem pItem = FindItemByID(parentItem.ID);

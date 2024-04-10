@@ -34,6 +34,7 @@ namespace TaskScheduler.WinForm
         ScheduleManagerConfig _config;
         //database information
         TaskSchedDbContextFactory _dbContextFactory;
+        public static ScheduleManager GlobalInstance { get; private set; }
 
         ManagerMapper _managerMapper;
 
@@ -77,6 +78,8 @@ namespace TaskScheduler.WinForm
             ILoggerFactory loggerFactory,
             ILogEmitter logEmitter) 
         {
+            GlobalInstance = this;
+
             _config = configuration;
             _loggerFactory = loggerFactory;
             _logEmitter = logEmitter;
@@ -186,6 +189,21 @@ namespace TaskScheduler.WinForm
 
         #region Get Treeview models
 
+        public async Task<List<ActivityModel>> GetActivities()
+        {
+            var getActivitiesResult = await _activityStore.GetAll();
+
+            List<ActivityModel> results = [];
+
+            foreach (var activity in getActivitiesResult.Result)
+            {
+                ActivityModel model = _managerMapper.Map<dataModel.Activity, ActivityModel>(activity);
+                results.Add(model);
+            }
+
+            return results;
+        }
+
         public async Task<ActivityRootModel> GetActivityModels()
         {
 
@@ -196,8 +214,6 @@ namespace TaskScheduler.WinForm
             foreach(var activity in getActivitiesResult.Result)
             {
                 ActivityModel model = _managerMapper.Map<dataModel.Activity, ActivityModel>(activity);
-                model.ParentItem = topModel;
-                //new ActivityModel(activity, topModel);
                 topModel.Children.Add(model);
             }
 
@@ -213,7 +229,6 @@ namespace TaskScheduler.WinForm
             foreach(var childFolder in folder.ChildFolders)
             {
                 FolderModel childModel = _managerMapper.Map<dataModel.Folder, FolderModel>(childFolder);
-                childModel.ParentItem = folderModel;
                 folderModel.ChildFolders.Add(childModel);
 
                 //  map all the children
@@ -224,8 +239,6 @@ namespace TaskScheduler.WinForm
             foreach(var childEvent in folder.Events)
             {
                 EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
-
-                eventModel.ParentItem = folderModel;
 
                 folderModel.Events.Add(eventModel);
 
@@ -249,8 +262,6 @@ namespace TaskScheduler.WinForm
 
                         EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
 
-                        eventModel.ParentItem = topModel;
-
                         topModel.Children.Add(eventModel);
 
                     }
@@ -258,7 +269,6 @@ namespace TaskScheduler.WinForm
                 else
                 {
                     FolderModel model = _managerMapper.Map<dataModel.Folder, FolderModel>(folder);
-                    model.ParentItem = topModel;
 
                     topModel.Children.Add(model);
 
@@ -368,6 +378,13 @@ namespace TaskScheduler.WinForm
             return topModel;
         }
 
+        public async Task<List<ExecutionHandlerInfo>> GetExecutionHandlerInfo()
+        {
+            var handlers = await _executionStore.GetHandlerInfo();
+
+            return handlers;
+        }
+
         public async Task<List<ITreeItem>> GetAllRoots()
         {
             List<ITreeItem> rootItems = new List<ITreeItem>()
@@ -410,21 +427,18 @@ namespace TaskScheduler.WinForm
                     {
                         var rsltGet = await _eventStore.Get(treeItem.ID.Value);
                         refreshedItem = _managerMapper.Map<EventModel>(rsltGet.Result);
-                        refreshedItem.ParentItem = treeItem.ParentItem;
                         break;
                     }
                 case (TreeItemTypeEnum.ActivityItem):
                     {
                         var rsltGet = await _activityStore.Get(treeItem.ID.Value);
                         refreshedItem = _managerMapper.Map<ActivityModel>(rsltGet.Result);
-                        refreshedItem.ParentItem = treeItem.ParentItem;
                         break;
                     }
                 case (TreeItemTypeEnum.FolderItem):
                     {
                         var rsltGet = await _folderStore.Get(treeItem.ID.Value);
                         refreshedItem = _managerMapper.Map<FolderModel>(rsltGet.Result);
-                        refreshedItem.ParentItem = treeItem.ParentItem;
                         break;
                     }
                 default:
@@ -480,7 +494,6 @@ namespace TaskScheduler.WinForm
                         var rsltGet = await _folderStore.Get(rsltCreate.Result);
 
                         var model = _managerMapper.Map<FolderModel>(rsltGet.Result);
-                        model.ParentItem = parentItem;
                         newItem = model;
                         break;
                     }
@@ -529,7 +542,6 @@ namespace TaskScheduler.WinForm
 
 
                         EventModel model = _managerMapper.Map<EventModel>(rsltGet.Result);
-                        model.ParentItem = parentItem;
 
                         newItem = model;
                         break;
@@ -590,7 +602,7 @@ namespace TaskScheduler.WinForm
             }
         }
 
-        public async Task<ITreeItem> SaveModel(ITreeItem? parentTreeItem, ITreeItem item)
+        public async Task<ITreeItem> SaveModel(ITreeItem item)
         {
 
             switch (item.TreeItemType)
@@ -598,24 +610,33 @@ namespace TaskScheduler.WinForm
                 case TreeItemTypeEnum.ActivityItem:
                     {
                         ActivityModel activityModel = item as ActivityModel;
+                        Activity activity = _managerMapper.Map<Activity>(activityModel);
+
+                        //  make sure we have all the necessary fields from the execution handler
+                        var handler = await _executionStore.GetExecutionHandler(activity.ActivityHandlerId);
+                        foreach (var field in handler.HandlerInfo.RequiredFields)
+                        {
+                            if (activity.DefaultFields.Any(x => x.Name == field.Name) == false)
+                            {
+                                var newField = new ActivityField() { Name = field.Name, FieldType = field.FieldType, IsReadOnly = true, Value = field.Value };
+                                activity.DefaultFields.Add(newField);
+                            }
+                        }
 
                         if (activityModel.Id == Guid.Empty)
                         {
-                            var rslt = await _activityStore.Create(activityModel);
-                            var rsltGet = await _activityStore.Get(rslt.Result);
-                            _managerMapper.Map<dataModel.Activity, ActivityModel>(rsltGet.Result, activityModel);
-
-                            item = activityModel;
+                            var rslt = await _activityStore.Create(activity);
+                            activityModel.Id = rslt.Result;
                         }
                         else
                         {
-                            var rslt = await _activityStore.Update(activityModel);
-                            var rsltGet = await _activityStore.Get(activityModel.Id);
-                            _managerMapper.Map<dataModel.Activity, ActivityModel>(rsltGet.Result, activityModel);
-
-                            item = activityModel;
+                            var rslt = await _activityStore.Update(activity);
 
                         }
+                        var rsltGet = await _activityStore.Get(activityModel.Id);
+                        _managerMapper.Map<dataModel.Activity, ActivityModel>(rsltGet.Result, activityModel);
+
+                        item = activityModel;
                         break;
                     }
                 case TreeItemTypeEnum.FolderItem:
@@ -624,7 +645,8 @@ namespace TaskScheduler.WinForm
 
                         if (folderModel.Id == Guid.Empty)
                         {
-                            var rslt = await _folderStore.Create(folderModel);
+                            Folder folder = _managerMapper.Map<Folder>(folderModel);
+                            var rslt = await _folderStore.Create(folder);
                             var rsltGet = await _folderStore.Get(rslt.Result);
                             _managerMapper.Map<dataModel.Folder, FolderModel>(rsltGet.Result, folderModel);
 
@@ -632,7 +654,8 @@ namespace TaskScheduler.WinForm
                         }
                         else
                         {
-                            var rslt = await _folderStore.Update(folderModel);
+                            Folder folder = _managerMapper.Map<Folder>(folderModel);
+                            var rslt = await _folderStore.Update(folder);
                             var rsltGet = await _folderStore.Get(folderModel.Id);
                             _managerMapper.Map<dataModel.Folder, FolderModel>(rsltGet.Result, folderModel);
 
@@ -647,14 +670,69 @@ namespace TaskScheduler.WinForm
                         Event eventItem;
                         Guid currentId;
 
+                        //  make sure we've got activities
+                        Event evt = _managerMapper.Map<Event>(eventModel);
+                        if (evt.Activities == null)
+                        {
+                            evt.Activities = new List<EventActivity>();
+                        }
+                        if (evt.Activities.Count == 0)
+                        {
+                            var bestActivity = await _activityStore.GetDefault();
+                            EventActivity newActivity = new EventActivity()
+                            {
+                                Fields = new List<EventActivityField>(),
+                                Name = "new activity",
+                                ActivityId = bestActivity.Result.Id
+                            };
+                            evt.Activities.Add(newActivity);
+                        }
+                        //  check the fields on the activities
+                        foreach(var activityItem in evt.Activities)
+                        {
+                            var activityRslt = await _activityStore.Get(activityItem.ActivityId);
+                            var activity = activityRslt.Result;
+
+                            foreach (var field in activity.DefaultFields)
+                            {
+                                if (field.IsReadOnly == false && activityItem.Fields.Any(x => x.ActivityFieldId == field.Id) == false)
+                                {
+                                    EventActivityField newField = new EventActivityField()
+                                    {
+                                        ActivityFieldId = field.Id,
+                                        FieldType = field.FieldType,
+                                        Name = field.Name,
+                                        Value = field.Value
+                                    };
+                                    activityItem.Fields.Add(newField);
+                                }
+                            }
+                        }
+
+                        //  check schedules
+                        if (evt.Schedules == null)
+                        {
+                            evt.Schedules = new List<EventSchedule>();
+                        }
+                        if (evt.Schedules.Count == 0)
+                        {
+                            EventSchedule newSchedle = new EventSchedule()
+                            {
+                                Name = "New Schedule",
+                                CRONData = "0 0 8 * * ?"
+                            };
+                            evt.Schedules.Add(newSchedle);
+                        }
+
+
                         if (eventModel.Id == Guid.Empty)
                         {
-                            var rslt = await _eventStore.Create(eventModel);
+                            var rslt = await _eventStore.Create(evt);
                             currentId = rslt.Result;
                         }
                         else
                         {
-                            var rslt = await _eventStore.Update(eventModel);
+                            var rslt = await _eventStore.Update(evt);
                             currentId = eventModel.Id;
                         }
 

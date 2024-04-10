@@ -16,8 +16,7 @@ namespace TaskScheduler.WinForm.Models
         public virtual object? UnderlyingItem { get; set; }
 
         public virtual TreeItemTypeEnum TreeItemType => TreeItemTypeEnum.Unknown;
-        public ITreeItem? ParentItem {get; set;}
-
+        public Guid? ParentId { get => null; }
 
         public List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; protected set; } = new List<TreeItemTypeEnum>();
 
@@ -31,7 +30,7 @@ namespace TaskScheduler.WinForm.Models
         public RootModel(ITreeItem? parentItem, object underlyingItem)
         {
             UnderlyingItem = underlyingItem;
-            ParentItem = parentItem;
+
             if (string.IsNullOrEmpty(DisplayName))
             {
                 DisplayName = "Not Set";
