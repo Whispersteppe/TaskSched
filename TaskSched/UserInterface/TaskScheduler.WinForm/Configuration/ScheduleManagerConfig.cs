@@ -13,7 +13,7 @@ namespace TaskScheduler.WinForm.Configuration
         public NlogConfig NLog { get; set; }
 
         [JsonExtensionData]
-        public Dictionary<string, JToken> ExtraData { get; set; }
+        public Dictionary<string, JToken>? ExtraData { get; set; }
     }
 
     public class NlogConfig
@@ -22,7 +22,7 @@ namespace TaskScheduler.WinForm.Configuration
         public List<JToken> rules { get; set; }
 
         [JsonExtensionData]
-        public Dictionary<string, JToken> ExtraData { get; set; }
+        public Dictionary<string, JToken>? ExtraData { get; set; }
 
     }
 

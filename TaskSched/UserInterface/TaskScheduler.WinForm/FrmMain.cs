@@ -21,12 +21,12 @@ namespace TaskScheduler.WinForm
     {
 
         bool _exitClicked = false;
-        ScheduleManager _engineManager;
-        TaskSchedConfigurationHandler _config;
+        readonly ScheduleManager _engineManager;
+        readonly TaskSchedConfigurationHandler _config;
 
-        ILogger _logger;
+        readonly ILogger _logger;
 
-        NLogWrapper _loggerWrapper;
+        readonly NLogWrapper _loggerWrapper;
 
         public FrmMain()
         {
@@ -121,37 +121,45 @@ namespace TaskScheduler.WinForm
 
         #region Notify Events
 
-        private async void _notifyContextShow_Click(object sender, EventArgs e)
+        private async void notifyContextShow_Click(object sender, EventArgs e)
         {
+            await Task.Run(() => { });
+
             ShowMainForm();
         }
 
-        private async void _notifyContextCreate_Click(object sender, EventArgs e)
+        private async void notifyContextCreate_Click(object sender, EventArgs e)
         {
+            await Task.Run(() => { });
+
             Debug.WriteLine("Create clicked");
         }
 
-        private async void _notifyContextStart_Click(object sender, EventArgs e)
+        private async void notifyContextStart_Click(object sender, EventArgs e)
         {
             await StartEngine();
 
 
         }
 
-        private async void _notifyContextStop_Click(object sender, EventArgs e)
+        private async void notifyContextStop_Click(object sender, EventArgs e)
         {
             await StopEngine();
 
         }
 
-        private async void _notifyContextExit_Click(object sender, EventArgs e)
+        private async void notifyContextExit_Click(object sender, EventArgs e)
         {
+            await Task.Run(() => { });
+
             _exitClicked = true;
             this.Close();
         }
 
-        private async void _notifyIcon_Click(object sender, EventArgs e)
+        private async void notifyIcon_Click(object sender, EventArgs e)
         {
+            await Task.Run(() => { });
+
             _notifyIconMenu.Show(Cursor.Position);
         }
 
@@ -160,6 +168,8 @@ namespace TaskScheduler.WinForm
 
         private async void tsExit_Click(object sender, EventArgs e)
         {
+            await Task.Run(() => { });
+
             _exitClicked = true;
             this.Close();
         }

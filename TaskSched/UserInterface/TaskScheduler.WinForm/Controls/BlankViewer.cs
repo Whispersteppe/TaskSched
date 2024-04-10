@@ -14,23 +14,47 @@ namespace TaskScheduler.WinForm.Controls
 {
     public partial class BlankViewer : UserControl, ICanvasItem
     {
-        ScheduleManager? _scheduleManager;
+        ScheduleManager _scheduleManager;
 
-        public BlankViewer()
+        public BlankViewer(ScheduleManager scheduleManager, ITreeItem item)
         {
             InitializeComponent();
+
+            _scheduleManager = scheduleManager;
+
+            if (item is ITreeItem treeItem)
+            {
+                TreeItem = treeItem;
+
+                txtName.Text = treeItem.DisplayName;
+
+                if (TreeItem.CanHaveChildren())
+                {
+                    AllowedChildTypes = TreeItem.AllowedChildTypes;
+                }
+                else
+                {
+                    AllowedChildTypes = [];
+                }
+            }
+            else
+            {
+                TreeItem = null;
+            }
         }
 
         public List<ToolStripItem> ToolStripItems
         {
             get
             {
-
                 ToolStripBuilder builder = new ToolStripBuilder();
-                foreach(TreeItemTypeEnum type in TreeItem.AllowedChildTypes)
+                if (TreeItem != null)
                 {
-                    var button = builder.AddButton($"Add {type}", TsAdd_Click);
-                    button.Tag = type;
+                    foreach (TreeItemTypeEnum type in TreeItem.AllowedChildTypes)
+                    {
+                        var button = builder.AddButton($"Add {type}", TsAdd_Click);
+                        button.Tag = type;
+                    }
                 }
 
                 return builder.ToolStripItems;
@@ -58,11 +82,14 @@ namespace TaskScheduler.WinForm.Controls
 
         public async Task LeavingItem()
         {
+            await Task.Run(() => { });
         }
 
 
         public bool CanCreateChild(TreeItemTypeEnum itemType)
         {
+            if (TreeItem == null) return false;
+
             if (TreeItem.CanHaveChildren())
             {
                 return TreeItem.AllowedChildTypes.Contains(itemType);
@@ -72,11 +99,13 @@ namespace TaskScheduler.WinForm.Controls
             {
                 return false;
             }
+
         }
 
         public async Task<ITreeItem?> CreateChild(TreeItemTypeEnum itemType)
         {
             if (CanCreateChild(itemType) == false) return null;
+            if (TreeItem == null) return null;
 
             if (TreeItem.CanHaveChildren())
             {
@@ -93,6 +122,8 @@ namespace TaskScheduler.WinForm.Controls
 
         public async Task Initialize(ScheduleManager scheduleManager, object o)
         {
+            await Task.Run(() => { });
+
             _scheduleManager = scheduleManager;
 
             if (o is ITreeItem treeItem)

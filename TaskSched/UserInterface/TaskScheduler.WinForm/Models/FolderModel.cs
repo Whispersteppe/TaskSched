@@ -4,21 +4,33 @@ using TaskSched.Common.DataModel;
 
 namespace TaskScheduler.WinForm.Models
 {
-    public class FolderModel : ITreeItem
+    public class FolderModel : ITreeItem, INotifyPropertyChanged
     {
+        private string name;
 
         [ReadOnly(true)]
         [Browsable(false)]
         [Category("ID")]
         public Guid Id { get; set; }
+
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public string Name { get; set; } = "New Folder";
+        [DefaultValue("New Folder")]
+        public string Name
+        {
+            get => name;
+            set 
+            { 
+                name = value;
+                OnPropertyChanged();
+            }
+        }
 
         [ReadOnly(true)]
         [Browsable(false)]
         public Guid? ParentFolderId { get; set; }
+
         [ReadOnly(true)]
         [Browsable(false)]
         public List<EventModel>? Events { get; set; } = new List<EventModel>();
@@ -91,8 +103,13 @@ namespace TaskScheduler.WinForm.Models
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public bool InstanceChanged { get; set; }
+
         protected void OnPropertyChanged([CallerMemberName] string name = "")
         {
+            InstanceChanged = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 

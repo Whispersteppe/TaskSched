@@ -42,6 +42,8 @@ namespace TaskScheduler.WinForm.Controls
 
         private async Task _scheduleManager_OnTreeItemRemoved(ITreeItem treeItem)
         {
+            await Task.Run(() => { });
+
             TreeNode? foundNode = FindNode(treeItem);
             if (foundNode != null)
             {
@@ -49,11 +51,8 @@ namespace TaskScheduler.WinForm.Controls
             }
 
 
-            ITreeItem parentItem = FindItemByID(treeItem.ParentId);
-            if (parentItem != null)
-            {
-                parentItem.Children.Remove(treeItem);
-            }
+            ITreeItem? parentItem = FindItemByID(treeItem.ParentId);
+            parentItem?.Children.Remove(treeItem);
         }
 
         #region Find node by tagitem ITreeItem
@@ -161,6 +160,8 @@ namespace TaskScheduler.WinForm.Controls
 
         private async Task _scheduleManager_OnTreeItemUpdated(ITreeItem treeItem)
         {
+            await Task.Run(() => { });
+
             var node = FindNode(treeItem);
 
             if (node != null)
@@ -172,6 +173,8 @@ namespace TaskScheduler.WinForm.Controls
 
         private async Task _scheduleManager_OnTreeItemCreated(ITreeItem? parentItem, ITreeItem childItem)
         {
+            await Task.Run(() => { });
+
             if (parentItem != null)
             {
                 var parentNode = FindNode(parentItem);
@@ -190,11 +193,8 @@ namespace TaskScheduler.WinForm.Controls
                     treeScheduler.SelectedNode = node;
                 }
 
-                ITreeItem pItem = FindItemByID(parentItem.ID);
-                if (pItem != null)
-                {
-                    pItem.Children.Add(childItem);
-                }
+                ITreeItem? pItem = FindItemByID(parentItem.ID);
+                pItem?.Children.Add(childItem);
             }
         }
 
@@ -227,7 +227,7 @@ namespace TaskScheduler.WinForm.Controls
             }
         }
 
-        private void EnsureNodeTreeVisible(TreeNodeCollection nodes)
+        private static void EnsureNodeTreeVisible(TreeNodeCollection nodes)
         {
             foreach(TreeNode node in nodes)
             {
@@ -265,8 +265,7 @@ namespace TaskScheduler.WinForm.Controls
         {
             if (e.Node == null) return;
 
-            ITreeItem? item = e.Node.Tag as ITreeItem;
-            if (item != null)
+            if (e.Node.Tag is ITreeItem item)
             {
                 if (_scheduleManager != null)
                 {
@@ -381,27 +380,31 @@ namespace TaskScheduler.WinForm.Controls
         private void treeScheduler_DragOver(object sender, DragEventArgs e)
         {
             Point targetPoint = treeScheduler.PointToClient(new Point(e.X, e.Y));
-            TreeNode movingNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
 
-            if (movingNode.Tag is ITreeItem movingItem)
+            if (e.Data != null)
             {
-                // Select the node at the mouse position.
-                TreeNode landingNode = treeScheduler.GetNodeAt(targetPoint);
-
-                if (landingNode != null)
+                TreeNode? movingNode = (TreeNode?)e.Data.GetData(typeof(TreeNode));
+                if (movingNode != null && movingNode.Tag is ITreeItem movingItem)
                 {
-                    if (landingNode.Tag is ITreeItem landingItem)
-                    {
+                    // Select the node at the mouse position.
+                    TreeNode landingNode = treeScheduler.GetNodeAt(targetPoint);
 
-                        if (movingItem.CanMoveItem(landingItem) == true && ContainsNode(movingNode, landingNode) == false)
+                    if (landingNode != null)
+                    {
+                        if (landingNode.Tag is ITreeItem landingItem)
                         {
-                            e.Effect = DragDropEffects.Move;
-                        }
-                        else
-                        {
-                            e.Effect = DragDropEffects.None;
+
+                            if (movingItem.CanMoveItem(landingItem) == true && ContainsNode(movingNode, landingNode) == false)
+                            {
+                                e.Effect = DragDropEffects.Move;
+                            }
+                            else
+                            {
+                                e.Effect = DragDropEffects.None;
+                            }
                         }
                     }
+
                 }
             }
         }
@@ -411,33 +414,36 @@ namespace TaskScheduler.WinForm.Controls
         private void treeScheduler_DragDrop(object sender, DragEventArgs e)
         {
             Point targetPoint = treeScheduler.PointToClient(new Point(e.X, e.Y));
-            TreeNode movingNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
-
-            if (movingNode.Tag is ITreeItem movingItem)
+            if (e.Data != null)
             {
-                // Select the node at the mouse position.
-                TreeNode landingNode = treeScheduler.GetNodeAt(targetPoint);
+                TreeNode movingNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
 
-                if (landingNode != null)
+                if (movingNode != null && movingNode.Tag is ITreeItem movingItem)
                 {
-                    //  make sure we're not trying to land on a parent of ourselves
-                    if (ContainsNode(movingNode, landingNode) == true)
-                    {
-                        e.Effect = DragDropEffects.None;
-                        return;
-                    }
+                    // Select the node at the mouse position.
+                    TreeNode landingNode = treeScheduler.GetNodeAt(targetPoint);
 
-                    if (landingNode.Tag is ITreeItem landingItem)
+                    if (landingNode != null)
                     {
-                        if (movingItem.CanMoveItem(landingItem) == true)
+                        //  make sure we're not trying to land on a parent of ourselves
+                        if (ContainsNode(movingNode, landingNode) == true)
                         {
-                            _scheduleManager.MoveItem(landingItem, movingItem);
-                            movingNode.Remove();
-                            landingNode.Nodes.Add(movingNode);
+                            e.Effect = DragDropEffects.None;
+                            return;
                         }
-                        else
+
+                        if (landingNode.Tag is ITreeItem landingItem)
                         {
-                            //MessageBox.Show("Cannot drop here.  ignoring");
+                            if (movingItem.CanMoveItem(landingItem) == true)
+                            {
+                                _scheduleManager?.MoveItem(landingItem, movingItem);
+                                movingNode.Remove();
+                                landingNode.Nodes.Add(movingNode);
+                            }
+                            else
+                            {
+                                //MessageBox.Show("Cannot drop here.  ignoring");
+                            }
                         }
                     }
                 }

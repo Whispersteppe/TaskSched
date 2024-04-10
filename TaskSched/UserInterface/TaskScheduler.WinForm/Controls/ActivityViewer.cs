@@ -21,42 +21,27 @@ namespace TaskScheduler.WinForm.Controls
     {
 
         public ITreeItem TreeItem { get; private set; }
-        ActivityModel _activityModel;
-        ActivityModel _activity;
-        ScheduleManager? _scheduleManager;
+        readonly ActivityModel _activityModel;
+        readonly ScheduleManager? _scheduleManager;
 
-        ActivityFieldModel _currentActivityField;
         bool _modelChanged;
 
 
-        public ActivityViewer()
+        public ActivityViewer(ScheduleManager scheduleManager, ActivityModel item)
         {
             InitializeComponent();
-        }
-
-        //JObject _objectModel;
-
-        public async Task Initialize(ScheduleManager scheduleManager, ActivityModel o)
-        {
-
-            //_objectModel = JObject.FromObject(o);
 
             _scheduleManager = scheduleManager;
-            _activityModel = o;
-            TreeItem = o;
+            _activityModel = item;
+            _activityModel.InstanceChanged = false;
+            TreeItem = item;
 
-            _activity = _activityModel;
-
-            grdActivityProperties.SelectedObject = _activity;
+            grdActivityProperties.SelectedObject = _activityModel;
 
             _modelChanged = false;
-
         }
 
-        public async Task Initialize(ScheduleManager scheduleManager, object treeItem)
-        {
-            await Initialize(scheduleManager, treeItem as ActivityModel);
-        }
+
 
         public List<ToolStripItem> ToolStripItems
         {
@@ -72,9 +57,12 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsDelete_Click(object? sender, EventArgs e)
         {
-            if (await _scheduleManager.CanDeleteItem(_activityModel))
+            if (_scheduleManager != null)
             {
-                await _scheduleManager.DeleteItem(_activityModel);
+                if (await _scheduleManager.CanDeleteItem(_activityModel))
+                {
+                    await _scheduleManager.DeleteItem(_activityModel);
+                }
             }
         }
 
@@ -95,19 +83,21 @@ namespace TaskScheduler.WinForm.Controls
 
         public async Task Save()
         {
-            //JObject newModel = JObject.FromObject(_objectModel);
-            //CompareLogic compareLogic = new CompareLogic();
-            //ComparisonResult compareResult = compareLogic.Compare(_objectModel, newModel);
-            //if (compareResult.AreEqual == false)
-            //{
-            //    _modelChanged = true;
-            //}
+
+            if (_activityModel.InstanceChanged == true)
+            {
+                _modelChanged = true;
+            }
+
 
 
             if (_modelChanged == true)
             {
+                if (_scheduleManager != null)
+                {
 
-                await _scheduleManager.SaveModel(_activityModel);
+                    await _scheduleManager.SaveModel(_activityModel);
+                }
             }
 
         }

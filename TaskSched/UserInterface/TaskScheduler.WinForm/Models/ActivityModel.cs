@@ -10,8 +10,11 @@ using TaskScheduler.WinForm.Controls.PropertyGridHelper;
 namespace TaskScheduler.WinForm.Models
 {
 
-    public class ActivityModel : ITreeItem
+    public class ActivityModel : ITreeItem, INotifyPropertyChanged
     {
+        private Guid activityHandlerId;
+        private bool instanceChanged;
+        private string name;
 
         [ReadOnly(true)]
         [Browsable(false)]
@@ -21,7 +24,15 @@ namespace TaskScheduler.WinForm.Models
         [ReadOnly(false)]
         [Browsable(false)]
         [Category("ID")]
-        public Guid ActivityHandlerId { get; set; }
+        public Guid ActivityHandlerId 
+        { 
+            get => activityHandlerId; 
+            set 
+            { 
+                activityHandlerId = value;
+                OnPropertyChanged();
+            }
+        }
 
         [ReadOnly(false)]
         [Browsable(true)]
@@ -39,13 +50,23 @@ namespace TaskScheduler.WinForm.Models
                 var items = ScheduleManager.GlobalInstance.GetExecutionHandlerInfo().Result;
                 var selectedItem = items.FirstOrDefault(x => x.Name == value);
                 ActivityHandlerId = selectedItem.HandlerId;
+                OnPropertyChanged();
             }
         }
 
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public string Name { get; set; } = "New Activity";
+        [DefaultValue("New Activity")]
+        public string Name 
+        { 
+            get => name;
+            set
+            {
+                name = value;
+                OnPropertyChanged();
+            }
+        }
 
         [ReadOnly(false)]
         [Browsable(true)]
@@ -95,6 +116,36 @@ namespace TaskScheduler.WinForm.Models
         public List<ITreeItem> Children { get; protected set; } = new List<ITreeItem>();
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public bool InstanceChanged
+        {
+            get
+            {
+                if (instanceChanged == true) return true;
+                foreach (var item in DefaultFields)
+                {
+                    if (item.InstanceChanged == true) return true;
+                }
+                return false;
+            }
+
+            set
+            {
+                instanceChanged = value;
+                foreach(var field in DefaultFields)
+                {
+                    field.InstanceChanged = value;
+                }
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            InstanceChanged = true;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public bool CanMoveItem(ITreeItem possibleNewParent)
         {
@@ -171,17 +222,43 @@ namespace TaskScheduler.WinForm.Models
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public string Name { get; set; }
+        public string Name 
+        { 
+            get => name;
+            set
+            {
+                name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        string fieldValue = "";
 
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public string Value { get; set; }
+        public string Value 
+        { 
+            get => fieldValue;
+            set
+            {
+                fieldValue = value;
+                OnPropertyChanged();
+            }
+        }
 
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public FieldTypeEnum FieldType { get; set; }
+        public FieldTypeEnum FieldType 
+        { 
+            get => fieldType;
+            set
+            {
+                fieldType = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         [ReadOnly(false)]
@@ -190,6 +267,26 @@ namespace TaskScheduler.WinForm.Models
         public bool IsReadOnly { get; set; } //  read only makes it fixed for the activity, such as an executable path.
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private bool instanceChanged;
+        private string name;
+        private FieldTypeEnum fieldType;
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public bool InstanceChanged
+        {
+            get => instanceChanged;
+            set => instanceChanged = value;
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            InstanceChanged = true;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+
 
         public override string ToString()
         {

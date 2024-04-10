@@ -38,7 +38,7 @@
             gridFolderProperties.Name = "gridFolderProperties";
             gridFolderProperties.Size = new Size(313, 189);
             gridFolderProperties.TabIndex = 2;
-            gridFolderProperties.PropertyValueChanged += gridFolderProperties_PropertyValueChanged;
+            gridFolderProperties.PropertyValueChanged += GridFolderProperties_PropertyValueChanged;
             // 
             // FolderViewer
             // 

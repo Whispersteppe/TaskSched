@@ -65,7 +65,7 @@
             _notifyIcon.Icon = (Icon)resources.GetObject("_notifyIcon.Icon");
             _notifyIcon.Text = "Scheduler Stopped";
             _notifyIcon.Visible = true;
-            _notifyIcon.Click += _notifyIcon_Click;
+            _notifyIcon.Click += notifyIcon_Click;
             // 
             // _notifyIconMenu
             // 
@@ -78,21 +78,21 @@
             _notifyContextShow.Name = "_notifyContextShow";
             _notifyContextShow.Size = new Size(140, 22);
             _notifyContextShow.Text = "Show";
-            _notifyContextShow.Click += _notifyContextShow_Click;
+            _notifyContextShow.Click += notifyContextShow_Click;
             // 
             // _notifyContextCreate
             // 
             _notifyContextCreate.Name = "_notifyContextCreate";
             _notifyContextCreate.Size = new Size(140, 22);
             _notifyContextCreate.Text = "Create Event";
-            _notifyContextCreate.Click += _notifyContextCreate_Click;
+            _notifyContextCreate.Click += notifyContextCreate_Click;
             // 
             // _notifyContextStart
             // 
             _notifyContextStart.Name = "_notifyContextStart";
             _notifyContextStart.Size = new Size(140, 22);
             _notifyContextStart.Text = "Start";
-            _notifyContextStart.Click += _notifyContextStart_Click;
+            _notifyContextStart.Click += notifyContextStart_Click;
             // 
             // _notifyContextStop
             // 
@@ -100,14 +100,14 @@
             _notifyContextStop.Name = "_notifyContextStop";
             _notifyContextStop.Size = new Size(140, 22);
             _notifyContextStop.Text = "Stop";
-            _notifyContextStop.Click += _notifyContextStop_Click;
+            _notifyContextStop.Click += notifyContextStop_Click;
             // 
             // _notifyContextExit
             // 
             _notifyContextExit.Name = "_notifyContextExit";
             _notifyContextExit.Size = new Size(140, 22);
             _notifyContextExit.Text = "Exit";
-            _notifyContextExit.Click += _notifyContextExit_Click;
+            _notifyContextExit.Click += notifyContextExit_Click;
             // 
             // _statusStrip
             // 

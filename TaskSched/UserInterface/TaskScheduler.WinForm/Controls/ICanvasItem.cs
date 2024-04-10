@@ -12,12 +12,6 @@ namespace TaskScheduler.WinForm.Controls
     /// </summary>
     internal interface ICanvasItem
     {
-        /// <summary>
-        /// show the given item
-        /// </summary>
-        /// <param name="o"></param>
-        Task Initialize(ScheduleManager scheduleManager, object treeItem);
-
         List<ToolStripItem> ToolStripItems { get; }
 
         /// <summary>
@@ -32,7 +26,6 @@ namespace TaskScheduler.WinForm.Controls
 
     internal interface ICanvasItem<T> : ICanvasItem
     {
-        Task Initialize(ScheduleManager scheduleManager, T o);
     }
 
 }

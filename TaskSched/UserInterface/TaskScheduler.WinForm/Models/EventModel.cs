@@ -6,8 +6,12 @@ using TaskScheduler.WinForm.Controls.PropertyGridHelper;
 
 namespace TaskScheduler.WinForm.Models
 {
-    public class EventModel : ITreeItem
+    public class EventModel : ITreeItem, INotifyPropertyChanged
     {
+        private string name;
+        private bool instanceChanged;
+        private bool isActive;
+        private bool catchUpOnStartup;
 
         [ReadOnly(true)]
         [Browsable(false)]
@@ -17,7 +21,16 @@ namespace TaskScheduler.WinForm.Models
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public string Name { get; set; } = "New Event";
+        [DefaultValue("New Event")]
+        public string Name 
+        { 
+            get => name;
+            set
+            {
+                name = value;
+                OnPropertyChanged();
+            }
+        }
 
         [ReadOnly(true)]
         [Browsable(true)]
@@ -32,12 +45,28 @@ namespace TaskScheduler.WinForm.Models
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public bool IsActive { get; set; }
+        public bool IsActive
+        { 
+            get => isActive;
+            set
+            {
+                isActive = value;
+                OnPropertyChanged();
+            }
+        }
 
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public bool CatchUpOnStartup { get; set; }
+        public bool CatchUpOnStartup 
+        { 
+            get => catchUpOnStartup;
+            set
+            {
+                catchUpOnStartup = value;
+                OnPropertyChanged();
+            }
+        }
 
         [ReadOnly(false)]
         [Browsable(false)]
@@ -98,9 +127,44 @@ namespace TaskScheduler.WinForm.Models
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public bool InstanceChanged
+        {
+            get
+            {
+                if (instanceChanged == true) return true;
+
+                foreach (var schedule in Schedules)
+                {
+                    if (schedule.InstanceChanged == true) return true;
+                }
+
+                foreach(var activity in Activities)
+                {
+                    if (activity.InstanceChanged == true) return true;
+                }
+
+                return false;
+            }
+            set
+            {
+                instanceChanged = value;
+                foreach(var schedule in Schedules)
+                {
+                    schedule.InstanceChanged = value;
+                }
+                foreach(var activity in Activities)
+                {
+                    activity.InstanceChanged = value;
+                }
+            }
+        }
+
         protected void OnPropertyChanged([CallerMemberName] string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            InstanceChanged = true;
         }
 
         public virtual bool CanMoveItem(ITreeItem possibleNewParent)
@@ -170,8 +234,11 @@ namespace TaskScheduler.WinForm.Models
 
     }
 
-    public class EventScheduleModel
+    public class EventScheduleModel: INotifyPropertyChanged
     {
+        private string name;
+        private string cRONData;
+
         [ReadOnly(true)]
         [Browsable(false)]
         [Category("ID")]
@@ -181,20 +248,49 @@ namespace TaskScheduler.WinForm.Models
         [Browsable(true)]
         [Category("ID")]
 
-        public string Name { get; set; }
+        public string Name 
+        { 
+            get => name;
+            set
+            {
+                name = value;OnPropertyChanged();
+            }
+        }
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public string CRONData { get; set; }
+        public string CRONData 
+        { 
+            get => cRONData;
+            set
+            {
+                cRONData = value;
+                OnPropertyChanged();
+            }
+        }
 
         public override string ToString()
         {
             return Name;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public bool InstanceChanged { get; set; }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            InstanceChanged = true;
+        }
     }
 
-    public class EventActivityModel
+    public class EventActivityModel : INotifyPropertyChanged
     {
+        private string name;
+        private bool instanceChanged;
 
         [ReadOnly(true)]
         [Browsable(false)]
@@ -204,7 +300,15 @@ namespace TaskScheduler.WinForm.Models
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public string Name { get; set; }
+        public string Name 
+        { 
+            get => name;
+            set
+            {
+                name = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         [ReadOnly(false)]
@@ -230,9 +334,12 @@ namespace TaskScheduler.WinForm.Models
                 var items = ScheduleManager.GlobalInstance.GetActivities().Result;
                 var selectedItem = items.FirstOrDefault(x => x.Name == value);
                 ActivityId = selectedItem.ID.Value;
+                OnPropertyChanged();
 
                 //TODO will also need to reswizzle fields as needed
             }
+
+
         }
 
 
@@ -246,10 +353,45 @@ namespace TaskScheduler.WinForm.Models
             return Name;
         }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public bool InstanceChanged 
+        {
+            get
+            {
+                if (instanceChanged == true) return true;
+                foreach(var field in Fields)
+                {
+                    if (field.InstanceChanged == true) return true;
+                }
+
+                return false;
+            }
+            set
+            {
+                instanceChanged = value;
+                if (Fields != null)
+                {
+                    foreach (var field in Fields)
+                    {
+                        field.InstanceChanged = value;
+                    }
+                }
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            InstanceChanged = true;
+        }
     }
 
-    public class EventActivityFieldModel
+    public class EventActivityFieldModel : INotifyPropertyChanged
     {
+        private string fieldValue;
 
         [ReadOnly(true)]
         [Browsable(false)]
@@ -264,7 +406,15 @@ namespace TaskScheduler.WinForm.Models
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
-        public string Value { get; set; }
+        public string Value 
+        { 
+            get => fieldValue;
+            set
+            {
+                fieldValue = value;
+                OnPropertyChanged();
+            }
+        }
 
         [ReadOnly(true)]
         [Browsable(true)]
@@ -281,6 +431,18 @@ namespace TaskScheduler.WinForm.Models
         public override string ToString()
         {
             return Name;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public bool InstanceChanged { get; set; }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            InstanceChanged = true;
         }
 
     }

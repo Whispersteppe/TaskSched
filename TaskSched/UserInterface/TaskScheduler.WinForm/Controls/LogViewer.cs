@@ -15,35 +15,33 @@ namespace TaskScheduler.WinForm.Controls
 {
     public partial class LogViewer : UserControl, ICanvasItem<LogViewModel>
     {
-        public LogViewer()
-        {
-            InitializeComponent();
-        }
 
-        ScheduleManager _scheduleManager;
-        LogViewModel _logViewModel;
-
+        readonly ScheduleManager _scheduleManager;
+        readonly LogViewModel _logViewModel;
         public List<ToolStripItem> ToolStripItems => [];
-
         public ITreeItem? TreeItem => throw new NotImplementedException();
 
-        public async Task Initialize(ScheduleManager scheduleManager, LogViewModel o)
+        public LogViewer(ScheduleManager scheduleManager, LogViewModel item)
         {
+            InitializeComponent();
+
+
             _scheduleManager = scheduleManager;
-            _logViewModel = o;
-            _logViewModel.OnLogMessage += _logViewModel_OnLogMessage;
+            _logViewModel = item;
+            _logViewModel.OnLogMessage += logViewModel_OnLogMessage;
 
             // load the current message set
-            _logViewModel.LogItems.ToList().ForEach(_logViewModel_OnLogMessage);
+            _logViewModel.LogItems.ToList().ForEach(logViewModel_OnLogMessage);
+
         }
 
-        private void _logViewModel_OnLogMessage(NLogCustom.LogEventInfoExtended logEventInfo)
+        private void logViewModel_OnLogMessage(NLogCustom.LogEventInfoExtended logEventInfo)
         {
             if (InvokeRequired)
             {
                 this.Invoke(new MethodInvoker(delegate
                 {
-                    _logViewModel_OnLogMessage(logEventInfo);
+                    logViewModel_OnLogMessage(logEventInfo);
                 }));
 
                 return;
@@ -75,15 +73,11 @@ namespace TaskScheduler.WinForm.Controls
             }
         }
 
-
-        public async Task Initialize(ScheduleManager scheduleManager, object treeItem)
-        {
-            await Initialize(scheduleManager, treeItem as LogViewModel);
-        }
-
         public async Task LeavingItem()
         {
-            _logViewModel.OnLogMessage -= _logViewModel_OnLogMessage;
+            await Task.Run(() => { });
+
+            _logViewModel.OnLogMessage -= logViewModel_OnLogMessage;
         }
 
         private void lvLogMessage_SelectedIndexChanged(object sender, EventArgs e)

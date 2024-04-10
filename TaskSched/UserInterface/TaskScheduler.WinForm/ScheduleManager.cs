@@ -31,28 +31,28 @@ namespace TaskScheduler.WinForm
     public class ScheduleManager : IDisposable
     {
 
-        ScheduleManagerConfig _config;
+        readonly ScheduleManagerConfig _config;
         //database information
-        TaskSchedDbContextFactory _dbContextFactory;
+        readonly TaskSchedDbContextFactory _dbContextFactory;
         public static ScheduleManager GlobalInstance { get; private set; }
 
-        ManagerMapper _managerMapper;
+        readonly ManagerMapper _managerMapper;
 
         // all of the data stores and mappers
-        IDataStoreMapper _mapper;
-        IExecutionStore _executionStore;
-        IActivityStore _activityStore;
-        IEventStore _eventStore;
-        IFolderStore _folderStore;
+        readonly IDataStoreMapper _mapper;
+        readonly IExecutionStore _executionStore;
+        readonly IActivityStore _activityStore;
+        readonly IEventStore _eventStore;
+        readonly IFolderStore _folderStore;
 
-        IFieldValidatorSet _fieldValidators;
+        readonly IFieldValidatorSet _fieldValidators;
 
-        ILoggerFactory _loggerFactory;
-        ILogger _logger;
-        ILogEmitter _logEmitter;
+        readonly ILoggerFactory _loggerFactory;
+        readonly ILogger _logger;
+        readonly ILogEmitter _logEmitter;
 
-        IExecutionEngine _executionEngine;
-        ISchedulerEngine _schedulerEngine;
+        readonly IExecutionEngine _executionEngine;
+        readonly ISchedulerEngine _schedulerEngine;
 
         #region Events
 
@@ -285,6 +285,8 @@ namespace TaskScheduler.WinForm
 
         public async Task<StatusRootModel> GetStatusModels()
         {
+            await Task.Run(() => { });
+
             StatusRootModel topModel = new StatusRootModel(null);
 
             SchedulerStatusModel schedulerStatus = new SchedulerStatusModel();
@@ -298,6 +300,8 @@ namespace TaskScheduler.WinForm
 
         public async Task<LogRootModel> GetLogModels()
         {
+            await Task.Run(() => { });
+
             LogRootModel topModel = new LogRootModel(null);
 
             LogViewModelConfig _configError = new LogViewModelConfig { MaxLogCount = 200, MinLogLevel = NLog.LogLevel.Error, Name = "Error Log" };

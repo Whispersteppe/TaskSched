@@ -17,18 +17,26 @@ namespace TaskScheduler.WinForm.Controls
 {
     public partial class EventViewer : UserControl, ICanvasItem<EventModel>
     {
-        ScheduleManager? _scheduleManager;
-        EventModel _eventModel;
+        readonly ScheduleManager _scheduleManager;
+        readonly EventModel _eventModel;
 
-        CronValue cronValue;
-        EventActivity? _currentActivity;
-        EventSchedule? _currentSchedule;
-        EventActivityField? _currentActivityField;
         bool _modelChanged;
 
-        public EventViewer()
+        public EventViewer(ScheduleManager scheduleManager, EventModel item)
         {
             InitializeComponent();
+
+            _scheduleManager = scheduleManager;
+
+            TreeItem = item;
+            _eventModel = item;
+            _eventModel.InstanceChanged = false;
+
+            grdEventProperties.SelectedObject = item;
+
+
+
+            _modelChanged = false;
         }
 
         public List<ToolStripItem> ToolStripItems
@@ -46,12 +54,19 @@ namespace TaskScheduler.WinForm.Controls
 
         private async void TsLaunch_Click(object? sender, EventArgs e)
         {
-            await _scheduleManager.LaunchEvent(_eventModel);
+            if (_scheduleManager != null)
+            {
+                await _scheduleManager.LaunchEvent(_eventModel);
+            }
+
         }
 
         private async void TsDelete_Click(object? sender, EventArgs e)
         {
-            await _scheduleManager.DeleteItem(_eventModel);
+            if (_scheduleManager != null)
+            {
+                await _scheduleManager.DeleteItem(_eventModel);
+            }
         }
 
         private async void TsSave_Click(object? sender, EventArgs e)
@@ -62,29 +77,7 @@ namespace TaskScheduler.WinForm.Controls
 
         }
 
-        //JObject _objectModel;
 
-        public async Task Initialize(ScheduleManager scheduleManager, EventModel o)
-        {
-
-            //_objectModel = JObject.FromObject(o);
-
-            _scheduleManager = scheduleManager;
-
-            TreeItem = o;
-            _eventModel = o;
-            grdEventProperties.SelectedObject = o;
-
-
-
-            _modelChanged = false;
-
-        }
-
-        public async Task Initialize(ScheduleManager scheduleManager, object treeItem)
-        {
-            await Initialize(scheduleManager, treeItem as EventModel);
-        }
 
 
         public ITreeItem? TreeItem { get; private set; }
@@ -99,18 +92,18 @@ namespace TaskScheduler.WinForm.Controls
 
         private async Task Save()
         {
-            //JObject newModel = JObject.FromObject(_objectModel);
-            //CompareLogic compareLogic = new CompareLogic();
-            //ComparisonResult compareResult = compareLogic.Compare(_objectModel, newModel);
-            //if (compareResult.AreEqual == false)
-            //{
-            //    _modelChanged = true;
-            //}
+            if (_eventModel.InstanceChanged == true)
+            {
+                _modelChanged = true;
+            }
 
 
             if (_modelChanged == true)
             {
-                var rslt = await _scheduleManager.SaveModel(_eventModel);
+                if (_scheduleManager != null)
+                {
+                    var rslt = await _scheduleManager.SaveModel(_eventModel);
+                }
             }
 
         }

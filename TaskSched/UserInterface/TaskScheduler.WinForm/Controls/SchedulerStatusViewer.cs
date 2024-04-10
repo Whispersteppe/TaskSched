@@ -12,9 +12,11 @@ namespace TaskScheduler.WinForm.Controls
 {
     public partial class SchedulerStatusViewer : UserControl
     {
-        public SchedulerStatusViewer()
+
+        public SchedulerStatusViewer(ScheduleManager scheduleManager, object item)
         {
             InitializeComponent();
+
         }
     }
 }

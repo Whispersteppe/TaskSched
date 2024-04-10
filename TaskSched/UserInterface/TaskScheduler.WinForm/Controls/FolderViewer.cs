@@ -17,13 +17,21 @@ namespace TaskScheduler.WinForm.Controls
 {
     public partial class FolderViewer : UserControl, ICanvasItem<FolderModel>
     {
-        ScheduleManager? _scheduleManager;
-        FolderModel _folderModel;
+        readonly ScheduleManager _scheduleManager;
+        readonly FolderModel _folderModel;
+        
         bool _modelChanged;
 
-        public FolderViewer()
+        public FolderViewer(ScheduleManager scheduleManager, FolderModel item)
         {
             InitializeComponent();
+
+            _scheduleManager = scheduleManager;
+            _folderModel = item;
+            _folderModel.InstanceChanged = false;
+
+            gridFolderProperties.SelectedObject = item;
+            TreeItem = item;
         }
 
         public List<ToolStripItem> ToolStripItems
@@ -60,6 +68,7 @@ namespace TaskScheduler.WinForm.Controls
                 await _scheduleManager.DeleteItem(_folderModel);
 
             }
+
         }
 
         private async void TsSave_Click(object? sender, EventArgs e)
@@ -70,39 +79,17 @@ namespace TaskScheduler.WinForm.Controls
         private async Task Save()
         {
 
-            //JObject newModel = JObject.FromObject(_objectModel);
-            //CompareLogic compareLogic = new CompareLogic();
-            //ComparisonResult compareResult = compareLogic.Compare(_objectModel, newModel);
-            //if (compareResult.AreEqual == false)
-            //{
-            //    _modelChanged = true;
-            //}
+            if (_folderModel.InstanceChanged == true)
+            {
+                _modelChanged = true;
+            }
 
-            
             if (_modelChanged == true)
             {
                 var rslt = await _scheduleManager.SaveModel(_folderModel);
             }
         }
 
-        //JObject _objectModel;
-
-        public async Task Initialize(ScheduleManager scheduleManager, FolderModel treeItem)
-        {
-            //_objectModel = JObject.FromObject(treeItem);
-
-            _scheduleManager = scheduleManager;
-            _folderModel = treeItem;
-            gridFolderProperties.SelectedObject = treeItem;
-            TreeItem = treeItem;
-
-        }
-
-        public async Task Initialize(ScheduleManager scheduleManager, object treeItem)
-        {
-            await Initialize(scheduleManager, treeItem as FolderModel);
-
-        }
 
         public ITreeItem? TreeItem { get; private set; }
 
@@ -120,7 +107,7 @@ namespace TaskScheduler.WinForm.Controls
             return true;
         }
 
-        private void gridFolderProperties_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        private void GridFolderProperties_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             _modelChanged = true;
         }

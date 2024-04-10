@@ -12,9 +12,12 @@ namespace TaskScheduler.WinForm.Controls
 {
     public partial class ProcessViewer : UserControl
     {
-        public ProcessViewer()
+
+        public ProcessViewer(ScheduleManager scheduleManager, object item)
         {
             InitializeComponent();
+
+
         }
     }
 }

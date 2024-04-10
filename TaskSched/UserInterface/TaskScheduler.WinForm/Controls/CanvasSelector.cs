@@ -17,7 +17,7 @@ namespace TaskScheduler.WinForm.Controls
     {
         Control? _currentCanvas;
 
-        Dictionary<Type, Type> _canvasItems = new Dictionary<Type, Type>();
+        readonly Dictionary<Type, Type> _canvasItems = new Dictionary<Type, Type>();
 
         ScheduleManager _scheduleManager;
 
@@ -58,6 +58,8 @@ namespace TaskScheduler.WinForm.Controls
 
         public async Task SetScheduleManager(ScheduleManager scheduleManager)
         {
+            await Task.Run(() => { });
+
             _scheduleManager = scheduleManager;
             _scheduleManager.OnTreeItemSelected += _scheduleManager_OnTreeItemSelected;
 
@@ -68,7 +70,7 @@ namespace TaskScheduler.WinForm.Controls
             await this.ViewItem(treeItem); 
         }
 
-        public async Task ViewItem(ITreeItem item)
+        public async Task ViewItem(ITreeItem? item)
         {
             if (item == null)
             {
@@ -91,9 +93,10 @@ namespace TaskScheduler.WinForm.Controls
         }
 
 
-        private async Task ViewItem(ITreeItem item, Type viewerType)
+        private async Task ViewItem(ITreeItem? item, Type viewerType)
         {
-            object? o = viewerType.Assembly.CreateInstance(viewerType.FullName);
+            //object? o = viewerType.Assembly.CreateInstance(viewerType.FullName);
+            object? o = Activator.CreateInstance(viewerType, _scheduleManager, item);
 
             if (o != null)
             {
@@ -112,35 +115,32 @@ namespace TaskScheduler.WinForm.Controls
 
                 _currentCanvas = o as Control;
 
-                _currentCanvas.AutoSize = true;
-                _currentCanvas.Dock = DockStyle.Fill;
-                _currentCanvas.Visible = true;
-
-                panelCanvasArea.Controls.Add(_currentCanvas);
-
-                if (_currentCanvas is ICanvasItem canvasItem)
+                if (_currentCanvas != null)
                 {
-                    await canvasItem.Initialize(_scheduleManager, item);
 
-                    // get the tool strip items from the canvas viewer
-                    //foreach(ToolStripItem toolStripItem in toolStrip1.Items)
-                    //{
-                    //    toolStripItem.Dispose();
-                    //}
-                    toolStrip1.Items.Clear();
+                    _currentCanvas.AutoSize = true;
+                    _currentCanvas.Dock = DockStyle.Fill;
+                    _currentCanvas.Visible = true;
 
-                    var toolStripItems = canvasItem.ToolStripItems;
-                    foreach(var toolStripItem in toolStripItems)
+                    panelCanvasArea.Controls.Add(_currentCanvas);
+
+                    if (_currentCanvas is ICanvasItem canvasItem)
                     {
-                        toolStrip1.Items.Add(toolStripItem);
+
+                        toolStrip1.Items.Clear();
+
+                        var toolStripItems = canvasItem.ToolStripItems;
+                        foreach (var toolStripItem in toolStripItems)
+                        {
+                            toolStrip1.Items.Add(toolStripItem);
+                        }
                     }
-                }
-                else
-                {
-                }
+                    else
+                    {
+                    }
 
-                _currentCanvas.Show();
-
+                    _currentCanvas.Show();
+                }
                 ResumeLayout();
                 PerformLayout();
 
