@@ -4,10 +4,10 @@ namespace TaskScheduler.WinForm.Configuration
 {
     public class TaskSchedConfigurationHandler
     {
-        IConfiguration _configuration;
-        ScheduleManagerConfig _config;
+        readonly IConfiguration _configuration;
+        readonly ScheduleManagerConfig _config;
 
-        string _fileName = "TaskScheduler.json";
+        readonly string _fileName = "TaskScheduler.json";
         public TaskSchedConfigurationHandler()
         {
             _config = new ScheduleManagerConfig();

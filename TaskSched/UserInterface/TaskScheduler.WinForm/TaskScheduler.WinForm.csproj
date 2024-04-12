@@ -11,11 +11,13 @@
   <ItemGroup>
     <Compile Remove="Controls\PropertyGridHelper\ExecutionHandlerInfoConverter.cs" />
     <Compile Remove="Controls\PropertyGridHelper\MyCollectionEditor.cs" />
+    <Compile Remove="Models\ConfigurationModel - Copy.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Controls\PropertyGridHelper\ExecutionHandlerInfoConverter.cs" />
     <None Include="Controls\PropertyGridHelper\MyCollectionEditor.cs" />
+    <None Include="Models\ConfigurationModel - Copy.cs" />
   </ItemGroup>
 
   <ItemGroup>

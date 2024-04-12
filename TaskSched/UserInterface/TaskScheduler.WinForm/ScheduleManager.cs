@@ -34,7 +34,7 @@ namespace TaskScheduler.WinForm
         readonly ScheduleManagerConfig _config;
         //database information
         readonly TaskSchedDbContextFactory _dbContextFactory;
-        public static ScheduleManager GlobalInstance { get; private set; }
+        public static ScheduleManager? GlobalInstance { get; private set; }
 
         readonly ManagerMapper _managerMapper;
 
@@ -223,25 +223,30 @@ namespace TaskScheduler.WinForm
 
         private void MapFolderChildren(FolderModel folderModel, dataModel.Folder folder)
         {
-            folderModel.ChildFolders.Clear();
-            folderModel.Events.Clear();
-
-            foreach(var childFolder in folder.ChildFolders)
+            folderModel?.ChildFolders?.Clear();
+            folderModel?.Events?.Clear();
+            if (folder.ChildFolders != null)
             {
-                FolderModel childModel = _managerMapper.Map<dataModel.Folder, FolderModel>(childFolder);
-                folderModel.ChildFolders.Add(childModel);
+                foreach (var childFolder in folder.ChildFolders)
+                {
+                    FolderModel childModel = _managerMapper.Map<dataModel.Folder, FolderModel>(childFolder);
+                    folderModel?.ChildFolders?.Add(childModel);
 
-                //  map all the children
-                MapFolderChildren(childModel, childFolder);
+                    //  map all the children
+                    MapFolderChildren(childModel, childFolder);
 
+                }
             }
 
-            foreach(var childEvent in folder.Events)
+            if (folder.Events != null)
             {
-                EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
+                foreach (var childEvent in folder.Events)
+                {
+                    EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
 
-                folderModel.Events.Add(eventModel);
+                    folderModel?.Events?.Add(eventModel);
 
+                }
             }
         }
 
@@ -257,13 +262,16 @@ namespace TaskScheduler.WinForm
                 {
                     //  we've got the unassigned folder.  lets unravel these separately
                     //  there won't be any folders.  those already fall at the top
-                    foreach (var childEvent in folder.Events)
+                    if (folder.Events != null)
                     {
+                        foreach (var childEvent in folder.Events)
+                        {
 
-                        EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
+                            EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
 
-                        topModel.Children.Add(eventModel);
+                            topModel.Children.Add(eventModel);
 
+                        }
                     }
                 }
                 else
@@ -281,6 +289,26 @@ namespace TaskScheduler.WinForm
 
             return topModel;
             
+        }
+
+        public async Task<ConfigurationRootModel> GetConfigModels()
+        {
+            await Task.Run(() => { });
+
+            ConfigurationRootModel topModel = new ConfigurationRootModel(null)
+            {
+                ScheduleManagerConfiguration = _config
+            };
+
+            //ConfigurationModel config = new ConfigurationModel()
+            //{
+            //    ScheduleManagerConfiguration = _config
+            //};
+
+
+            //topModel.Children.Add(config);
+
+            return topModel;
         }
 
         public async Task<StatusRootModel> GetStatusModels()
@@ -396,7 +424,8 @@ namespace TaskScheduler.WinForm
                 await GetFolderModels(),
                 await GetActivityModels(),
                 await GetStatusModels(),
-                await GetLogModels()
+                await GetLogModels(),
+                await GetConfigModels(),
             };
 
             return rootItems;
@@ -572,29 +601,35 @@ namespace TaskScheduler.WinForm
             {
                 case TreeItemTypeEnum.ActivityItem:
                     {
-                        ActivityModel activityModel = movingItem as ActivityModel;
+                        if (movingItem is ActivityModel activityModel)
+                       {
 
-                        //  currently there isn't any movemen of activities
+                            //  currently there isn't any movement of activities
+                        }
 
                         break;
                     }
                 case TreeItemTypeEnum.FolderItem:
                     {
-                        FolderModel folderModel = movingItem as FolderModel;
-                        folderModel.ParentFolderId = landingItem.ID;
-                        Folder folder = _managerMapper.Map<dataModel.Folder>(folderModel);
+                        if (movingItem is FolderModel folderModel)
+                        {
+                            folderModel.ParentFolderId = landingItem.ID;
+                            Folder folder = _managerMapper.Map<dataModel.Folder>(folderModel);
 
-                        await _folderStore.Update(folder);
+                            await _folderStore.Update(folder);
+                        }
 
                         break;
                     }
                 case TreeItemTypeEnum.EventItem:
                     {
-                        EventModel eventModel = movingItem as EventModel;
-                        eventModel.FolderId = landingItem.ID;
-                        Event eventItem = _managerMapper.Map<dataModel.Event>(eventModel);
+                        if (movingItem is EventModel eventModel)
+                        {
+                            eventModel.FolderId = landingItem.ID;
+                            Event eventItem = _managerMapper.Map<dataModel.Event>(eventModel);
 
-                        await _eventStore.Update(eventItem);
+                            await _eventStore.Update(eventItem);
+                        }
 
 
                         break;
@@ -618,12 +653,15 @@ namespace TaskScheduler.WinForm
 
                         //  make sure we have all the necessary fields from the execution handler
                         var handler = await _executionStore.GetExecutionHandler(activity.ActivityHandlerId);
-                        foreach (var field in handler.HandlerInfo.RequiredFields)
+                        if (handler != null)
                         {
-                            if (activity.DefaultFields.Any(x => x.Name == field.Name) == false)
+                            foreach (var field in handler.HandlerInfo.RequiredFields)
                             {
-                                var newField = new ActivityField() { Name = field.Name, FieldType = field.FieldType, IsReadOnly = true, Value = field.Value };
-                                activity.DefaultFields.Add(newField);
+                                if (activity.DefaultFields.Any(x => x.Name == field.Name) == false)
+                                {
+                                    var newField = new ActivityField() { Name = field.Name, FieldType = field.FieldType, IsReadOnly = true, Value = field.Value };
+                                    activity.DefaultFields.Add(newField);
+                                }
                             }
                         }
 

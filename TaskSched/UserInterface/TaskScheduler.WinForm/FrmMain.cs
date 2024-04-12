@@ -204,7 +204,7 @@ namespace TaskScheduler.WinForm
             tsStop.Enabled = false;
             if (_engineManager.ExecutionStatus == ExecutionStatusEnum.Running)
             {
-                await _engineManager?.Stop();
+                await _engineManager.Stop();
             }
             _notifyContextStart.Enabled = true;
             tsStart.Enabled = true;

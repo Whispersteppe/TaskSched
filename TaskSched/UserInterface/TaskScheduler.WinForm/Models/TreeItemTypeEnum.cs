@@ -16,5 +16,7 @@
         LogViewItem,
         SchedulerStatusItem,
         ExecutionEngineStatusItem,
+
+        ConfigItem,
     }
 }

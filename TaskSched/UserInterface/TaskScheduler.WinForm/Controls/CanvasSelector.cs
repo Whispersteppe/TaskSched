@@ -19,7 +19,7 @@ namespace TaskScheduler.WinForm.Controls
 
         readonly Dictionary<Type, Type> _canvasItems = new Dictionary<Type, Type>();
 
-        ScheduleManager _scheduleManager;
+        ScheduleManager? _scheduleManager;
 
         public CanvasSelector()
         {
@@ -40,6 +40,7 @@ namespace TaskScheduler.WinForm.Controls
             _canvasItems.Add(typeof(StatusRootModel), typeof(BlankViewer));
             _canvasItems.Add(typeof(SchedulerStatusModel), typeof(SchedulerStatusViewer));
             _canvasItems.Add(typeof(ExecutionEngineStatusModel), typeof(ExecutionEngineStatusViewer));
+            _canvasItems.Add(typeof(ConfigurationRootModel), typeof(ConfigViewer));
 
             _currentCanvas = null;
         }

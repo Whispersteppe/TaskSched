@@ -35,15 +35,18 @@ namespace TaskScheduler.WinForm.Models
         [ReadOnly(true)]
         [Browsable(true)]
         [Category("Dates")]
+        [DisplayName("Last Execution")]
         public DateTime LastExecution { get; set; } = DateTime.MinValue;
 
         [ReadOnly(true)]
         [Browsable(true)]
         [Category("Dates")]
+        [DisplayName("Next Execution")]
         public DateTime NextExecution { get; set; } = DateTime.MinValue;
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [DisplayName("Is Active")]
         [Category("ID")]
         public bool IsActive
         { 
@@ -57,6 +60,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [DisplayName("Catch up on startup")]
         [Category("ID")]
         public bool CatchUpOnStartup 
         { 
@@ -320,6 +324,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [DisplayName("Activity Name")]
         [TypeConverter(typeof(ActivityConverter))]
         public string ActivityName
         {
@@ -418,6 +423,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(true)]
         [Browsable(true)]
+        [DisplayName("Field Type")]
         [Category("ID")]
         public FieldTypeEnum FieldType { get; set; }
 

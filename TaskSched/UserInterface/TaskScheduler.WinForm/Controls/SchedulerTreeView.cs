@@ -237,7 +237,7 @@ namespace TaskScheduler.WinForm.Controls
 
         }
 
-        private void AddChildren(TreeNode parentNode, ITreeItem parentTreeItem, string searchText)
+        private static void AddChildren(TreeNode parentNode, ITreeItem parentTreeItem, string searchText)
         {
             if (parentTreeItem.CanHaveChildren() == true)
             {
@@ -416,7 +416,7 @@ namespace TaskScheduler.WinForm.Controls
             Point targetPoint = treeScheduler.PointToClient(new Point(e.X, e.Y));
             if (e.Data != null)
             {
-                TreeNode movingNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
+                TreeNode? movingNode = (TreeNode?)e.Data.GetData(typeof(TreeNode));
 
                 if (movingNode != null && movingNode.Tag is ITreeItem movingItem)
                 {
@@ -451,7 +451,7 @@ namespace TaskScheduler.WinForm.Controls
 
         }
 
-        private bool ContainsNode(TreeNode selectedNode, TreeNode landingNode)
+        private static bool ContainsNode(TreeNode selectedNode, TreeNode landingNode)
         {
             // Check the parent node of the second node.
             if (landingNode.Parent == null) return false;

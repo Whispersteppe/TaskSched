@@ -36,6 +36,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [DisplayName("Execution Handler")]
         [TypeConverter(typeof(ExecutionHandlerInfoConverter))]
         public string ExecutionHandlerName
         { 
@@ -70,6 +71,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [DisplayName("Fields")]
         [Category("Fields")]
         public ObservableCollection<ActivityFieldModel>? DefaultFields { get; set; } = new ObservableCollection<ActivityFieldModel>();
 
@@ -249,6 +251,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [DisplayName("Field Type")]
         [Category("ID")]
         public FieldTypeEnum FieldType 
         { 
@@ -263,6 +266,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [DisplayName("Read only")]
         [Category("ID")]
         public bool IsReadOnly { get; set; } //  read only makes it fixed for the activity, such as an executable path.
 
