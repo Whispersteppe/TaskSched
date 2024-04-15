@@ -570,6 +570,21 @@ namespace TaskScheduler.WinForm
                             }
                         };
 
+                        //  see if I can use the current clipboard contents for the activity
+                        if (Clipboard.ContainsText() == true)
+                        {
+                            string clipboardText = Clipboard.GetText();
+                            Uri? uri;
+                            if (Uri.TryCreate(clipboardText, new UriCreationOptions() { }, out uri) == true)
+                            {
+                                var urlField = eventItem.Activities[0].Fields.FirstOrDefault(x=>x.Name.Equals("url", StringComparison.InvariantCultureIgnoreCase));
+                                if (urlField != null)
+                                {
+                                    urlField.Value = clipboardText;
+                                }
+                            }
+                        }
+
                         var rsltCreate = await _eventStore.Create(eventItem);
                         var rsltGet = await _eventStore.Get(rsltCreate.Result);
 

@@ -109,14 +109,23 @@ namespace TaskSched.SchedulerEngine
 
                 foreach (var schedule in eventItem.Schedules)
                 {
-                    ITrigger trigger = TriggerBuilder.Create()
-                     .WithIdentity(schedule.TriggerKey())
-                     .ForJob(job)
-                     .StartNow()
-                     .WithCronSchedule(schedule.CRONData)
-                     .Build();
+                    try
+                    {
 
-                    await _scheduler.ScheduleJob(trigger);
+
+                        ITrigger trigger = TriggerBuilder.Create()
+                         .WithIdentity(schedule.TriggerKey())
+                         .ForJob(job)
+                         .StartNow()
+                         .WithCronSchedule(schedule.CRONData)
+                         .Build();
+
+                        await _scheduler.ScheduleJob(trigger);
+                    }
+                    catch(Exception ex)
+                    {
+                        _logger.LogError(ex, $"Error creating trigger for {eventItem.Name}");
+                    }
                 }
 
                 if (eventItem.CatchUpOnStartup == true)
