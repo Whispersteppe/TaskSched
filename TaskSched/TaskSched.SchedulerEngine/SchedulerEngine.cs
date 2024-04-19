@@ -3,6 +3,7 @@ using Quartz;
 using System.Collections.Specialized;
 using TaskSched.Common.DataModel;
 using TaskSched.Common.Interfaces;
+using TaskSched.SchedulerEngine.Listeners;
 
 namespace TaskSched.SchedulerEngine
 {
@@ -20,6 +21,11 @@ namespace TaskSched.SchedulerEngine
         ILogger _logger;
 
         IScheduler _scheduler;
+
+        IJobListener _jobListener;
+        ITriggerListener _triggerListener;
+        ISchedulerListener _schedulerListener;
+
 
         /// <summary>
         /// Scheduler Engine constructor
@@ -69,7 +75,13 @@ namespace TaskSched.SchedulerEngine
                 ;
 
             _scheduler.JobFactory = new EngineJobFactory(_executionEngine, _eventStore, _activityStore, _logger);
+            _schedulerListener = new ScheduleListenerLogger(_logger);
+            _jobListener = new JobListenerLogger(_logger);
+            _triggerListener = new TriggerListenerLogger(_logger);
 
+            _scheduler.ListenerManager.AddJobListener(_jobListener);
+            _scheduler.ListenerManager.AddSchedulerListener(_schedulerListener);
+            _scheduler.ListenerManager.AddTriggerListener(_triggerListener);
 
             _logger.LogInformation("Quartz Scheduler setup complete");
 
