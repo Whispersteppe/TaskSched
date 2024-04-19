@@ -5,8 +5,7 @@
     /// </summary>
     public class DaysOfWeekComponent : CronComponentBase, ICronComponent
     {
-        public int DayOfWeek { get; private set; }
-        public int WeekOfMonth { get; private set; }
+
 
 
         public DaysOfWeekComponent() :
@@ -20,6 +19,7 @@
             AllowedComponentTypes.Add(CronComponentType.DaysOfWeekFromLast);
             AllowedComponentTypes.Add(CronComponentType.Ignored);
             AllowedComponentTypes.Add(CronComponentType.NthWeekday);
+            InstanceChanged = false;
 
         }
 
@@ -36,6 +36,8 @@
             {"FRI", "6" },
             {"SAT", "7" },
         };
+        private int _dayOfWeek;
+        private int _weekOfMonth;
 
         /// <summary>
         /// decode the incoming value
@@ -92,19 +94,42 @@
                 base.DecodeIncomingValue(value);
             }
         }
+        public int DayOfWeek
+        {
+            get => _dayOfWeek;
+
+            set
+            {
+                _dayOfWeek = value;
+                ComponentType = CronComponentType.DaysOfWeekFromLast;
+                OnPropertyChanged();
+            }
+        }
+
+        public int WeekOfMonth 
+        { get => _weekOfMonth;
+            set
+            {
+                _weekOfMonth = value;
+                ComponentType = CronComponentType.NthWeekday;
+                OnPropertyChanged();
+            }
+        }
 
         public void SetLastWeekDayOfMonth(int dayOfWeek)
         {
-            DayOfWeek = dayOfWeek;
+            _dayOfWeek = dayOfWeek;
             ComponentType = CronComponentType.DaysOfWeekFromLast;
+            OnPropertyChanged("DayOfWeek");
         }
 
         public void SetNthWeekDayOfMonth(int dayOfWeek, int weekOfMonth)
         {
-            DayOfWeek = dayOfWeek; 
-            WeekOfMonth = weekOfMonth;
+            _dayOfWeek = dayOfWeek; 
+            _weekOfMonth = weekOfMonth;
             ComponentType = CronComponentType.NthWeekday;
-
+            OnPropertyChanged("DayOfWeek");
+            OnPropertyChanged("WeekOfMonth");
         }
 
         /// <summary>
@@ -217,6 +242,28 @@
                     }
             }
 
+        }
+
+        public override string Text
+        {
+            get
+            {
+                switch (ComponentType)
+                {
+                    case CronComponentType.AllowAny:
+                        return "";
+                    case CronComponentType.Repeating:
+                        return $"every {RepeatInterval} seconds starting at {RepeatStart}";
+                    case CronComponentType.Range:
+                        return $"at {string.Join(',', Range)} seconds";
+                    case CronComponentType.DaysOfWeekFromLast:
+                        return $"the last {DayOfWeek} of the month";
+                    case CronComponentType.NthWeekday:
+                        return $"the {WeekOfMonth} {DayOfWeek}";
+                    default:
+                        return "";
+                }
+            }
         }
 
     }

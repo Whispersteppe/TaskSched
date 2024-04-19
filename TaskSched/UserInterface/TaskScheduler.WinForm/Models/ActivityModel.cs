@@ -3,13 +3,13 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using TaskSched.Common.DataModel;
-using TaskSched.Common.FieldValidator;
 using TaskSched.Common.Interfaces;
 using TaskScheduler.WinForm.Controls.PropertyGridHelper;
 
 namespace TaskScheduler.WinForm.Models
 {
 
+    [TypeConverter(typeof(ActivityModelConverter))]
     public class ActivityModel : ITreeItem, INotifyPropertyChanged
     {
         private Guid activityHandlerId;
@@ -36,6 +36,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [Description("the name of the current activity execution handler")]
         [DisplayName("Execution Handler")]
         [TypeConverter(typeof(ExecutionHandlerInfoConverter))]
         public string ExecutionHandlerName
@@ -57,6 +58,7 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
+        [Description("the name of the activity")]
         [Category("ID")]
         [DefaultValue("New Activity")]
         public string Name 
@@ -71,8 +73,21 @@ namespace TaskScheduler.WinForm.Models
 
         [ReadOnly(false)]
         [Browsable(true)]
-        [DisplayName("Fields")]
+        [DisplayName("New Fields")]
         [Category("Fields")]
+        [Description("the set of new fields associated with this activity")]
+        public List<ActivityFieldModel>? Fields 
+        { 
+            get
+            {
+                return DefaultFields.Where(x => x.IsReadOnly == false).ToList();
+            }
+        }
+
+
+
+        [ReadOnly(false)]
+        [Browsable(false)]
         public ObservableCollection<ActivityFieldModel>? DefaultFields { get; set; } = new ObservableCollection<ActivityFieldModel>();
 
         [ReadOnly(true)]
@@ -211,92 +226,6 @@ namespace TaskScheduler.WinForm.Models
             }
             return false;
         }
-    }
-
-    public class ActivityFieldModel : INotifyPropertyChanged
-    {
-
-        [ReadOnly(true)]
-        [Browsable(false)]
-        [Category("ID")]
-        public Guid Id { get; set; }
-
-        [ReadOnly(false)]
-        [Browsable(true)]
-        [Category("ID")]
-        public string Name 
-        { 
-            get => name;
-            set
-            {
-                name = value;
-                OnPropertyChanged();
-            }
-        }
-
-        string fieldValue = "";
-
-        [ReadOnly(false)]
-        [Browsable(true)]
-        [Category("ID")]
-        public string Value 
-        { 
-            get => fieldValue;
-            set
-            {
-                fieldValue = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [ReadOnly(false)]
-        [Browsable(true)]
-        [DisplayName("Field Type")]
-        [Category("ID")]
-        public FieldTypeEnum FieldType 
-        { 
-            get => fieldType;
-            set
-            {
-                fieldType = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-        [ReadOnly(false)]
-        [Browsable(true)]
-        [DisplayName("Read only")]
-        [Category("ID")]
-        public bool IsReadOnly { get; set; } //  read only makes it fixed for the activity, such as an executable path.
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private bool instanceChanged;
-        private string name;
-        private FieldTypeEnum fieldType;
-
-        [ReadOnly(true)]
-        [Browsable(false)]
-        public bool InstanceChanged
-        {
-            get => instanceChanged;
-            set => instanceChanged = value;
-        }
-
-        protected void OnPropertyChanged([CallerMemberName] string name = "")
-        {
-            InstanceChanged = true;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
     }
 
 }

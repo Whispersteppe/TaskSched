@@ -15,6 +15,8 @@
             AllowedComponentTypes.Add(CronComponentType.AllowAny);
             AllowedComponentTypes.Add(CronComponentType.Repeating);
             AllowedComponentTypes.Add(CronComponentType.Range);
+            InstanceChanged = false;
+
         }
 
         /// <summary>
@@ -40,6 +42,24 @@
                     }
             }
 
+        }
+
+        public override string Text
+        {
+            get
+            {
+                switch (ComponentType)
+                {
+                    case CronComponentType.AllowAny:
+                        return "";
+                    case CronComponentType.Repeating:
+                        return $"every {RepeatInterval} years starting at {RepeatStart}";
+                    case CronComponentType.Range:
+                        return $"at {string.Join(',', Range)} years";
+                    default:
+                        return "";
+                }
+            }
         }
 
     }

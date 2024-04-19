@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TaskSched.Component.Cron
 {
-    public class CronValue
+    public class CronValue : INotifyPropertyChanged
     {
         #region Properties
 
@@ -55,6 +57,20 @@ namespace TaskSched.Component.Cron
 
         }
 
+        #region Property Notify
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public bool InstanceChanged { get; set; }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            InstanceChanged = true;
+        }
+        #endregion
+
+
         /// <summary>
         /// builds the cron value from the various pieces
         /// </summary>
@@ -73,6 +89,19 @@ namespace TaskSched.Component.Cron
             DaysOfWeek = (cronParts.Length >= 6) ? new DaysOfWeekComponent(cronParts[5]) : new DaysOfWeekComponent();
             Years = (cronParts.Length >= 7) ? new YearsComponent(cronParts[6]) : new YearsComponent();
 
+            Seconds.PropertyChanged += CronComponent_Changed;
+            Minutes.PropertyChanged += CronComponent_Changed;
+            Hours.PropertyChanged += CronComponent_Changed;
+            DaysOfMonth.PropertyChanged += CronComponent_Changed;
+            Months.PropertyChanged += CronComponent_Changed;
+            DaysOfWeek.PropertyChanged += CronComponent_Changed;
+            Years.PropertyChanged += CronComponent_Changed;
+
+        }
+
+        private void CronComponent_Changed(object? sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("Cron Component");
         }
 
         /// <summary>
@@ -272,113 +301,8 @@ namespace TaskSched.Component.Cron
             return workDate;
 
         }
-        
-#if false
-//  this is a recursive version of the above that I started with.  
-        private DateTime InternalNextTimeS(DateTime fromTime)
-        {
-            DateTime workDate;
-            // start high, go in
-            if (Years.IsValid(fromTime) == false)
-            {
-                int nextYear = Years.GetNext(fromTime.Year);
-                if (nextYear == -1)
-                {
-                    // we're run off the end of the year component without hitting an event
-                    return DateTime.MaxValue;
-                }
-                workDate = new DateTime(nextYear, 1, 1, 0, 0, 0);
-            }
-            else if (Months.IsValid(fromTime) == false)
-            {
-                int nextMonth = Months.GetNext(fromTime.Month);
-                if (nextMonth == -1)
-                {
-                    fromTime = fromTime.AddMonths(12 - fromTime.Month + 1);
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, 1, 0, 0, 0);
-                }
-                else
-                {
-                    workDate = new DateTime(fromTime.Year, nextMonth, 1, 0, 0, 0);
-                }
-            }
-            else if (DaysOfMonth.IsValid(fromTime) == false)
-            {
-                int nextDay = DaysOfMonth.GetNext(fromTime);
-                if (nextDay == -1)
-                {
-                    fromTime = fromTime.AddDays(DateTime.DaysInMonth(fromTime.Year, fromTime.Month) - fromTime.Day + 1);
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, 1, 0, 0, 0);
-                }
-                else
-                {
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, nextDay, 0, 0, 0);
-                }
-            }
-            else if (DaysOfWeek.IsValid(fromTime) == false)
-            {
-                workDate = fromTime;
-                while (DaysOfWeek.IsValid(workDate) == false)
-                {
-                    workDate = workDate.AddDays(1);
-                }
+      
 
-                //  and reset the time
-                workDate = workDate.AddHours(-workDate.Hour);
-                workDate = workDate.AddMinutes(-workDate.Minute);
-                workDate = workDate.AddSeconds(-workDate.Second);
-            }
-            else if (Hours.IsValid(fromTime) == false)
-            {
-                int nextHour = Hours.GetNext(fromTime.Hour);
-                if (nextHour == -1)
-                {
-                    fromTime = fromTime.AddHours(24 - fromTime.Hour);
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day, 0, 0, 0);
-                }
-                else
-                {
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day, nextHour, 0, 0);
-                }
-            }
-            else if (Minutes.IsValid(fromTime) == false)
-            {
-                int nextMinute = Minutes.GetNext(fromTime.Minute);
-                if (nextMinute == -1)
-                {
-                    fromTime = fromTime.AddMinutes(60 - fromTime.Minute);
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day, fromTime.Hour, 0, 0);
-                }
-                else
-                {
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day, fromTime.Hour, nextMinute, 0);
-                }
-            }
-            else if (Seconds.IsValid(fromTime) == false)
-            {
-                int nextSecond = Seconds.GetNext(fromTime.Second);
-                if (nextSecond == -1)
-                {
-                    fromTime = fromTime.AddSeconds(60 - fromTime.Second);
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day, fromTime.Hour, fromTime.Minute, 0);
-                }
-                else
-                {
-                    workDate = new DateTime(fromTime.Year, fromTime.Month, fromTime.Day, fromTime.Hour, fromTime.Minute, nextSecond);
-                }
-
-            }
-            else
-            {
-                //  it's completely valid.  return it;
-                return fromTime;
-            }
-
-            return InternalNextTime(workDate);
-
-        }
-
-#endif
 
     }
 

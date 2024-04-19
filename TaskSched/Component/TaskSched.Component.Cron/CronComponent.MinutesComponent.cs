@@ -15,6 +15,8 @@
             AllowedComponentTypes.Add(CronComponentType.Repeating);
             AllowedComponentTypes.Add(CronComponentType.Range);
 
+            InstanceChanged = false;
+
         }
 
         /// <summary>
@@ -36,6 +38,24 @@
                     {
                         return false;
                     }
+            }
+        }
+
+        public override string Text
+        {
+            get
+            {
+                switch (ComponentType)
+                {
+                    case CronComponentType.AllowAny:
+                        return "";
+                    case CronComponentType.Repeating:
+                        return $"every {RepeatInterval} minutes starting at {RepeatStart}";
+                    case CronComponentType.Range:
+                        return $"at {string.Join(',', Range)} minutes";
+                    default:
+                        return "";
+                }
             }
         }
 

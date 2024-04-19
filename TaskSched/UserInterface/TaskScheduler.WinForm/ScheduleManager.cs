@@ -220,6 +220,27 @@ namespace TaskScheduler.WinForm
             return topModel;
         }
 
+        public async Task<List<ScheduleStatusItem>> GetScheduleItems(bool showActive)
+        {
+            var eventsRslt = await _eventStore.GetAll();
+            var scheduleItems = new List<ScheduleStatusItem>();
+            foreach(var eventItem in eventsRslt.Result)
+            {
+                if (eventItem.IsActive == showActive)
+                {
+                    scheduleItems.Add(new ScheduleStatusItem()
+                    {
+                        IsActive = eventItem.IsActive,
+                        Name = eventItem.Name,
+                        NextExecution = eventItem.NextExecution,
+                        PreviousExecution = eventItem.LastExecution,
+                        ID = eventItem.Id,
+                    });
+                }
+            }
+
+            return scheduleItems;
+        }
 
         private void MapFolderChildren(FolderModel folderModel, dataModel.Folder folder)
         {
@@ -317,10 +338,12 @@ namespace TaskScheduler.WinForm
 
             StatusRootModel topModel = new StatusRootModel(null);
 
-            SchedulerStatusModel schedulerStatus = new SchedulerStatusModel();
+            SchedulerStatusModel activeStatus = new SchedulerStatusModel(this, "Active Items", true);
+            SchedulerStatusModel inactiveStatus = new SchedulerStatusModel(this, "Inactive Items", false);
             ExecutionEngineStatusModel executionStatus = new ExecutionEngineStatusModel();
 
-            topModel.Children.Add(schedulerStatus);
+            topModel.Children.Add(activeStatus);
+            topModel.Children.Add(inactiveStatus);
             topModel.Children.Add(executionStatus);
 
             return topModel;
@@ -571,6 +594,7 @@ namespace TaskScheduler.WinForm
                         };
 
                         //  see if I can use the current clipboard contents for the activity
+                        //TODO - we'll want to use tags once ive defined that process.  but until then, we'll hardwire this one in.
                         if (Clipboard.ContainsText() == true)
                         {
                             string clipboardText = Clipboard.GetText();

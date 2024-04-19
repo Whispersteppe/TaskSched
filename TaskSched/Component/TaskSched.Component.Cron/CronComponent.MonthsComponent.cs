@@ -15,6 +15,7 @@
             AllowedComponentTypes.Add(CronComponentType.AllowAny);
             AllowedComponentTypes.Add(CronComponentType.Repeating);
             AllowedComponentTypes.Add(CronComponentType.Range);
+            InstanceChanged = false;
 
         }
 
@@ -77,6 +78,24 @@
                     {
                         return false;
                     }
+            }
+        }
+
+        public override string Text
+        {
+            get
+            {
+                switch (ComponentType)
+                {
+                    case CronComponentType.AllowAny:
+                        return "";
+                    case CronComponentType.Repeating:
+                        return $"every {RepeatInterval} months starting at {RepeatStart}";
+                    case CronComponentType.Range:
+                        return $"at {string.Join(',', Range)} months";
+                    default:
+                        return "";
+                }
             }
         }
 

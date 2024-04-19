@@ -1,11 +1,13 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace TaskSched.Component.Cron
 {
     /// <summary>
     /// base component for all of the individual pieces
     /// </summary>
-    public class CronComponentBase : ICronComponent
+    public class CronComponentBase : ICronComponent, INotifyPropertyChanged
     {
         #region internal fields
 
@@ -13,9 +15,25 @@ namespace TaskSched.Component.Cron
         protected List<int> _rangeValues = new List<int>();
         int _repeatInterval;
         int _repeatStart;
+        private CronComponentType componentType;
+
 
         #endregion
 
+        #region Property Notify
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public bool InstanceChanged { get; set; }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            InstanceChanged = true;
+        }
+        #endregion
 
         public CronComponentBase(int allowedRangeStart, int allowedRangeEnd) :
             this("*", allowedRangeStart, allowedRangeEnd)
@@ -36,18 +54,31 @@ namespace TaskSched.Component.Cron
             }
 
             DecodeIncomingValue(value);
+            InstanceChanged = false;
 
         }
 
+        public virtual string Text => "Not handled";
 
         /// <summary>
         /// the type of component - range, allow any, and so on.
         /// </summary>
-        public CronComponentType ComponentType { get; internal set; }
+        public CronComponentType ComponentType 
+        { 
+            get => componentType;
+            internal set 
+            { 
+                componentType = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// the set of values that are allowed on this component
         /// </summary>
+        [ReadOnly(true)]
+        [Browsable(false)]
+
         public ReadOnlyCollection<int> AllowedRangeValues
         {
             get
@@ -78,6 +109,12 @@ namespace TaskSched.Component.Cron
         /// </remarks>
         internal virtual void DecodeIncomingValue(string value)
         {
+            //  clear the component
+            _rangeValues.Clear();
+            _repeatInterval = 0;
+            _repeatStart = 0;
+            componentType = CronComponentType.AllowAny;
+
             value = value.ToUpper();
 
             if (value == "*")
@@ -138,18 +175,25 @@ namespace TaskSched.Component.Cron
         {
             if (AllowedRangeValues.Contains(repeatStart) == false)
             {
-                throw new Exception($"RepeatStart value is not allowed - {repeatStart}");
+                SetRange([repeatStart]);
+                return;
+                //throw new Exception($"RepeatStart value is not allowed - {repeatStart}");
             }
 
             if (repeatInterval <= 0)
             {
-                throw new Exception($"RepeatInterval must be greater than zero - {repeatInterval}");
+                SetRange([repeatStart]);
+                return;
+                //throw new Exception($"RepeatInterval must be greater than zero - {repeatInterval}");
+
             }
 
             _repeatInterval = repeatInterval;
             _repeatStart = repeatStart;
             ComponentType = CronComponentType.Repeating;
             SetRepeatingRange();
+            OnPropertyChanged("RepeatInterval");
+            OnPropertyChanged("RepeatStart");
 
         }
 
@@ -161,6 +205,10 @@ namespace TaskSched.Component.Cron
             get
             {
                 return _repeatInterval;
+            }
+            set
+            {
+                SetRepeating(RepeatStart, value);
             }
 
         }
@@ -175,8 +223,14 @@ namespace TaskSched.Component.Cron
                 return _repeatStart;
 
             }
+            set
+            {
+                SetRepeating(value, RepeatInterval);
+            }
         }
 
+        [ReadOnly(true)]
+        [Browsable(false)]
         public List<CronComponentType> AllowedComponentTypes { get; } = new List<CronComponentType>();
 
         /// <summary>
@@ -222,6 +276,18 @@ namespace TaskSched.Component.Cron
                 {
                     return $"{FromValue}-{ToValue}";
                 }
+            }
+        }
+
+        public string Value
+        {
+            get
+            {
+                return GetPiece();
+            }
+            set
+            {
+                DecodeIncomingValue( value );
             }
         }
 
@@ -331,6 +397,7 @@ namespace TaskSched.Component.Cron
         public virtual void SetAllowAny()
         {
             ComponentType = CronComponentType.AllowAny;
+            OnPropertyChanged("ComponentType");
         }
 
         /// <summary>
@@ -372,6 +439,7 @@ namespace TaskSched.Component.Cron
             }
 
             _rangeValues.Sort();
+            OnPropertyChanged("RangeValues");
         }
 
         /// <summary>
@@ -382,6 +450,8 @@ namespace TaskSched.Component.Cron
         {
             AddRangeItems(values);
             ComponentType = CronComponentType.Range;
+            OnPropertyChanged("RangeValues");
+            OnPropertyChanged("ComponentType");
         }
 
         /// <summary>
@@ -399,6 +469,8 @@ namespace TaskSched.Component.Cron
             }
 
             _rangeValues.Sort();
+            OnPropertyChanged("RangeValues");
+
         }
 
         /// <summary>
@@ -409,6 +481,9 @@ namespace TaskSched.Component.Cron
         {
             RemoveRangeItems(values);
             ComponentType = CronComponentType.Range;
+            OnPropertyChanged("RangeValues");
+            OnPropertyChanged("ComponentType");
+
         }
 
         /// <summary>
@@ -417,6 +492,12 @@ namespace TaskSched.Component.Cron
         public void ClearRange()
         {
             _rangeValues.Clear();
+            OnPropertyChanged("RangeValues");
+        }
+
+        public override string ToString()
+        {
+            return Value;
         }
     }
 }

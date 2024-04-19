@@ -16,6 +16,7 @@ namespace TaskScheduler.WinForm.Models
         [ReadOnly(false)]
         [Browsable(true)]
         [Category("ID")]
+        [Description("The name of the folder")]
         [DefaultValue("New Folder")]
         public string Name
         {

@@ -18,6 +18,8 @@ namespace TaskSched.Component.Cron
             AllowedComponentTypes.Add(CronComponentType.Range);
             AllowedComponentTypes.Add(CronComponentType.DaysOfMonthFromLast);
             AllowedComponentTypes.Add(CronComponentType.Ignored);
+            InstanceChanged = false;
+
         }
 
         /// <summary>
@@ -190,6 +192,26 @@ namespace TaskSched.Component.Cron
                             return false;
                         }
                     }
+            }
+        }
+
+        public override string Text
+        {
+            get
+            {
+                switch (ComponentType)
+                {
+                    case CronComponentType.AllowAny:
+                        return "";
+                    case CronComponentType.Repeating:
+                        return $"every {RepeatInterval} seconds starting at {RepeatStart}";
+                    case CronComponentType.Range:
+                        return $"at {string.Join(',', Range)} seconds";
+                    case CronComponentType.DaysOfMonthFromLast:
+                        return $"the {Range[0]} from the end of the month";
+                    default:
+                        return "";
+                }
             }
         }
     }

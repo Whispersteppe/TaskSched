@@ -16,6 +16,7 @@ namespace TaskSched.Component.Cron
         void RemoveRange(IEnumerable<int> values);
         void ClearRange();
 
+        string Text { get; }
 
         int RepeatInterval { get;  }
         int RepeatStart { get; }

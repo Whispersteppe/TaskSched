@@ -1,27 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Drawing.Design;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
-using TaskSched.Common.DataModel;
-using TaskSched.Common.Interfaces;
+﻿using System.ComponentModel;
+using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls.PropertyGridHelper
 {
-    public class ExecutionHandlerInfoConverter : StringConverter
+    public class ActivityConverter : StringConverter
     {
-        List<ExecutionHandlerInfo> _handlers = [];
+        List<ActivityModel> _handlers = [];
 
-        public ExecutionHandlerInfoConverter()
+        public ActivityConverter()
         {
-            var handlers = ScheduleManager.GlobalInstance.GetExecutionHandlerInfo().Result;
+            var handlers = ScheduleManager.GlobalInstance.GetActivities().Result;
             foreach (var item in handlers)
             {
                 _handlers.Add(item);
