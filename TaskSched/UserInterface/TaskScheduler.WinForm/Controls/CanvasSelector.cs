@@ -41,6 +41,7 @@ namespace TaskScheduler.WinForm.Controls
             _canvasItems.Add(typeof(SchedulerStatusModel), typeof(SchedulerStatusViewer));
             _canvasItems.Add(typeof(ExecutionEngineStatusModel), typeof(ExecutionEngineStatusViewer));
             _canvasItems.Add(typeof(ConfigurationRootModel), typeof(ConfigViewer));
+            _canvasItems.Add(typeof(AboutModel), typeof(AboutViewer));
 
             _currentCanvas = null;
         }

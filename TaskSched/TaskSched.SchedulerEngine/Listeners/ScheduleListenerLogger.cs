@@ -11,47 +11,47 @@ namespace TaskSched.SchedulerEngine.Listeners
 
         public async Task JobAdded(IJobDetail jobDetail, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job Added {ToJsonString(jobDetail)}");
+            Logger.LogInformation($"Job Added {jobDetail}");
         }
 
         public async Task JobDeleted(JobKey jobKey, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job Deleted {ToJsonString(jobKey)}");
+            Logger.LogInformation($"Job Deleted {jobKey}");
         }
 
         public async Task JobInterrupted(JobKey jobKey, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job Interrupted {ToJsonString(jobKey)}");
+            Logger.LogInformation($"Job Interrupted {jobKey}");
         }
 
         public async Task JobPaused(JobKey jobKey, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job Paused {ToJsonString(jobKey)}");
+            Logger.LogInformation($"Job Paused {jobKey}");
         }
 
         public async Task JobResumed(JobKey jobKey, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job Resumed {ToJsonString(jobKey)}");
+            Logger.LogInformation($"Job Resumed {jobKey}");
         }
 
         public async Task JobScheduled(ITrigger trigger, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job Scheduled {ToJsonString(trigger)}");
+            Logger.LogInformation($"Job Scheduled {trigger}");
         }
 
         public async Task JobsPaused(string jobGroup, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Jobs Paused {ToJsonString(jobGroup)}");
+            Logger.LogInformation($"Jobs Paused {jobGroup}");
         }
 
         public async Task JobsResumed(string jobGroup, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Jobs Resumed {ToJsonString(jobGroup)}");
+            Logger.LogInformation($"Jobs Resumed {jobGroup}");
         }
 
         public async Task JobUnscheduled(TriggerKey triggerKey, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job Unscheduled {ToJsonString(triggerKey)}");
+            Logger.LogInformation($"Job Unscheduled {triggerKey}");
         }
 
         public async Task SchedulerError(string msg, SchedulerException cause, CancellationToken cancellationToken = default)
@@ -91,27 +91,27 @@ namespace TaskSched.SchedulerEngine.Listeners
 
         public async Task TriggerFinalized(ITrigger trigger, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Trigger Finalized {ToJsonString(trigger)}");
+            Logger.LogInformation($"Trigger Finalized {trigger}");
         }
 
         public async Task TriggerPaused(TriggerKey triggerKey, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Trigger Paused {ToJsonString(triggerKey)}");
+            Logger.LogInformation($"Trigger Paused {triggerKey}");
         }
 
         public async Task TriggerResumed(TriggerKey triggerKey, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Trigger Resumed {ToJsonString(triggerKey)}");
+            Logger.LogInformation($"Trigger Resumed {triggerKey}");
         }
 
         public async Task TriggersPaused(string? triggerGroup, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Triggers Paused {ToJsonString(triggerGroup)}");
+            Logger.LogInformation($"Triggers Paused {triggerGroup}");
         }
 
         public async Task TriggersResumed(string? triggerGroup, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Triggers Resumed {ToJsonString(triggerGroup)}");
+            Logger.LogInformation($"Triggers Resumed {triggerGroup}");
         }
     }
 }

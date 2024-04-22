@@ -18,5 +18,6 @@
         ExecutionEngineStatusItem,
 
         ConfigItem,
+        AboutItem,
     }
 }

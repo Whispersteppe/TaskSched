@@ -6,7 +6,25 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Copyright>Copyright 2024 Whispersteppe Consulting</Copyright>
+    <Title>Task Scheduler</Title>
+    <Company>Whispersteppe Consulting</Company>
+    <Product>TaskScheduler</Product>
+    <Description>Task Scheduler to simplify and automate opening web sites and other documents on a periodic basis</Description>
+    <PackageProjectUrl>https://github.com/Whispersteppe/TaskSched</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Whispersteppe/TaskSched</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Authors>Chris Arterburn</Authors>
+    <AssemblyVersion>1.0.*</AssemblyVersion>
+	<Deterministic>false</Deterministic>
+    <FileVersion>1.0.*</FileVersion>
   </PropertyGroup>
+
+	<ItemGroup>
+	  <AssemblyAttribute Include="TaskScheduler.WinForm.Configuration.BuildDateTime">
+		  <_Parameter1>$([System.DateTime]::Now.ToString("s"))</_Parameter1>
+	  </AssemblyAttribute>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CompareNETObjects" Version="4.83.0" />
@@ -28,8 +46,32 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Nlog.config">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Update="TaskScheduler.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

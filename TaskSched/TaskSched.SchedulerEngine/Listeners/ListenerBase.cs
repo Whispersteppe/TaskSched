@@ -12,19 +12,5 @@ namespace TaskSched.SchedulerEngine.Listeners
 
         public ILogger Logger { get; private set; }
 
-        public string ToJsonString(object o)
-        {
-            try
-            {
-                string data = JsonConvert.SerializeObject(o);
-                return data;
-            }
-            catch(Exception ex)
-            {
-                Logger.LogError(ex, "error converting object in logger");
-            }
-
-            return "Cannot Convert";
-        }
     }
 }

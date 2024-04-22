@@ -312,6 +312,18 @@ namespace TaskScheduler.WinForm
             
         }
 
+
+        public async Task<AboutModel> GetAboutModels()
+        {
+            await Task.Run(() => { });
+
+            AboutModel topModel = new AboutModel()
+            {
+            };
+
+            return topModel;
+        }
+
         public async Task<ConfigurationRootModel> GetConfigModels()
         {
             await Task.Run(() => { });
@@ -449,6 +461,7 @@ namespace TaskScheduler.WinForm
                 await GetStatusModels(),
                 await GetLogModels(),
                 await GetConfigModels(),
+                await GetAboutModels(),
             };
 
             return rootItems;

@@ -21,17 +21,17 @@ namespace TaskSched.SchedulerEngine.Listeners
 
         public async Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job Vetoed - {ToJsonString(context)}");
+            Logger.LogInformation($"Job Vetoed - {context}");
         }
 
         public async Task JobToBeExecuted(IJobExecutionContext context, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job to be executed - {ToJsonString(context)}");
+            Logger.LogInformation($"Job to be executed - {context}");
         }
 
         public async Task JobWasExecuted(IJobExecutionContext context, JobExecutionException? jobException, CancellationToken cancellationToken = default)
         {
-            Logger.LogInformation($"Job was executed - {ToJsonString(context)}");
+            Logger.LogInformation($"Job was executed - {context}");
         }
     }
 }
