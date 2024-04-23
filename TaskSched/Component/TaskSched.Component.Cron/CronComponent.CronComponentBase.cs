@@ -109,6 +109,15 @@ namespace TaskSched.Component.Cron
         /// </remarks>
         internal virtual void DecodeIncomingValue(string value)
         {
+            string validCharacters = "0123456789/-,*?";
+            foreach(char c in value)
+            {
+                if (validCharacters.Contains(c) == false)
+                {
+                    value = "*";
+                    break;
+                }
+            }
             value = value.Trim().ToUpper();
             //  clear the component
             _rangeValues.Clear();
@@ -136,7 +145,6 @@ namespace TaskSched.Component.Cron
             }
             else
             {
-                ComponentType = CronComponentType.Range;
                 string[] items = value.Split(',');
                 List<int> itemsToAdd = new List<int>();
 
@@ -161,7 +169,6 @@ namespace TaskSched.Component.Cron
                         }
                     }
                 }
-
                 SetRange(itemsToAdd);
             }
         }
@@ -510,7 +517,7 @@ namespace TaskSched.Component.Cron
 
         public override string ToString()
         {
-            return Value;
+            return Text;
         }
     }
 }

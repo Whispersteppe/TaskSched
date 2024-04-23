@@ -19,24 +19,24 @@
 
         }
 
-        /// <summary>
-        /// list of allowed values for text representation of months
-        /// </summary>
-        Dictionary<string, string> stringReplacements = new Dictionary<string, string>()
-        {
-            {"OCT", "10" },
-            {"NOV", "11" },
-            {"DEC", "12" },
-            {"JAN", "1" },
-            {"FEB", "2" },
-            {"MAR", "3" },
-            {"APR", "4" },
-            {"MAY", "5" },
-            {"JUN", "6" },
-            {"JUL", "7" },
-            {"AUG", "8" },
-            {"SEP", "9" },
-        };
+        ///// <summary>
+        ///// list of allowed values for text representation of months
+        ///// </summary>
+        //Dictionary<string, string> stringReplacements = new Dictionary<string, string>()
+        //{
+        //    {"OCT", "10" },
+        //    {"NOV", "11" },
+        //    {"DEC", "12" },
+        //    {"JAN", "1" },
+        //    {"FEB", "2" },
+        //    {"MAR", "3" },
+        //    {"APR", "4" },
+        //    {"MAY", "5" },
+        //    {"JUN", "6" },
+        //    {"JUL", "7" },
+        //    {"AUG", "8" },
+        //    {"SEP", "9" },
+        //};
 
         /// <summary>
         /// decode the incoming value
@@ -51,9 +51,9 @@
 
             //  could be numbers or strings
             //  lets turn the strings into numbers, if they exist
-            foreach (var item in stringReplacements)
+            foreach (var item in replacements)
             {
-                value = value.Replace(item.Key, item.Value);
+                value = value.Replace(item.ShortName, item.ID);
             }
 
             base.DecodeIncomingValue(value);
@@ -81,6 +81,46 @@
             }
         }
 
+
+        internal class MonthConversion
+        {
+            public string ShortName { get; set; }
+            public string Name { get; set; }
+            public string ID
+            {
+                get => IDInt.ToString();
+            }
+            public int IDInt { get; set; }
+        }
+        List<MonthConversion> replacements = new List<MonthConversion>()
+        {
+            new MonthConversion(){ IDInt = 11, Name = "November", ShortName = "NOV"},
+            new MonthConversion(){ IDInt = 12, Name = "December", ShortName = "DEC"},
+            new MonthConversion(){ IDInt = 1, Name = "January", ShortName = "JAN"},
+            new MonthConversion(){ IDInt = 2, Name = "February", ShortName = "FEB"},
+            new MonthConversion(){ IDInt = 3, Name = "March", ShortName = "MAR"},
+            new MonthConversion(){ IDInt = 4, Name = "April", ShortName = "APR"},
+            new MonthConversion(){ IDInt = 5, Name = "May", ShortName = "MAY"},
+            new MonthConversion(){ IDInt = 6, Name = "June", ShortName = "JUN"},
+            new MonthConversion(){ IDInt = 7, Name = "July", ShortName = "JUL"},
+            new MonthConversion(){ IDInt = 8, Name = "August", ShortName = "AUG"},
+            new MonthConversion(){ IDInt = 9, Name = "September", ShortName = "SEP"},
+            new MonthConversion(){ IDInt = 10, Name = "October", ShortName = "OCT"},
+        };
+
+
+        private string ToMonthString(int day)
+        {
+            var replacement = replacements.FirstOrDefault(x => x.IDInt == day);
+            return replacement?.Name ?? "";
+        }
+
+        private string ToMonthShortString(int day)
+        {
+            var replacement = replacements.FirstOrDefault(x => x.IDInt == day);
+            return replacement?.ShortName ?? "";
+        }
+
         public override string Text
         {
             get
@@ -88,11 +128,11 @@
                 switch (ComponentType)
                 {
                     case CronComponentType.AllowAny:
-                        return "";
+                        return "every month";
                     case CronComponentType.Repeating:
-                        return $"every {RepeatInterval} months starting at {RepeatStart}";
+                        return $"every {RepeatInterval} month starting on {ToMonthString(RepeatStart)}";
                     case CronComponentType.Range:
-                        return $"at {string.Join(',', Range)} months";
+                        return $"on {string.Join(',', Range.Select(x => ToMonthString(x)).ToList())}";
                     default:
                         return "";
                 }
@@ -104,9 +144,9 @@
             get
             {
                 string valueString = Value;
-                foreach (var replacement in stringReplacements)
+                foreach (var replacement in replacements)
                 {
-                    valueString = valueString.Replace(replacement.Value, replacement.Key);
+                    valueString = valueString.Replace(replacement.ID, replacement.ShortName);
                 }
 
                 return valueString;

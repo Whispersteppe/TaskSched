@@ -1,4 +1,6 @@
-﻿namespace TaskSched.Component.Cron
+﻿using System.Runtime.InteropServices;
+
+namespace TaskSched.Component.Cron
 {
     /// <summary>
     /// handles the day of week component
@@ -23,19 +25,19 @@
 
         }
 
-        /// <summary>
-        /// list of allowed string values in the segment
-        /// </summary>
-        Dictionary<string, string> stringReplacements = new Dictionary<string, string>() 
-        { 
-            {"SUN", "1" },
-            {"MON", "2" },
-            {"TUE", "3" },
-            {"WED", "4" },
-            {"THU", "5" },
-            {"FRI", "6" },
-            {"SAT", "7" },
-        };
+        ///// <summary>
+        ///// list of allowed string values in the segment
+        ///// </summary>
+        //Dictionary<string, string> stringReplacements = new Dictionary<string, string>() 
+        //{ 
+        //    {"SUN", "1" },
+        //    {"MON", "2" },
+        //    {"TUE", "3" },
+        //    {"WED", "4" },
+        //    {"THU", "5" },
+        //    {"FRI", "6" },
+        //    {"SAT", "7" },
+        //};
         private int _dayOfWeek;
         private int _weekOfMonth;
 
@@ -54,9 +56,9 @@
 
             //  could be numbers or strings
             //  lets turn the strings into numbers, if they exist
-            foreach (var item in stringReplacements)
+            foreach (var item in replacements)
             {
-                value = value.Replace(item.Key, item.Value);
+                value = value.Replace(item.ShortName, item.ID);
             }
             //TODO need to handle # stuff
 
@@ -244,6 +246,40 @@
 
         }
 
+        internal class DayOfWeekConversion
+        {
+            public string ShortName { get; set; }
+            public string Name { get; set; }
+            public string ID
+            {
+                get => IDInt.ToString();
+            }
+            public int IDInt { get; set; }
+        }
+        List<DayOfWeekConversion> replacements = new List<DayOfWeekConversion>()
+        {
+            new DayOfWeekConversion(){ IDInt = 1, Name = "Sunday", ShortName = "SUN"},
+            new DayOfWeekConversion(){ IDInt = 2, Name = "Monday", ShortName = "MON"},
+            new DayOfWeekConversion(){ IDInt = 3, Name = "Tuesday", ShortName = "TUE"},
+            new DayOfWeekConversion(){ IDInt = 4, Name = "Wednesday", ShortName = "WED"},
+            new DayOfWeekConversion(){ IDInt = 5, Name = "Thursday", ShortName = "THU"},
+            new DayOfWeekConversion(){ IDInt = 6, Name = "Friday", ShortName = "FRI"},
+            new DayOfWeekConversion(){ IDInt = 7, Name = "Saturday", ShortName = "SAT"},
+        };
+
+
+        private string ToDayOfWeekString(int day)
+        {
+            var replacement = replacements.FirstOrDefault(x=>x.IDInt == day);
+            return replacement?.Name ?? "";
+        }
+
+        private string ToDayOfWeekShortString(int day)
+        {
+            var replacement = replacements.FirstOrDefault(x => x.IDInt == day);
+            return replacement?.ShortName ?? "";
+        }
+
         public override string Text
         {
             get
@@ -251,15 +287,15 @@
                 switch (ComponentType)
                 {
                     case CronComponentType.AllowAny:
-                        return "";
+                        return "every day";
                     case CronComponentType.Repeating:
-                        return $"every {RepeatInterval} seconds starting at {RepeatStart}";
+                        return $"every {RepeatInterval} day starting on {ToDayOfWeekString(RepeatStart)}";
                     case CronComponentType.Range:
-                        return $"at {string.Join(',', Range)} seconds";
+                        return $"on {string.Join(',', Range.Select(x=> ToDayOfWeekString(x)).ToList())}";
                     case CronComponentType.DaysOfWeekFromLast:
-                        return $"the last {DayOfWeek} of the month";
+                        return $"the last {ToDayOfWeekString(DayOfWeek)} of the month";
                     case CronComponentType.NthWeekday:
-                        return $"the {WeekOfMonth} {DayOfWeek}";
+                        return $"the {WeekOfMonth} {ToDayOfWeekString(DayOfWeek)}";
                     default:
                         return "";
                 }
@@ -271,9 +307,9 @@
             get 
             {
                 string valueString = Value;
-                foreach(var replacement in stringReplacements)
+                foreach(var replacement in replacements)
                 {
-                    valueString = valueString.Replace(replacement.Value, replacement.Key);
+                    valueString = valueString.Replace(replacement.ID, replacement.ShortName);
                 }
 
                 return valueString;

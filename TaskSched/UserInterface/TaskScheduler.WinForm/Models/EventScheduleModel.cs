@@ -46,6 +46,18 @@ namespace TaskScheduler.WinForm.Models
             }
         }
 
+        [ReadOnly(true)]
+        [Browsable(true)]
+        [Description("Cron data for the schedule - Sec Min Hour DayOfMonth Month DayOfWeek Year")]
+        [Category("ID")]
+        public string LongCRONData
+        {
+            get
+            {
+                return cronValue.LongValue;
+            }
+        }
+
         public override string ToString()
         {
             return Name;
@@ -65,26 +77,31 @@ namespace TaskScheduler.WinForm.Models
 
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [Category("CRON")]
+        [DisplayName("1. Seconds")]
         public SecondsComponent Seconds => cronValue.Seconds;
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [Category("CRON")]
+        [DisplayName("2. Minutes")]
         public MinutesComponent Minutes => cronValue.Minutes;
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [Category("CRON")]
+        [DisplayName("3. Hours")]
         public HoursComponent Hours => cronValue.Hours;
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [Category("CRON")]
-        [DisplayName("Days of Month")]
+        [DisplayName("4. Days of Month")]
         public DaysOfMonthComponent DaysOfMonth => cronValue.DaysOfMonth;
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [Category("CRON")]
+        [DisplayName("5. Months")]
         public MonthsComponent Months => cronValue.Months;
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [Category("CRON")]
-        [DisplayName("Days of Week")]
+        [DisplayName("6. Days of Week")]
         public DaysOfWeekComponent DaysOfWeek => cronValue.DaysOfWeek;
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [Category("CRON")]
+        [DisplayName("7. Years")]
         public YearsComponent Years => cronValue.Years;
 
     }

@@ -17,9 +17,9 @@ namespace TaskSched.Component.Cron
         public SecondsComponent Seconds { get; private set; }
         public MinutesComponent Minutes { get; private set; }
         public HoursComponent Hours { get; private set; }
-        public DaysOfWeekComponent DaysOfWeek { get; private set; }
         public DaysOfMonthComponent DaysOfMonth { get; private set; }
         public MonthsComponent Months { get; private set; }
+        public DaysOfWeekComponent DaysOfWeek { get; private set; }
         public YearsComponent Years { get; private set; }
 
 
@@ -38,6 +38,26 @@ namespace TaskSched.Component.Cron
                     Months.GetPiece(),
                     DaysOfWeek.GetPiece(),
                     Years.GetPiece(),
+                ];
+
+                string value = string.Join(' ', valueParts.ToArray());
+                return value;
+            }
+        }
+
+        public string LongValue
+        {
+            get
+            {
+                List<string> valueParts =
+                [
+                    Seconds.ValueText,
+                    Minutes.ValueText,
+                    Hours.ValueText,
+                    DaysOfMonth.ValueText,
+                    Months.ValueText,
+                    DaysOfWeek.ValueText,
+                    Years.ValueText,
                 ];
 
                 string value = string.Join(' ', valueParts.ToArray());

@@ -202,11 +202,11 @@ namespace TaskSched.Component.Cron
                 switch (ComponentType)
                 {
                     case CronComponentType.AllowAny:
-                        return "";
+                        return "every day";
                     case CronComponentType.Repeating:
-                        return $"every {RepeatInterval} seconds starting at {RepeatStart}";
+                        return $"every {RepeatInterval} days starting on {RepeatStart}";
                     case CronComponentType.Range:
-                        return $"at {string.Join(',', Range)} seconds";
+                        return $"on the {string.Join(',', Range)}";
                     case CronComponentType.DaysOfMonthFromLast:
                         return $"the {Range[0]} from the end of the month";
                     default:
