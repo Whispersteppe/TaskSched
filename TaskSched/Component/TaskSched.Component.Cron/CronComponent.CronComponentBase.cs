@@ -109,6 +109,7 @@ namespace TaskSched.Component.Cron
         /// </remarks>
         internal virtual void DecodeIncomingValue(string value)
         {
+            value = value.Trim().ToUpper();
             //  clear the component
             _rangeValues.Clear();
             _repeatInterval = 0;
@@ -284,6 +285,18 @@ namespace TaskSched.Component.Cron
             get
             {
                 return GetPiece();
+            }
+            set
+            {
+                DecodeIncomingValue( value );
+            }
+        }
+
+        public virtual string ValueText
+        {
+            get
+            {
+                return Value;
             }
             set
             {

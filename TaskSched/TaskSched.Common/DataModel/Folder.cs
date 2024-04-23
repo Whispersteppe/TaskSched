@@ -10,6 +10,7 @@ namespace TaskSched.Common.DataModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = "New Folder";
+        public string? DefaultSchedule { get; set; }
 
         public Guid? ParentFolderId { get; set; }
         public List<Event>? Events { get; set; } = new List<Event>();

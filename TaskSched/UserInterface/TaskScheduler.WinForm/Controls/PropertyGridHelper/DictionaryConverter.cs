@@ -7,6 +7,11 @@ namespace TaskScheduler.WinForm.Controls.PropertyGridHelper
     public class InternalDictionary<TKey, TData> : Dictionary<TKey, TData>
     {
         public string _title;
+
+        public InternalDictionary()
+        {
+            _title = string.Empty;
+        }
         public InternalDictionary(string title) 
         { 
             _title = title;
@@ -25,7 +30,7 @@ namespace TaskScheduler.WinForm.Controls.PropertyGridHelper
 
             //  get the current set of properties
 
-            if (value is InternalDictionary<TKey, TData> stringDictionary)
+            if (value is Dictionary<TKey, TData> stringDictionary)
             {
 
                 foreach (KeyValuePair<TKey,TData> item in stringDictionary)

@@ -572,6 +572,16 @@ namespace TaskScheduler.WinForm
 
                         var rsltActivity = await _activityStore.GetDefault();
                         var defaultActivity = rsltActivity.Result;
+                        string defaultSchedule = "0 0 8 * * ? *";
+
+                        if (parentItem != null && parentItem is FolderModel folder)
+                        {
+                            if (string.IsNullOrEmpty(folder.DefaultSchedule) == false)
+                            {
+                                defaultSchedule = folder.DefaultSchedule;
+                            }
+                        }
+
                         Event eventItem = new Event()
                         {
                             CatchUpOnStartup = false, 
@@ -600,8 +610,8 @@ namespace TaskScheduler.WinForm
                             {
                                 new EventSchedule()
                                 {
-                                     Name = "8 am each day",
-                                      CRONData = "0 0 8 * * ? *"
+                                     Name = "Default Schedule",
+                                      CRONData = defaultSchedule
                                 }
                             }
                         };

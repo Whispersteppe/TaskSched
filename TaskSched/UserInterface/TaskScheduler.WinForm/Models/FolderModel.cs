@@ -7,6 +7,7 @@ namespace TaskScheduler.WinForm.Models
     public class FolderModel : ITreeItem, INotifyPropertyChanged
     {
         private string name;
+        string? _defaultSchedule;
 
         [ReadOnly(true)]
         [Browsable(false)]
@@ -24,6 +25,21 @@ namespace TaskScheduler.WinForm.Models
             set 
             { 
                 name = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [Category("ID")]
+        [Description("Cron data for the schedule - Sec Min Hour DayOfMonth Month DayOfWeek Year")]
+        public string? DefaultSchedule
+        {
+            get => _defaultSchedule;
+            set
+            {
+                _defaultSchedule = value;
                 OnPropertyChanged();
             }
         }

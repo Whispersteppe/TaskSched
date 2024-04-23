@@ -10,6 +10,7 @@ namespace TaskSched.DataStore.DataModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string? DefaultSchedule { get; set; }
 
         public Guid? ParentFolderId { get; set; }
         public Folder ParentFolder { get; set; }

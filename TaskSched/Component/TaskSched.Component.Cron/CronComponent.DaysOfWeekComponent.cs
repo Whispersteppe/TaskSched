@@ -266,5 +266,20 @@
             }
         }
 
+        public override string ValueText 
+        { 
+            get 
+            {
+                string valueString = Value;
+                foreach(var replacement in stringReplacements)
+                {
+                    valueString = valueString.Replace(replacement.Value, replacement.Key);
+                }
+
+                return valueString;
+            }
+            set => base.ValueText = value; 
+        }
+
     }
 }

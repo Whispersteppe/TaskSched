@@ -24,6 +24,9 @@
         /// </summary>
         Dictionary<string, string> stringReplacements = new Dictionary<string, string>()
         {
+            {"OCT", "10" },
+            {"NOV", "11" },
+            {"DEC", "12" },
             {"JAN", "1" },
             {"FEB", "2" },
             {"MAR", "3" },
@@ -33,9 +36,6 @@
             {"JUL", "7" },
             {"AUG", "8" },
             {"SEP", "9" },
-            {"OCT", "10" },
-            {"NOV", "11" },
-            {"DEC", "12" },
         };
 
         /// <summary>
@@ -97,6 +97,21 @@
                         return "";
                 }
             }
+        }
+
+        public override string ValueText
+        {
+            get
+            {
+                string valueString = Value;
+                foreach (var replacement in stringReplacements)
+                {
+                    valueString = valueString.Replace(replacement.Value, replacement.Key);
+                }
+
+                return valueString;
+            }
+            set => base.ValueText = value;
         }
 
 

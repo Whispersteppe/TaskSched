@@ -101,6 +101,36 @@ namespace TaskSched.Component.Cron
 
         private void CronComponent_Changed(object? sender, PropertyChangedEventArgs e)
         {
+            //  we need to make sure DaysOfWeek and DaysOfMonth have one and only one '?' between them
+            if (sender is DaysOfWeekComponent dayOfWeek)
+            {
+                if (DaysOfWeek.Value == "?")
+                {
+                    if (DaysOfMonth.Value == "?")
+                    {
+                        DaysOfMonth.Value = "*";
+                    }
+                }
+                else
+                {
+                    DaysOfMonth.Value = "?";
+                }
+            }
+            else if (sender is DaysOfMonthComponent dayOfMonth)
+            {
+                if (DaysOfMonth.Value == "?")
+                {
+                    if (DaysOfWeek.Value == "?")
+                    {
+                        DaysOfWeek.Value = "*";
+                    }
+                }
+                else
+                {
+                    DaysOfWeek.Value = "?";
+                }
+            }
+
             OnPropertyChanged("Cron Component");
         }
 

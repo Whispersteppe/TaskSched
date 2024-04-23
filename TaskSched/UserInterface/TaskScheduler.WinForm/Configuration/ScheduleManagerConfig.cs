@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using TaskSched.DataStore;
+using TaskScheduler.WinForm.Controls.PropertyGridHelper;
 
 namespace TaskScheduler.WinForm.Configuration
 {
@@ -41,8 +42,10 @@ namespace TaskScheduler.WinForm.Configuration
     public class NlogConfig
     {
         //public Dictionary<string, JToken> targets { get; set; }
-        public Dictionary<string, NlogTargetConfig> Targets { get; set; }
+        [TypeConverter(typeof(DictionaryConverter<string, NlogTargetConfig>))]
+        public InternalDictionary<string, NlogTargetConfig> Targets { get; set; }
         //public List<JToken> rules { get; set; }
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public List<NlogRuleConfig> Rules { get; set; }
 
         [JsonExtensionData]
