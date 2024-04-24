@@ -33,11 +33,26 @@ namespace TaskScheduler.WinForm.Controls
             _scheduleManager.OnTreeItemCreated += _scheduleManager_OnTreeItemCreated;
             _scheduleManager.OnTreeItemUpdated += _scheduleManager_OnTreeItemUpdated;
             _scheduleManager.OnTreeItemRemoved += _scheduleManager_OnTreeItemRemoved;
+            _scheduleManager.OnItemSelected += _scheduleManager_OnItemSelected;
 
 
             _list = await _scheduleManager.GetAllRoots();
 
             SetTreeviewCollection(_list, "");
+        }
+
+        private async Task _scheduleManager_OnItemSelected(Guid itemId)
+        {
+            var find = FindItemByID(itemId);
+            if (find != null)
+            {
+                var node = FindNode(find);
+                if (node != null)
+                {
+                    treeScheduler.SelectedNode = node;
+                    node.EnsureVisible();
+                }
+            }
         }
 
         private async Task _scheduleManager_OnTreeItemRemoved(ITreeItem treeItem)

@@ -43,7 +43,19 @@ namespace TaskScheduler.WinForm
 
             _engineManager = new ScheduleManager(_config.Configuration, _loggerWrapper.LoggerFactory, _loggerWrapper.LogEmitter);
 
+            _engineManager.OnTreeItemRemoving += _engineManager_OnTreeItemRemoving;
+
             _logger.LogInformation("Starting the application");
+        }
+
+        private void _engineManager_OnTreeItemRemoving(ITreeItem treeItem, EventCancellationArgs cancelArgs)
+        {
+            var rslt = MessageBox.Show($"Delete {treeItem.DisplayName}?", "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (rslt == DialogResult.Cancel)
+            {
+                cancelArgs.Cancel = true;
+                cancelArgs.AddReason("User cancelled");
+            }
         }
 
         #region NLog setup
@@ -75,6 +87,7 @@ namespace TaskScheduler.WinForm
 
             this.Location = _config.Configuration.DisplayConfig.MainWindowLocation.Location;
             this.Size = _config.Configuration.DisplayConfig.MainWindowLocation.Size;
+            mainSplit.SplitterDistance = _config.Configuration.DisplayConfig.MainSplitterDistance;
 
             await schedulerTreeView.SetScheduleManager(_engineManager);
             await canvasSelector.SetScheduleManager(_engineManager);
@@ -113,6 +126,7 @@ namespace TaskScheduler.WinForm
                 //  save the last location of the form
                 _config.Configuration.DisplayConfig.MainWindowLocation.Location = this.Location;
                 _config.Configuration.DisplayConfig.MainWindowLocation.Size = this.Size;
+                _config.Configuration.DisplayConfig.MainSplitterDistance = mainSplit.SplitterDistance;
 
                 _config.SaveConfiguration();
             }

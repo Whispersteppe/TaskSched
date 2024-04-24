@@ -48,15 +48,15 @@
             tsAddEvent = new ToolStripMenuItem();
             tsMenuAddFolder = new ToolStripMenuItem();
             tsMenuAddActivity = new ToolStripMenuItem();
-            splitContainer1 = new SplitContainer();
+            mainSplit = new SplitContainer();
             schedulerTreeView = new Controls.SchedulerTreeView();
             canvasSelector = new Controls.CanvasSelector();
             _notifyIconMenu.SuspendLayout();
             _menuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
-            splitContainer1.Panel1.SuspendLayout();
-            splitContainer1.Panel2.SuspendLayout();
-            splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)mainSplit).BeginInit();
+            mainSplit.Panel1.SuspendLayout();
+            mainSplit.Panel2.SuspendLayout();
+            mainSplit.SuspendLayout();
             SuspendLayout();
             // 
             // _notifyIcon
@@ -144,21 +144,21 @@
             // tsStart
             // 
             tsStart.Name = "tsStart";
-            tsStart.Size = new Size(180, 22);
+            tsStart.Size = new Size(98, 22);
             tsStart.Text = "Start";
             tsStart.Click += tsStart_Click;
             // 
             // tsStop
             // 
             tsStop.Name = "tsStop";
-            tsStop.Size = new Size(180, 22);
+            tsStop.Size = new Size(98, 22);
             tsStop.Text = "Stop";
             tsStop.Click += tsStop_Click;
             // 
             // tsExit
             // 
             tsExit.Name = "tsExit";
-            tsExit.Size = new Size(180, 22);
+            tsExit.Size = new Size(98, 22);
             tsExit.Text = "Exit";
             tsExit.Click += tsExit_Click;
             // 
@@ -172,37 +172,37 @@
             // tsAddEvent
             // 
             tsAddEvent.Name = "tsAddEvent";
-            tsAddEvent.Size = new Size(146, 22);
+            tsAddEvent.Size = new Size(139, 22);
             tsAddEvent.Text = "Add Event";
             // 
             // tsMenuAddFolder
             // 
             tsMenuAddFolder.Name = "tsMenuAddFolder";
-            tsMenuAddFolder.Size = new Size(146, 22);
+            tsMenuAddFolder.Size = new Size(139, 22);
             tsMenuAddFolder.Text = "Add Folder";
             // 
             // tsMenuAddActivity
             // 
             tsMenuAddActivity.Name = "tsMenuAddActivity";
-            tsMenuAddActivity.Size = new Size(146, 22);
+            tsMenuAddActivity.Size = new Size(139, 22);
             tsMenuAddActivity.Text = "Add Activity";
             // 
-            // splitContainer1
+            // mainSplit
             // 
-            splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 49);
-            splitContainer1.Name = "splitContainer1";
+            mainSplit.Dock = DockStyle.Fill;
+            mainSplit.Location = new Point(0, 49);
+            mainSplit.Name = "mainSplit";
             // 
-            // splitContainer1.Panel1
+            // mainSplit.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(schedulerTreeView);
+            mainSplit.Panel1.Controls.Add(schedulerTreeView);
             // 
-            // splitContainer1.Panel2
+            // mainSplit.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(canvasSelector);
-            splitContainer1.Size = new Size(800, 379);
-            splitContainer1.SplitterDistance = 174;
-            splitContainer1.TabIndex = 4;
+            mainSplit.Panel2.Controls.Add(canvasSelector);
+            mainSplit.Size = new Size(800, 379);
+            mainSplit.SplitterDistance = 174;
+            mainSplit.TabIndex = 4;
             // 
             // schedulerTreeView
             // 
@@ -225,7 +225,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(splitContainer1);
+            Controls.Add(mainSplit);
             Controls.Add(_toolStrip);
             Controls.Add(_statusStrip);
             Controls.Add(_menuStrip);
@@ -238,10 +238,10 @@
             _notifyIconMenu.ResumeLayout(false);
             _menuStrip.ResumeLayout(false);
             _menuStrip.PerformLayout();
-            splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
-            splitContainer1.ResumeLayout(false);
+            mainSplit.Panel1.ResumeLayout(false);
+            mainSplit.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)mainSplit).EndInit();
+            mainSplit.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -258,7 +258,7 @@
         private StatusStrip _statusStrip;
         private ToolStrip _toolStrip;
         private MenuStrip _menuStrip;
-        private SplitContainer splitContainer1;
+        private SplitContainer mainSplit;
         private Controls.SchedulerTreeView schedulerTreeView;
         private Controls.CanvasSelector canvasSelector;
         private ToolStripMenuItem tsMenuControl;

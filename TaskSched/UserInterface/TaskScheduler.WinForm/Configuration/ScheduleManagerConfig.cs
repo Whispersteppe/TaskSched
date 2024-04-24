@@ -108,6 +108,10 @@ namespace TaskScheduler.WinForm.Configuration
         [DisplayName("Main Window Location")]
         public WindowCoordinates MainWindowLocation { get; set; } = new WindowCoordinates();
 
+
+        [DisplayName("Tree Width")]
+        public int MainSplitterDistance { get; set; } = 200;
+
         public override string ToString()
         {
             return "Display Configuration";

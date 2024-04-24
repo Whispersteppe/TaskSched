@@ -65,6 +65,18 @@ namespace TaskScheduler.WinForm.Controls
             lvEvents.ListViewItemSorter = new EventSorter(e.Column);
             lvEvents.Sort();
         }
+
+        private async void lvEvents_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvEvents.SelectedItems.Count > 0)
+            {
+                var selectedItem = lvEvents.SelectedItems[0];
+                if (selectedItem.Tag is ScheduleStatusItem item)
+                {
+                    await _manager.SelectItem(item.ID);
+                }
+            }
+        }
     }
 
     public class EventSorter : IComparer<ListViewItem>, IComparer

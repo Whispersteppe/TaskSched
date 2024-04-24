@@ -23,7 +23,7 @@ namespace TaskSched.Common.DataModel
 
     public class ExpandedResult<T> : ExpandedResult
     {
-        public T Result { get; set; }
+        public T? Result { get; set; }
     }
 
     public class ResultMessage

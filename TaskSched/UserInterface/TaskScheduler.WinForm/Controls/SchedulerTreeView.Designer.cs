@@ -46,6 +46,7 @@
             // 
             treeScheduler.AllowDrop = true;
             treeScheduler.Dock = DockStyle.Fill;
+            treeScheduler.HideSelection = false;
             treeScheduler.Location = new Point(0, 23);
             treeScheduler.Name = "treeScheduler";
             treeScheduler.Size = new Size(150, 166);

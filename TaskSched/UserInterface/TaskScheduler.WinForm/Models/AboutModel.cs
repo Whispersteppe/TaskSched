@@ -14,6 +14,10 @@ namespace TaskScheduler.WinForm.Models
         public string Version { get; private set; } = "Unknown";
 
         [ReadOnly(true)]
+        [Category("Versioning")]
+        public string Configuration { get; private set; } = "Unknown";
+
+        [ReadOnly(true)]
         [Category("Licensing")]
         public string Copyright { get; private set; } = "Copyright 2024 Whispersteppe Consulting.";
 
@@ -82,6 +86,10 @@ namespace TaskScheduler.WinForm.Models
                 else if (attribute is BuildDateTimeAttribute buildDateTimeAttribute)
                 {
                     BuildTime = buildDateTimeAttribute.Built.ToString();
+                }
+                else if (attribute is AssemblyConfigurationAttribute configurationAttribute)
+                {
+                    Configuration = configurationAttribute.Configuration;
                 }
             }
         }

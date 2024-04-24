@@ -21,8 +21,21 @@ using SQLitePCL;
 namespace TaskScheduler.WinForm
 {
 
+    public class EventCancellationArgs
+    {
+        public bool Cancel { get; set; } = false;
+        public List<string> CancelReasons { get; private set; } = [];
+        public void AddReason(string reason)
+        {
+            CancelReasons.Add(reason);
+        }
+    }
+
+
     public delegate Task ITreeItemEvent(ITreeItem treeItem);
     public delegate Task ITreeItemParentEvent(ITreeItem? parentItem, ITreeItem childItem);
+    public delegate void ITreeItemEventCheck(ITreeItem treeItem, EventCancellationArgs cancelArgs);
+    public delegate Task ItemEvent(Guid itemId);
 
 
     /// <summary>
@@ -60,6 +73,8 @@ namespace TaskScheduler.WinForm
         public event ITreeItemEvent? OnTreeItemRemoved;
         public event ITreeItemEvent? OnTreeItemUpdated;
         public event ITreeItemEvent? OnTreeItemSelected;
+        public event ITreeItemEventCheck? OnTreeItemRemoving;
+        public event ItemEvent? OnItemSelected;
 
         #endregion
 
@@ -480,6 +495,14 @@ namespace TaskScheduler.WinForm
         }
 
 
+        public async Task SelectItem(Guid itemId)
+        {
+
+            if (OnItemSelected != null)
+            {
+                await OnItemSelected(itemId);
+            }
+        }
 
 
         #region data manipulation items
@@ -841,12 +864,15 @@ namespace TaskScheduler.WinForm
                         }
 
                         var rsltGet = await _eventStore.Get(currentId);
-                        _managerMapper.Map<dataModel.Event, EventModel>(rsltGet.Result, eventModel);
-                        eventItem = rsltGet.Result;
+                        if (rsltGet.Result != null)
+                        {
+                            _managerMapper.Map<dataModel.Event, EventModel>(rsltGet.Result, eventModel);
+                            eventItem = rsltGet.Result;
 
-                        item = eventModel;
-                        await _schedulerEngine.UpdateEvent(eventItem);
+                            item = eventModel;
+                            await _schedulerEngine.UpdateEvent(eventItem);
 
+                        }
                         break;
                     }
                 default:
@@ -912,6 +938,19 @@ namespace TaskScheduler.WinForm
 
         public async Task DeleteItem(ITreeItem model)
         {
+            EventCancellationArgs args = new EventCancellationArgs();
+
+
+            OnTreeItemRemoving?.Invoke(model, args);
+            if (args.Cancel == true)
+            {
+                foreach (var item in args.CancelReasons)
+                {
+                    _logger.LogInformation($"Delete cancelled {model.DisplayName} - {item}");
+                }
+                return;
+            }
+            
 
             switch (model.TreeItemType)
             {
@@ -934,17 +973,17 @@ namespace TaskScheduler.WinForm
                     }
                 default:
                     {
+                        _logger.LogInformation($"Delete cancelled {model.DisplayName} - type is not recognized");
                         return;
                     }
             }
 
 
-            if (OnTreeItemCreated != null)
+            if (OnTreeItemRemoved != null)
             {
                 await OnTreeItemRemoved(model);
             }
 
-            return;
         }
 
         #endregion

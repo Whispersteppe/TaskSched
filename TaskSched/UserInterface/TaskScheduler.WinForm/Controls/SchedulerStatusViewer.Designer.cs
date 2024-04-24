@@ -31,8 +31,8 @@
             lvEvents = new ListView();
             colName = new ColumnHeader();
             colNextExecution = new ColumnHeader();
-            colEnabled = new ColumnHeader();
             colLastExecution = new ColumnHeader();
+            colEnabled = new ColumnHeader();
             SuspendLayout();
             // 
             // lvEvents
@@ -47,6 +47,7 @@
             lvEvents.UseCompatibleStateImageBehavior = false;
             lvEvents.View = View.Details;
             lvEvents.ColumnClick += lvEvents_ColumnClick;
+            lvEvents.DoubleClick += lvEvents_DoubleClick;
             // 
             // colName
             // 
@@ -56,15 +57,15 @@
             // 
             colNextExecution.Text = "Next Execution";
             // 
-            // colEnabled
-            // 
-            colEnabled.DisplayIndex = 2;
-            colEnabled.Text = "Enabled";
-            // 
             // colLastExecution
             // 
             colLastExecution.DisplayIndex = 3;
             colLastExecution.Text = "Last Execution";
+            // 
+            // colEnabled
+            // 
+            colEnabled.DisplayIndex = 2;
+            colEnabled.Text = "Enabled";
             // 
             // SchedulerStatusViewer
             // 
