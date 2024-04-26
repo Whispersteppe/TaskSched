@@ -239,17 +239,17 @@ namespace TaskScheduler.WinForm.Models
             return menu;
         }
 
-        private void MenuItem_Save_Click(object? sender, EventArgs e)
+        private async void MenuItem_Save_Click(object? sender, EventArgs e)
         {
-            //throw new NotImplementedException();
+            await ScheduleManager.GlobalInstance.SaveModel(this);
         }
-        private void MenuItem_Delete_Click(object? sender, EventArgs e)
+        private async void MenuItem_Delete_Click(object? sender, EventArgs e)
         {
-            //throw new NotImplementedException();
+            await ScheduleManager.GlobalInstance.DeleteItem(this);
         }
-        private void MenuItem_AddNew_Click(object? sender, EventArgs e)
+        private async void MenuItem_AddNew_Click(object? sender, EventArgs e)
         {
-            //throw new NotImplementedException();
+            await ScheduleManager.GlobalInstance.CreateModel(null, TreeItemTypeEnum.ActivityItem);
         }
 
 

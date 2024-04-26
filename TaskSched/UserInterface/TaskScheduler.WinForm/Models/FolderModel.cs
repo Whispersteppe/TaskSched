@@ -200,21 +200,26 @@ namespace TaskScheduler.WinForm.Models
             return menu;
         }
 
-        private void MenuItem_Save_Click(object? sender, EventArgs e)
+        private async void MenuItem_Save_Click(object? sender, EventArgs e)
         {
-            //throw new NotImplementedException();
+            await ScheduleManager.GlobalInstance.SaveModel(this);
         }
-        private void MenuItem_Delete_Click(object? sender, EventArgs e)
+        private async void MenuItem_Delete_Click(object? sender, EventArgs e)
         {
-            //throw new NotImplementedException();
+            if (await ScheduleManager.GlobalInstance.CanDeleteItem(this))
+            {
+                await ScheduleManager.GlobalInstance.DeleteItem(this);
+            }
         }
-        private void MenuItem_AddNewFolder_Click(object? sender, EventArgs e)
+        private async void MenuItem_AddNewFolder_Click(object? sender, EventArgs e)
         {
-            //throw new NotImplementedException();
+            var newItem = await ScheduleManager.GlobalInstance.CreateModel(this, TreeItemTypeEnum.FolderItem);
+            await ScheduleManager.GlobalInstance.SelectItem(newItem.ID.Value);
         }
-        private void MenuItem_AddNewEvent_Click(object? sender, EventArgs e)
+        private async void MenuItem_AddNewEvent_Click(object? sender, EventArgs e)
         {
-            //throw new NotImplementedException();
+            var newItem = await ScheduleManager.GlobalInstance.CreateModel(this, TreeItemTypeEnum.EventItem);
+            await ScheduleManager.GlobalInstance.SelectItem(newItem.ID.Value);
         }
 
     }
