@@ -501,6 +501,8 @@ namespace TaskScheduler.WinForm.Controls
         {
             if (e.Button == MouseButtons.Left) return; //  we only want the off mouse button
 
+            treeScheduler.SelectedNode = e.Node;
+
             if (e.Node.Tag is ITreeItem treeItem)
             {
 
