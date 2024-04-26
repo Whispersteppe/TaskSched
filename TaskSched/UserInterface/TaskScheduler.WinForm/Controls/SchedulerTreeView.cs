@@ -13,8 +13,8 @@ namespace TaskScheduler.WinForm.Controls
         {
             InitializeComponent();
 
-//            Icon icon = new Icon()
-//            treeScheduler.ImageList.Images.Add()
+            //            Icon icon = new Icon()
+            //            treeScheduler.ImageList.Images.Add()
         }
 
         public async Task SetScheduleManager(ScheduleManager scheduleManager)
@@ -109,7 +109,7 @@ namespace TaskScheduler.WinForm.Controls
 
         }
 
-        
+
 
         private ITreeItem? FindItemByID(Guid? ID)
         {
@@ -222,7 +222,7 @@ namespace TaskScheduler.WinForm.Controls
                 case TreeItemTypeEnum.ExecutionEngineStatusItem: break;
                 case TreeItemTypeEnum.ConfigItem: break;
                 case TreeItemTypeEnum.AboutItem: break;
-                default:break;
+                default: break;
             }
         }
 
@@ -240,7 +240,7 @@ namespace TaskScheduler.WinForm.Controls
                 };
 
                 node.Tag = item;
-                
+
 
 
                 AddChildren(node, item, searchText);
@@ -251,7 +251,7 @@ namespace TaskScheduler.WinForm.Controls
                 }
             }
 
-            if (string.IsNullOrEmpty(searchText) == false) 
+            if (string.IsNullOrEmpty(searchText) == false)
             {
                 EnsureNodeTreeVisible(treeScheduler.Nodes);
             }
@@ -259,7 +259,7 @@ namespace TaskScheduler.WinForm.Controls
 
         private static void EnsureNodeTreeVisible(TreeNodeCollection nodes)
         {
-            foreach(TreeNode node in nodes)
+            foreach (TreeNode node in nodes)
             {
                 node.EnsureVisible();
                 EnsureNodeTreeVisible(node.Nodes);
@@ -497,5 +497,20 @@ namespace TaskScheduler.WinForm.Controls
 
         #endregion
 
+        private void treeScheduler_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) return; //  we only want the off mouse button
+
+            if (e.Node.Tag is ITreeItem treeItem)
+            {
+
+                ContextMenuStrip? menu = treeItem.GetContextMenu();
+                if (menu != null)
+                {
+                    
+                    menu.Show(treeScheduler,  new Point(e.X, e.Y));
+                }
+            }
+        }
     }
 }

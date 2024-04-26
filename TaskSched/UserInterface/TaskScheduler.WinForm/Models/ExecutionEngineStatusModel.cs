@@ -54,5 +54,12 @@ namespace TaskScheduler.WinForm.Models
         {
             return true;
         }
+
+        public ContextMenuStrip? GetContextMenu()
+        {
+
+            return null;
+
+        }
     }
 }

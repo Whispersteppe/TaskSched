@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using TaskScheduler.WinForm.Controls;
 
 namespace TaskScheduler.WinForm.Models
 {
@@ -97,6 +98,11 @@ namespace TaskScheduler.WinForm.Models
         public bool ContainsText(string text)
         {
             return false;
+        }
+
+        public ContextMenuStrip? GetContextMenu()
+        {
+            return null;
         }
     }
 

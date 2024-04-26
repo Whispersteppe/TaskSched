@@ -88,6 +88,13 @@ namespace TaskScheduler.WinForm.Models
             return scheduleItems;
 
         }
+
+        public ContextMenuStrip? GetContextMenu()
+        {
+
+            return null;
+
+        }
     }
 
     public class ScheduleStatusItem

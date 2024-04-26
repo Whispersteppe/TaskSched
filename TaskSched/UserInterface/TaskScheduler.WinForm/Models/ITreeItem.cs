@@ -20,6 +20,8 @@ namespace TaskScheduler.WinForm.Models
 
         TreeItemTypeEnum TreeItemType { get; }
 
+        ContextMenuStrip? GetContextMenu();
+
         bool CanMoveItem(ITreeItem possibleNewParent);
         bool CanAddItem(ITreeItem possibleNewChild);
         List<TreeItemTypeEnum> AllowedMoveToParentTypes { get; }

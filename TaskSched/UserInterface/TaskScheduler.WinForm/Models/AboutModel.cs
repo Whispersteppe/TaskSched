@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using TaskSched.Common.FieldValidator;
 using TaskScheduler.WinForm.Configuration;
+using TaskScheduler.WinForm.Controls;
 using TaskScheduler.WinForm.Controls.PropertyGridHelper;
 
 namespace TaskScheduler.WinForm.Models
@@ -151,6 +152,13 @@ namespace TaskScheduler.WinForm.Models
         public bool ContainsText(string text)
         {
             return true;
+        }
+
+        public ContextMenuStrip? GetContextMenu()
+        {
+
+            return null;
+
         }
     }
 

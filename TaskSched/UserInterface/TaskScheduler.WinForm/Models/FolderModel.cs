@@ -187,6 +187,36 @@ namespace TaskScheduler.WinForm.Models
             return false;
         }
 
+        public ContextMenuStrip? GetContextMenu()
+        {
+            ContextMenuStrip menu = menu = new ContextMenuStrip();
+            menu.Items.AddRange((ToolStripItem[])[
+                new ToolStripMenuItem("Save", null, MenuItem_Save_Click),
+                new ToolStripMenuItem("Delete", null, MenuItem_Delete_Click),
+                new ToolStripMenuItem("Add Folder", null, MenuItem_AddNewFolder_Click),
+                new ToolStripMenuItem("Add Event", null, MenuItem_AddNewEvent_Click),
+            ]);
+
+            return menu;
+        }
+
+        private void MenuItem_Save_Click(object? sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+        private void MenuItem_Delete_Click(object? sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+        private void MenuItem_AddNewFolder_Click(object? sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+        private void MenuItem_AddNewEvent_Click(object? sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
     }
 
 }

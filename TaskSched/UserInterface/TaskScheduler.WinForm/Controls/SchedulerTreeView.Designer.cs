@@ -53,6 +53,7 @@
             treeScheduler.TabIndex = 1;
             treeScheduler.ItemDrag += treeScheduler_ItemDrag;
             treeScheduler.AfterSelect += treeScheduler_AfterSelect;
+            treeScheduler.NodeMouseClick += treeScheduler_NodeMouseClick;
             treeScheduler.DragDrop += treeScheduler_DragDrop;
             treeScheduler.DragEnter += treeScheduler_DragEnter;
             treeScheduler.DragOver += treeScheduler_DragOver;
