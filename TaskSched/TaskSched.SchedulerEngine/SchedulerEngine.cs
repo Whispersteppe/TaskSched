@@ -95,7 +95,7 @@ namespace TaskSched.SchedulerEngine
         /// </summary>
         /// <param name="eventItem"></param>
         /// <returns></returns>
-        private async Task LoadEvent(Event eventItem)
+        private async Task LoadEvent(Event eventItem, bool launchIfAble)
         {
             if (eventItem == null) return;
             if (eventItem.IsActive == false) return;
@@ -134,19 +134,20 @@ namespace TaskSched.SchedulerEngine
 
                         await _scheduler.ScheduleJob(trigger);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         _logger.LogError(ex, $"Error creating trigger for {eventItem.Name}");
                     }
                 }
 
-                if (eventItem.CatchUpOnStartup == true)
+                if (launchIfAble == true && eventItem.CatchUpOnStartup == true)
                 {
                     if (DateTime.Now > eventItem.NextExecution)
                     {
                         await _scheduler.TriggerJob(eventItem.JobKey());
                     }
                 }
+                
             }
 
         }
@@ -170,7 +171,7 @@ namespace TaskSched.SchedulerEngine
 
             if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
-                await LoadEvent(rsltGet.Result);
+                await LoadEvent(rsltGet.Result, false);
             }
 
             return rsltCreate;
@@ -243,7 +244,7 @@ namespace TaskSched.SchedulerEngine
 
             if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
-                await LoadEvent(eventItem);
+                await LoadEvent(eventItem, false);
             }
 
             return rslt;
@@ -294,7 +295,7 @@ namespace TaskSched.SchedulerEngine
 
             foreach (var eventItem in rslt.Result)
             {
-                await LoadEvent(eventItem);
+                await LoadEvent(eventItem, true);
             }
         }
 

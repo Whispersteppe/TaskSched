@@ -396,7 +396,8 @@ namespace TaskScheduler.WinForm
                 MaxLogCount = 200, 
                 MinLogLevel = NLog.LogLevel.Trace, 
                 Name = "Scheduler Log", 
-                AllowedLoggerNames = ["Quartz", "TaskSched.SchedulerEngine"] 
+                AllowedLoggerNames = ["Quartz", "TaskSched.SchedulerEngine"], 
+                DeniedMessageText = ["Batch acquisition of 0 triggers"]
             };
             LogViewModel logviewScheduler = new LogViewModel(_configScheduler, _logEmitter);
             topModel.Children.Add(logviewScheduler);
@@ -595,7 +596,7 @@ namespace TaskScheduler.WinForm
 
                         var rsltActivity = await _activityStore.GetDefault();
                         var defaultActivity = rsltActivity.Result;
-                        string defaultSchedule = "0 0 8 * * ? *";
+                        string defaultSchedule = $"0 {DateTime.Now.Minute} {DateTime.Now.Hour} ? * {DateTime.Now.ToString("ddd").ToUpper()} *";
 
                         if (parentItem != null && parentItem is FolderModel folder)
                         {

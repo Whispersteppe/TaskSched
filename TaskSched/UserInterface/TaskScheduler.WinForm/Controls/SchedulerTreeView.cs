@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using TaskScheduler.WinForm.Models;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+﻿using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls
 {
@@ -24,6 +12,9 @@ namespace TaskScheduler.WinForm.Controls
         public SchedulerTreeView()
         {
             InitializeComponent();
+
+//            Icon icon = new Icon()
+//            treeScheduler.ImageList.Images.Add()
         }
 
         public async Task SetScheduleManager(ScheduleManager scheduleManager)
@@ -213,6 +204,28 @@ namespace TaskScheduler.WinForm.Controls
             }
         }
 
+        private void SetImageForNode(ITreeItem item, TreeNode node)
+        {
+            switch (item.TreeItemType)
+            {
+                case TreeItemTypeEnum.Unknown: break;
+                case TreeItemTypeEnum.RootItem: break;
+                case TreeItemTypeEnum.ActivityItem: break;
+                case TreeItemTypeEnum.FolderItem: break;
+                case TreeItemTypeEnum.EventItem: break;
+                case TreeItemTypeEnum.ActivityRootItem: break;
+                case TreeItemTypeEnum.FolderRootItem: break;
+                case TreeItemTypeEnum.LogRootItem: break;
+                case TreeItemTypeEnum.StatusRootItem: break;
+                case TreeItemTypeEnum.LogViewItem: break;
+                case TreeItemTypeEnum.SchedulerStatusItem: break;
+                case TreeItemTypeEnum.ExecutionEngineStatusItem: break;
+                case TreeItemTypeEnum.ConfigItem: break;
+                case TreeItemTypeEnum.AboutItem: break;
+                default:break;
+            }
+        }
+
         private void SetTreeviewCollection(List<ITreeItem> list, string searchText)
         {
 
@@ -227,6 +240,8 @@ namespace TaskScheduler.WinForm.Controls
                 };
 
                 node.Tag = item;
+                
+
 
                 AddChildren(node, item, searchText);
 
@@ -292,10 +307,12 @@ namespace TaskScheduler.WinForm.Controls
             }
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
             if (txtSearch.Text.Length == 0)
             {
+                //  lets reset our list.  it's about due
+                _list = await _scheduleManager.GetAllRoots();
                 SetTreeviewCollection(_list, "");
             }
             else

@@ -70,8 +70,8 @@ namespace TaskSched.DataStore
 
             db.Event item = _mapper.Map<db.Event>(eventItem);
 
-            item.LastExecution = DateTime.MinValue;
-            item.NextExecution = DateTime.MinValue;
+            item.LastExecution = eventItem.LastExecution == DateTime.MinValue ? DateTime.Now : eventItem.LastExecution;
+            item.NextExecution = eventItem.NextExecution == DateTime.MinValue ? DateTime.Now : eventItem.NextExecution;
             item.Id = Guid.Empty;
 
             using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())

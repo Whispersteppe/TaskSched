@@ -15,6 +15,8 @@ namespace TaskScheduler.WinForm.Models
         public int MaxLogCount { get; set; } = 100;
         public List<string> AllowedLoggerNames { get; set; } = [];
         public List<string> DeniedLoggerNames { get; set; } = [];
+
+        public List<string> DeniedMessageText { get; set; } = [];
     }
 
 
@@ -71,6 +73,21 @@ namespace TaskScheduler.WinForm.Models
                     }
                 }
                 if (loggerNameFound == true) return;  //  in this case, if found we want to leave
+            }
+
+            if (_config.DeniedMessageText.Count > 0)
+            {
+                bool textFound = false;
+                foreach (string textString in _config.DeniedMessageText)
+                {
+                    if (logEventInfo.Message.Contains(textString, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        textFound = true;
+                        break;
+                    }
+                }
+                if (textFound == true) return;  //  in this case, if found we want to leave
+
             }
 
 
