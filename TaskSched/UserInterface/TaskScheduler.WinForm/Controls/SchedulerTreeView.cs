@@ -1,4 +1,5 @@
-﻿using TaskScheduler.WinForm.Models;
+﻿using System.Xml.Linq;
+using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls
 {
@@ -193,6 +194,7 @@ namespace TaskScheduler.WinForm.Controls
                     };
 
                     node.Tag = childItem;
+                    SetImageForNode(node);
                     parentNode.Nodes.Add(node);
 
                     //  select the new node
@@ -204,27 +206,7 @@ namespace TaskScheduler.WinForm.Controls
             }
         }
 
-        private void SetImageForNode(ITreeItem item, TreeNode node)
-        {
-            switch (item.TreeItemType)
-            {
-                case TreeItemTypeEnum.Unknown: break;
-                case TreeItemTypeEnum.RootItem: break;
-                case TreeItemTypeEnum.ActivityItem: break;
-                case TreeItemTypeEnum.FolderItem: break;
-                case TreeItemTypeEnum.EventItem: break;
-                case TreeItemTypeEnum.ActivityRootItem: break;
-                case TreeItemTypeEnum.FolderRootItem: break;
-                case TreeItemTypeEnum.LogRootItem: break;
-                case TreeItemTypeEnum.StatusRootItem: break;
-                case TreeItemTypeEnum.LogViewItem: break;
-                case TreeItemTypeEnum.SchedulerStatusItem: break;
-                case TreeItemTypeEnum.ExecutionEngineStatusItem: break;
-                case TreeItemTypeEnum.ConfigItem: break;
-                case TreeItemTypeEnum.AboutItem: break;
-                default: break;
-            }
-        }
+
 
         private void SetTreeviewCollection(List<ITreeItem> list, string searchText)
         {
@@ -241,7 +223,7 @@ namespace TaskScheduler.WinForm.Controls
 
                 node.Tag = item;
 
-
+                SetImageForNode(node);
 
                 AddChildren(node, item, searchText);
 
@@ -267,7 +249,7 @@ namespace TaskScheduler.WinForm.Controls
 
         }
 
-        private static void AddChildren(TreeNode parentNode, ITreeItem parentTreeItem, string searchText)
+        private void AddChildren(TreeNode parentNode, ITreeItem parentTreeItem, string searchText)
         {
             if (parentTreeItem.CanHaveChildren() == true)
             {
@@ -278,6 +260,7 @@ namespace TaskScheduler.WinForm.Controls
                     TreeNode node = new TreeNode(item.DisplayName);
 
                     node.Tag = item;
+                    SetImageForNode(node);
 
                     AddChildren(node, item, searchText);
 
@@ -509,8 +492,72 @@ namespace TaskScheduler.WinForm.Controls
                 ContextMenuStrip? menu = treeItem.GetContextMenu();
                 if (menu != null)
                 {
-                    
-                    menu.Show(treeScheduler,  new Point(e.X, e.Y));
+
+                    menu.Show(treeScheduler, new Point(e.X, e.Y));
+                }
+            }
+        }
+
+        private void treeScheduler_AfterCollapse(object sender, TreeViewEventArgs e)
+        {
+            SetImageForNode(e.Node);
+        }
+
+        private void treeScheduler_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            SetImageForNode(e.Node);
+
+        }
+
+        private void SetImageForNode(TreeNode selectedNode)
+        {
+            if (selectedNode.Tag != null && selectedNode.Tag is ITreeItem treeItem)
+            {
+
+                switch (treeItem.TreeItemType)
+                {
+                    case TreeItemTypeEnum.FolderItem:
+                        if (selectedNode.IsExpanded == true)
+                        {
+                            selectedNode.ImageIndex = 2;
+                            selectedNode.SelectedImageIndex = 2;
+                        }
+                        else
+                        {
+                            selectedNode.ImageIndex = 1;
+                            selectedNode.SelectedImageIndex = 1;
+                        }
+                        break;
+                    case TreeItemTypeEnum.EventItem:
+                        selectedNode.ImageIndex = 3;
+                        selectedNode.SelectedImageIndex = 3;
+                        break;
+                    case TreeItemTypeEnum.ActivityItem:
+                        break;
+                    case TreeItemTypeEnum.LogRootItem:
+                        break;
+                    case TreeItemTypeEnum.Unknown:
+                        break;
+                    case TreeItemTypeEnum.RootItem:
+                        break;
+                    case TreeItemTypeEnum.ActivityRootItem:
+                        break;
+                    case TreeItemTypeEnum.FolderRootItem:
+                        break;
+                    case TreeItemTypeEnum.StatusRootItem:
+                        break;
+                    case TreeItemTypeEnum.LogViewItem:
+                        break;
+                    case TreeItemTypeEnum.SchedulerStatusItem:
+                        break;
+                    case TreeItemTypeEnum.ExecutionEngineStatusItem:
+                        break;
+                    case TreeItemTypeEnum.ConfigItem:
+                        break;
+                    case TreeItemTypeEnum.AboutItem:
+                        break;
+                    default:
+                        break;
                 }
             }
         }

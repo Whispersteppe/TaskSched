@@ -32,6 +32,8 @@ namespace TaskScheduler.WinForm
         {
             InitializeComponent();
 
+
+
             _config = new TaskSchedConfigurationHandler();
 
 

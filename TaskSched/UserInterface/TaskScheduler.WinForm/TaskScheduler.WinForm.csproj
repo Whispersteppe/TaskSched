@@ -20,11 +20,19 @@
     <FileVersion>1.0.*</FileVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="ResourceManager.cs" />
+  </ItemGroup>
+
 	<ItemGroup>
 	  <AssemblyAttribute Include="TaskScheduler.WinForm.Configuration.BuildDateTime">
 		  <_Parameter1>$([System.DateTime]::Now.ToString("s"))</_Parameter1>
 	  </AssemblyAttribute>
   </ItemGroup>
+
+	<ItemGroup>
+	  <None Include="ResourceManager.cs" />
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CompareNETObjects" Version="4.83.0" />

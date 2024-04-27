@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SchedulerTreeView));
             txtSearch = new TextBox();
             treeScheduler = new TreeView();
+            treeviewImages = new ImageList(components);
             SuspendLayout();
             // 
             // txtSearch
@@ -47,16 +50,31 @@
             treeScheduler.AllowDrop = true;
             treeScheduler.Dock = DockStyle.Fill;
             treeScheduler.HideSelection = false;
+            treeScheduler.ImageIndex = 0;
+            treeScheduler.ImageList = treeviewImages;
             treeScheduler.Location = new Point(0, 23);
             treeScheduler.Name = "treeScheduler";
+            treeScheduler.SelectedImageIndex = 0;
             treeScheduler.Size = new Size(150, 166);
             treeScheduler.TabIndex = 1;
+            treeScheduler.AfterCollapse += treeScheduler_AfterCollapse;
+            treeScheduler.AfterExpand += treeScheduler_AfterExpand;
             treeScheduler.ItemDrag += treeScheduler_ItemDrag;
             treeScheduler.AfterSelect += treeScheduler_AfterSelect;
             treeScheduler.NodeMouseClick += treeScheduler_NodeMouseClick;
             treeScheduler.DragDrop += treeScheduler_DragDrop;
             treeScheduler.DragEnter += treeScheduler_DragEnter;
             treeScheduler.DragOver += treeScheduler_DragOver;
+            // 
+            // treeviewImages
+            // 
+            treeviewImages.ColorDepth = ColorDepth.Depth32Bit;
+            treeviewImages.ImageStream = (ImageListStreamer)resources.GetObject("treeviewImages.ImageStream");
+            treeviewImages.TransparentColor = Color.Transparent;
+            treeviewImages.Images.SetKeyName(0, "Unknown.ico");
+            treeviewImages.Images.SetKeyName(1, "ClosedFolder.ico");
+            treeviewImages.Images.SetKeyName(2, "OpenFolder.ico");
+            treeviewImages.Images.SetKeyName(3, "Checkbox.ico");
             // 
             // SchedulerTreeView
             // 
@@ -74,5 +92,6 @@
 
         private TextBox txtSearch;
         private TreeView treeScheduler;
+        private ImageList treeviewImages;
     }
 }
