@@ -71,10 +71,15 @@
             treeviewImages.ColorDepth = ColorDepth.Depth32Bit;
             treeviewImages.ImageStream = (ImageListStreamer)resources.GetObject("treeviewImages.ImageStream");
             treeviewImages.TransparentColor = Color.Transparent;
-            treeviewImages.Images.SetKeyName(0, "Unknown.ico");
-            treeviewImages.Images.SetKeyName(1, "ClosedFolder.ico");
-            treeviewImages.Images.SetKeyName(2, "OpenFolder.ico");
-            treeviewImages.Images.SetKeyName(3, "Checkbox.ico");
+            treeviewImages.Images.SetKeyName(0, "Unknown");
+            treeviewImages.Images.SetKeyName(1, "ClosedFolder");
+            treeviewImages.Images.SetKeyName(2, "OpenFolder");
+            treeviewImages.Images.SetKeyName(3, "Event");
+            treeviewImages.Images.SetKeyName(4, "Log.png");
+            treeviewImages.Images.SetKeyName(5, "Status");
+            treeviewImages.Images.SetKeyName(6, "Configuration");
+            treeviewImages.Images.SetKeyName(7, "About");
+            treeviewImages.Images.SetKeyName(8, "Activities");
             // 
             // SchedulerTreeView
             // 

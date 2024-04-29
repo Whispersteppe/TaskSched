@@ -533,30 +533,64 @@ namespace TaskScheduler.WinForm.Controls
                         selectedNode.SelectedImageIndex = 3;
                         break;
                     case TreeItemTypeEnum.ActivityItem:
+                        selectedNode.ImageIndex = 8;
+                        selectedNode.SelectedImageIndex = 8;
                         break;
                     case TreeItemTypeEnum.LogRootItem:
+                        selectedNode.ImageIndex = 4;
+                        selectedNode.SelectedImageIndex = 4;
                         break;
                     case TreeItemTypeEnum.Unknown:
+                        selectedNode.ImageIndex = 0;
+                        selectedNode.SelectedImageIndex = 0;
                         break;
                     case TreeItemTypeEnum.RootItem:
+                        selectedNode.ImageIndex = 0;
+                        selectedNode.SelectedImageIndex = 0;
                         break;
                     case TreeItemTypeEnum.ActivityRootItem:
+                        selectedNode.ImageIndex = 8;
+                        selectedNode.SelectedImageIndex = 8;
                         break;
                     case TreeItemTypeEnum.FolderRootItem:
+                        if (selectedNode.IsExpanded == true)
+                        {
+                            selectedNode.ImageIndex = 2;
+                            selectedNode.SelectedImageIndex = 2;
+                        }
+                        else
+                        {
+                            selectedNode.ImageIndex = 1;
+                            selectedNode.SelectedImageIndex = 1;
+                        }
                         break;
                     case TreeItemTypeEnum.StatusRootItem:
+                        selectedNode.ImageIndex = 5;
+                        selectedNode.SelectedImageIndex = 5;
                         break;
                     case TreeItemTypeEnum.LogViewItem:
+                        selectedNode.ImageIndex = 4;
+                        selectedNode.SelectedImageIndex = 4;
                         break;
                     case TreeItemTypeEnum.SchedulerStatusItem:
+                        selectedNode.ImageIndex = 5;
+                        selectedNode.SelectedImageIndex = 5;
                         break;
                     case TreeItemTypeEnum.ExecutionEngineStatusItem:
+                        selectedNode.ImageIndex = 5;
+                        selectedNode.SelectedImageIndex = 5;
                         break;
                     case TreeItemTypeEnum.ConfigItem:
+                        selectedNode.ImageIndex = 6;
+                        selectedNode.SelectedImageIndex = 6;
                         break;
                     case TreeItemTypeEnum.AboutItem:
+                        selectedNode.ImageIndex = 7;
+                        selectedNode.SelectedImageIndex = 7;
                         break;
                     default:
+                        selectedNode.ImageIndex = 0;
+                        selectedNode.SelectedImageIndex = 0;
                         break;
                 }
             }

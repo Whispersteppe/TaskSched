@@ -18,6 +18,7 @@
     <AssemblyVersion>1.0.*</AssemblyVersion>
 	<Deterministic>false</Deterministic>
     <FileVersion>1.0.*</FileVersion>
+    <ApplicationIcon>WebForm(ASPX)_815_color.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,10 @@
 		  <_Parameter1>$([System.DateTime]::Now.ToString("s"))</_Parameter1>
 	  </AssemblyAttribute>
   </ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="WebForm(ASPX)_815_color.ico" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <None Include="ResourceManager.cs" />
