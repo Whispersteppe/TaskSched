@@ -257,34 +257,34 @@ namespace TaskScheduler.WinForm
             return scheduleItems;
         }
 
-        private void MapFolderChildren(FolderModel folderModel, dataModel.Folder folder)
-        {
-            folderModel?.ChildFolders?.Clear();
-            folderModel?.Events?.Clear();
-            if (folder.ChildFolders != null)
-            {
-                foreach (var childFolder in folder.ChildFolders)
-                {
-                    FolderModel childModel = _managerMapper.Map<dataModel.Folder, FolderModel>(childFolder);
-                    folderModel?.ChildFolders?.Add(childModel);
+        //private void MapFolderChildren(FolderModel folderModel, dataModel.Folder folder)
+        //{
+        //    folderModel?.ChildFolders?.Clear();
+        //    folderModel?.Events?.Clear();
+        //    if (folder.ChildFolders != null)
+        //    {
+        //        foreach (var childFolder in folder.ChildFolders)
+        //        {
+        //            FolderModel childModel = _managerMapper.Map<dataModel.Folder, FolderModel>(childFolder);
+        //            folderModel?.ChildFolders?.Add(childModel);
 
-                    //  map all the children
-                    MapFolderChildren(childModel, childFolder);
+        //            //  map all the children
+        //            MapFolderChildren(childModel, childFolder);
 
-                }
-            }
+        //        }
+        //    }
 
-            if (folder.Events != null)
-            {
-                foreach (var childEvent in folder.Events)
-                {
-                    EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
+        //    if (folder.Events != null)
+        //    {
+        //        foreach (var childEvent in folder.Events)
+        //        {
+        //            EventModel eventModel = _managerMapper.Map<dataModel.Event, EventModel>(childEvent);
 
-                    folderModel?.Events?.Add(eventModel);
+        //            folderModel?.Events?.Add(eventModel);
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         public async Task<FolderRootModel> GetFolderModels()
         {
@@ -317,7 +317,7 @@ namespace TaskScheduler.WinForm
                     topModel.Children.Add(model);
 
                     //  map all the children
-                    MapFolderChildren(model, folder);
+                    //MapFolderChildren(model, folder);
 
                 }
 
@@ -510,6 +510,8 @@ namespace TaskScheduler.WinForm
 
         public async Task<ITreeItem> RefreshModel(ITreeItem treeItem)
         {
+
+
             ITreeItem refreshedItem = treeItem;
 
             if (treeItem.ID == null) return treeItem; //  no id - maybe a root

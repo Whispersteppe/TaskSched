@@ -44,10 +44,23 @@ namespace TaskScheduler.WinForm.Controls
                 builder.AddButton("Delete", TsDelete_Click);
                 builder.AddButton("Add Folder", TsCreateChildFolder);
                 builder.AddButton("Add Event", TsCreateChildEvent);
+                builder.AddButton("Launch All", TsLaunchAllEvent);
 
                 return builder.ToolStripItems;
 
             }
+        }
+
+        private async void TsLaunchAllEvent(object? sender, EventArgs e)
+        {
+            if (_folderModel != null && _folderModel.Events != null)
+            {
+                foreach (var item in _folderModel.Events)
+                {
+                    await _scheduleManager.LaunchEvent(item);
+                }
+            }
+
         }
 
         private async void TsCreateChildFolder(object? sender, EventArgs e)

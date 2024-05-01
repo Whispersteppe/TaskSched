@@ -88,6 +88,8 @@ namespace TaskSched.DataStore
 
                 var entity = await _dbContext
                 .Folders
+                .Include(x=>x.Events).ThenInclude(x=>x.Activities).ThenInclude(x=>x.Fields)
+                .Include(x=>x.Events).ThenInclude(x=>x.Schedules)
                 .FirstOrDefaultAsync(x => x.Id == folderId)
                 ;
 
