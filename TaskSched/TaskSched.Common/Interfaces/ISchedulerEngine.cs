@@ -1,7 +1,9 @@
 ﻿using TaskSched.Common.DataModel;
+using TaskSched.Common.Delegates;
 
 namespace TaskSched.Common.Interfaces
 {
+
     public interface ISchedulerEngine
     {
 
@@ -18,6 +20,8 @@ namespace TaskSched.Common.Interfaces
 
         Task ExecuteNow(Event eventItem);
 
+        public event EventAction OnStartEvent;
+        public event EventAction OnFinishEvent;
 
     }
 }

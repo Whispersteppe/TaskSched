@@ -2,6 +2,7 @@
 using Quartz;
 using System.Collections.Specialized;
 using TaskSched.Common.DataModel;
+using TaskSched.Common.Delegates;
 using TaskSched.Common.Interfaces;
 using TaskSched.SchedulerEngine.Listeners;
 
@@ -26,6 +27,8 @@ namespace TaskSched.SchedulerEngine
         ITriggerListener _triggerListener;
         ISchedulerListener _schedulerListener;
 
+        public event EventAction OnStartEvent;
+        public event EventAction OnFinishEvent;
 
         /// <summary>
         /// Scheduler Engine constructor
@@ -74,7 +77,11 @@ namespace TaskSched.SchedulerEngine
                 .GetResult()
                 ;
 
-            _scheduler.JobFactory = new EngineJobFactory(_executionEngine, _eventStore, _activityStore, _logger);
+            EngineJobFactory factory = new EngineJobFactory(_executionEngine, _eventStore, _activityStore, _logger);
+            factory.OnStartEvent += Handler_OnStartEvent;
+            factory.OnFinishEvent += Handler_OnFinishEvent;
+            _scheduler.JobFactory = factory;
+
             _schedulerListener = new ScheduleListenerLogger(_logger);
             _jobListener = new JobListenerLogger(_logger);
             _triggerListener = new TriggerListenerLogger(_logger);
@@ -88,6 +95,15 @@ namespace TaskSched.SchedulerEngine
 
         }
 
+        private void Handler_OnStartEvent(Common.DataModel.Event context)
+        {
+            OnStartEvent?.Invoke(context);
+        }
+
+        private void Handler_OnFinishEvent(Common.DataModel.Event context)
+        {
+            OnFinishEvent?.Invoke(context);
+        }
 
 
         /// <summary>

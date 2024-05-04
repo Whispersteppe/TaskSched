@@ -1,3 +1,4 @@
+using CommunityToolkit.WinUI.Notifications;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -44,10 +45,37 @@ namespace TaskScheduler.WinForm
             tsStop.Enabled = false;
 
             _engineManager = new ScheduleManager(_config.Configuration, _loggerWrapper.LoggerFactory, _loggerWrapper.LogEmitter);
+            _engineManager.OnStartEvent += _engineManager_OnStartEvent;
+            _engineManager.OnFinishEvent += _engineManager_OnFinishEvent;
 
             _engineManager.OnTreeItemRemoving += _engineManager_OnTreeItemRemoving;
 
             _logger.LogInformation("Starting the application");
+        }
+
+        private void _engineManager_OnFinishEvent(TaskSched.Common.DataModel.Event context)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void _engineManager_OnStartEvent(TaskSched.Common.DataModel.Event context)
+        {
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new MethodInvoker(() => _engineManager_OnStartEvent(context)));
+                }
+                else
+                {
+                    ToastContentBuilder builder = new ToastContentBuilder();
+                    builder.AddText($"Running {context.Name}");
+                    builder.Show(x =>
+                    {
+                        x.ExpirationTime = DateTime.Now.AddSeconds(10);
+                    });
+                }
+
+                
+
         }
 
         private void _engineManager_OnTreeItemRemoving(ITreeItem treeItem, EventCancellationArgs cancelArgs)

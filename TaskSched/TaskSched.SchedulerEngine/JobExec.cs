@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskSched.Common.DataModel;
+using TaskSched.Common.Delegates;
 using TaskSched.Common.Interfaces;
 
 namespace TaskSched.SchedulerEngine
@@ -17,6 +18,9 @@ namespace TaskSched.SchedulerEngine
         IEventStore _eventStore;
         IActivityStore _activityStore;
         ILogger _logger;
+
+        public event EventAction OnStartEvent;
+        public event EventAction OnFinishEvent;
 
         public JobExec(
             IExecutionEngine executionEngine, 
@@ -38,6 +42,7 @@ namespace TaskSched.SchedulerEngine
 
                 var eventGet = await _eventStore.Get(eventId);
                 Event eventItem = eventGet.Result;
+                OnStartEvent?.Invoke(eventItem);
 
                 _logger.LogInformation($"Trigger for {eventItem.Name}. Executing the activity");
 
@@ -53,7 +58,7 @@ namespace TaskSched.SchedulerEngine
                         Activity = activity
                     };
 
-                    _executionEngine.DoActivity(activityContext);
+                    await _executionEngine.DoActivity(activityContext);
 
                 }
 
@@ -63,6 +68,7 @@ namespace TaskSched.SchedulerEngine
 
                 await _eventStore.Update(eventItem);
 
+                OnFinishEvent?.Invoke(eventItem);
 
                 Console.WriteLine($"{DateTime.Now}: {context.JobDetail.Key}");
             }

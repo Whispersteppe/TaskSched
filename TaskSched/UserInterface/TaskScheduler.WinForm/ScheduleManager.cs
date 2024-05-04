@@ -17,6 +17,7 @@ using TaskScheduler.WinForm.Models;
 using TaskSched.Common.DataModel;
 using TaskScheduler.WinForm.NLogCustom;
 using SQLitePCL;
+using TaskSched.Common.Delegates;
 
 namespace TaskScheduler.WinForm
 {
@@ -76,6 +77,10 @@ namespace TaskScheduler.WinForm
         public event ITreeItemEventCheck? OnTreeItemRemoving;
         public event ItemEvent? OnItemSelected;
 
+
+        public event EventAction OnStartEvent;
+        public event EventAction OnFinishEvent;
+
         #endregion
 
 
@@ -117,8 +122,18 @@ namespace TaskScheduler.WinForm
             _executionEngine = new ActivityEngine(_loggerFactory.CreateLogger<ActivityEngine>(), _executionStore);
 
             _schedulerEngine = new SchedulerEngine(_executionEngine, _eventStore, _activityStore, _loggerFactory.CreateLogger<SchedulerEngine>());
+            _schedulerEngine.OnStartEvent += _schedulerEngine_OnStartEvent;
+            _schedulerEngine.OnFinishEvent += _schedulerEngine_OnFinishEvent;
+        }
 
+        private void _schedulerEngine_OnFinishEvent(Event context)
+        {
+            OnFinishEvent?.Invoke(context);
+        }
 
+        private void _schedulerEngine_OnStartEvent(Event context)
+        {
+            OnStartEvent?.Invoke(context);
         }
 
         public async Task Start()
@@ -1005,19 +1020,6 @@ namespace TaskScheduler.WinForm
 
             await _schedulerEngine.ExecuteNow(eventItem);
 
-            //foreach (var eventActivity in eventItem.Activities)
-            //{
-            //    var rsltActivity = await _activityStore.Get(eventActivity.ActivityId);
-
-            //    dataModel.ActivityContext activityContext = new dataModel.ActivityContext()
-            //    {
-            //        Activity = rsltActivity.Result,
-            //        EventActivity = eventActivity,
-            //        EventItem = eventItem
-            //    };
-
-            //    await _executionEngine.DoActivity(activityContext);
-            //}
         }
 
     }
