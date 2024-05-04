@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks.Dataflow;
 using TaskSched.Common.DataModel;
+using TaskSched.Common.Delegates;
 using TaskSched.Common.Interfaces;
 using ActivityContext = TaskSched.Common.DataModel.ActivityContext;
 
@@ -19,6 +20,8 @@ namespace TaskSched.ExecutionEngine
 
         public ExecutionStatusEnum ExecutionStatus { get; private set; }
 
+        public event ActivityAction OnStartActivity;
+        public event ActivityAction OnFinishActivity;
 
         ITargetBlock<ActivityContext>? _pipeline;
 
@@ -43,6 +46,8 @@ namespace TaskSched.ExecutionEngine
         {
             if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
+
+                OnStartActivity?.Invoke(activity);
 
                 _logger.LogInformation($"Starting Activity {activity.EventItem.Name}");
 
@@ -92,7 +97,6 @@ namespace TaskSched.ExecutionEngine
 
             }
 
-
             var notFoundHandler = new TransformBlock<ActivityContext, ActivityContext>(NotFoundHandler);
             _allBlocks.Add(notFoundHandler);
             ingestBuffer.LinkTo(notFoundHandler);
@@ -124,6 +128,7 @@ namespace TaskSched.ExecutionEngine
         {
 
             Debug.WriteLine($"Final Process: {context}");
+            OnFinishActivity?.Invoke( context );
         }
 
 

@@ -80,6 +80,8 @@ namespace TaskScheduler.WinForm
 
         public event EventAction OnStartEvent;
         public event EventAction OnFinishEvent;
+        public event ActivityAction OnStartActivity;
+        public event ActivityAction OnFinishActivity;
 
         #endregion
 
@@ -120,10 +122,22 @@ namespace TaskScheduler.WinForm
             _executionStore = new TaskSched.ExecutionStore.ExecutionStore(_loggerFactory.CreateLogger<TaskSched.ExecutionStore.ExecutionStore>());
 
             _executionEngine = new ActivityEngine(_loggerFactory.CreateLogger<ActivityEngine>(), _executionStore);
+            _executionEngine.OnStartActivity += _executionEngine_OnStartActivity;
+            _executionEngine.OnFinishActivity += _executionEngine_OnFinishActivity;
 
             _schedulerEngine = new SchedulerEngine(_executionEngine, _eventStore, _activityStore, _loggerFactory.CreateLogger<SchedulerEngine>());
             _schedulerEngine.OnStartEvent += _schedulerEngine_OnStartEvent;
             _schedulerEngine.OnFinishEvent += _schedulerEngine_OnFinishEvent;
+        }
+
+        private void _executionEngine_OnFinishActivity(ActivityContext context)
+        {
+            OnFinishActivity?.Invoke(context); 
+        }
+
+        private void _executionEngine_OnStartActivity(ActivityContext context)
+        {
+            OnStartActivity?.Invoke(context);
         }
 
         private void _schedulerEngine_OnFinishEvent(Event context)

@@ -8,4 +8,5 @@ using TaskSched.Common.DataModel;
 namespace TaskSched.Common.Delegates
 {
     public delegate void EventAction(Event context);
+    public delegate void ActivityAction(ActivityContext context);
 }

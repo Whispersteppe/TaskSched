@@ -47,10 +47,34 @@ namespace TaskScheduler.WinForm
             _engineManager = new ScheduleManager(_config.Configuration, _loggerWrapper.LoggerFactory, _loggerWrapper.LogEmitter);
             _engineManager.OnStartEvent += _engineManager_OnStartEvent;
             _engineManager.OnFinishEvent += _engineManager_OnFinishEvent;
+            _engineManager.OnStartActivity += _engineManager_OnStartActivity;
+            _engineManager.OnFinishActivity += _engineManager_OnFinishActivity;
 
             _engineManager.OnTreeItemRemoving += _engineManager_OnTreeItemRemoving;
 
             _logger.LogInformation("Starting the application");
+        }
+
+        private void _engineManager_OnFinishActivity(TaskSched.Common.DataModel.ActivityContext context)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void _engineManager_OnStartActivity(TaskSched.Common.DataModel.ActivityContext context)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(() => _engineManager_OnStartActivity(context)));
+            }
+            else
+            {
+                ToastContentBuilder builder = new ToastContentBuilder();
+                builder.AddText($"Running {context.EventItem.Name} {context.Activity.Name}");
+                builder.Show(x =>
+                {
+                    x.ExpirationTime = DateTime.Now.AddSeconds(5);
+                });
+            }
         }
 
         private void _engineManager_OnFinishEvent(TaskSched.Common.DataModel.Event context)
@@ -60,22 +84,19 @@ namespace TaskScheduler.WinForm
 
         private void _engineManager_OnStartEvent(TaskSched.Common.DataModel.Event context)
         {
-                if (InvokeRequired)
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(() => _engineManager_OnStartEvent(context)));
+            }
+            else
+            {
+                ToastContentBuilder builder = new ToastContentBuilder();
+                builder.AddText($"Running {context.Name}");
+                builder.Show(x =>
                 {
-                    BeginInvoke(new MethodInvoker(() => _engineManager_OnStartEvent(context)));
-                }
-                else
-                {
-                    ToastContentBuilder builder = new ToastContentBuilder();
-                    builder.AddText($"Running {context.Name}");
-                    builder.Show(x =>
-                    {
-                        x.ExpirationTime = DateTime.Now.AddSeconds(10);
-                    });
-                }
-
-                
-
+                    x.ExpirationTime = DateTime.Now.AddSeconds(5);
+                });
+            }
         }
 
         private void _engineManager_OnTreeItemRemoving(ITreeItem treeItem, EventCancellationArgs cancelArgs)
