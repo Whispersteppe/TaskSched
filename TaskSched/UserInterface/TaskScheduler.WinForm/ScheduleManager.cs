@@ -856,14 +856,17 @@ namespace TaskScheduler.WinForm
                             {
                                 if (field.IsReadOnly == false && activityItem.Fields.Any(x => x.ActivityFieldId == field.Id) == false)
                                 {
-                                    EventActivityField newField = new EventActivityField()
+                                    if (activityItem.Fields.Any(x => x.Name == field.Name) == false)
                                     {
-                                        ActivityFieldId = field.Id,
-                                        FieldType = field.FieldType,
-                                        Name = field.Name,
-                                        Value = field.Value
-                                    };
-                                    activityItem.Fields.Add(newField);
+                                        EventActivityField newField = new EventActivityField()
+                                        {
+                                            ActivityFieldId = field.Id,
+                                            FieldType = field.FieldType,
+                                            Name = field.Name,
+                                            Value = field.Value
+                                        };
+                                        activityItem.Fields.Add(newField);
+                                    }
                                 }
                             }
                         }
