@@ -1,5 +1,5 @@
 ﻿{
   "Repository": {
-    "DataSource": "TaskSched.sqlite"
+    "DataSource": "EmptyTaskSched.sqlite"
   }
 }

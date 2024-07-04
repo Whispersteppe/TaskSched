@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TaskSched.Common.DataModel;
 using TaskSched.Common.Interfaces;
+using TaskSched.DataStore.DataModel;
+using Model = TaskSched.Common.DataModel;
+using Db = TaskSched.DataStore.DataModel;
+using TaskSched.Common.Extensions;
 
 namespace TaskSched.DataStore
 {
@@ -22,15 +25,15 @@ namespace TaskSched.DataStore
 
         }
 
-        public async Task<ExpandedResult<ExportData>> ExportData()
+        public async Task<Model.ExpandedResult<ExportData>> ExportData()
         {
-            ExpandedResult<ExportData> result = new ExpandedResult<ExportData>()
+            Model.ExpandedResult<ExportData> result = new Model.ExpandedResult<ExportData>()
             {
                 Result = new ExportData()
                 {
-                    Activities = new List<Activity>(),
-                    Folders = new List<Folder>(),
-                    Events = new List<Event>()
+                    Activities = new List<Model.Activity>(),
+                    Folders = new List<Model.Folder>(),
+                    Events = new List<Model.Event>()
                 }
             };
 
@@ -51,24 +54,45 @@ namespace TaskSched.DataStore
 
         }
 
-        public async Task<ExpandedResult> ImportData(ExportData data)
+        public async Task<Model.ExpandedResult> ImportData(ExportData data)
         {
 
-            ExpandedResult result = new ExpandedResult();
+            Dictionary<Guid, Guid> activityConvert = new Dictionary<Guid, Guid>();
+            Dictionary<Guid, Guid> folderConvert = new Dictionary<Guid, Guid>();
+            Dictionary<Guid, Guid> eventConvert = new Dictionary<Guid, Guid>();
+
+            Model.ExpandedResult result = new Model.ExpandedResult();
 
             foreach (var activity in data.Activities)
             {
-
+                Guid oldId = activity.Id;
+                activity.SetForCreate();
+                var rslt = await _activityStore.Create(activity);
+                activityConvert.Add(oldId, rslt.Result);
             }
 
             foreach(var folder in data.Folders)
             {
+                Guid oldId = folder.Id;
+                folder.SetForCreate();
 
+                if (folder.ParentFolderId != null)
+                {
+                    if (folderConvert.ContainsKey(folder.ParentFolderId.Value))
+                    {
+                        folder.ParentFolderId = folderConvert[folder.ParentFolderId.Value];
+                    }
+                }
+                var rslt = await _folderStore.Create(folder);
+                folderConvert.Add(oldId, rslt.Result);
             }
 
             foreach(var eventItem in data.Events)
             {
+                Guid oldId = eventItem.Id;
+                eventItem.SetForCreate();
 
+                var rslt = await _eventStore.Create(eventItem);
             }
 
             return result;

@@ -73,6 +73,22 @@ namespace TaskSched.DataStore
             item.LastExecution = eventItem.LastExecution == DateTime.MinValue ? DateTime.Now : eventItem.LastExecution;
             item.NextExecution = eventItem.NextExecution == DateTime.MinValue ? DateTime.Now : eventItem.NextExecution;
             item.Id = Guid.Empty;
+            foreach(var schedule in item.Schedules)
+            {
+                schedule.Id = Guid.Empty;
+                schedule.EventId = Guid.Empty;
+            }
+
+            foreach(var activity in item.Activities)
+            {
+                activity.Id = Guid.Empty;
+                activity.EventId = Guid.Empty;
+                foreach (var field in activity.Fields)
+                {
+                    field.Id = Guid.Empty;
+                    field.EventActivityId = Guid.Empty;
+                }
+            }
 
             using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
             {

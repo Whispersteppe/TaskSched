@@ -34,6 +34,7 @@ namespace TaskSched.Common.DataModel
         /// the set of default fields associated with this particular activity
         /// </summary>
         public List<ActivityField>? DefaultFields { get; set; } = new List<ActivityField>();
+
     }
 
 

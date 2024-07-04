@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
 using TaskScheduler.WinForm.Models;
 
 namespace TaskScheduler.WinForm.Controls
@@ -206,6 +207,13 @@ namespace TaskScheduler.WinForm.Controls
             }
         }
 
+        class TreeItemComparer : IComparer<ITreeItem>
+        {
+            public int Compare(ITreeItem? x, ITreeItem? y)
+            {
+                return x.DisplayName.CompareTo(y.DisplayName);
+            }
+        }
 
 
         private void SetTreeviewCollection(List<ITreeItem> list, string searchText)
@@ -213,7 +221,9 @@ namespace TaskScheduler.WinForm.Controls
 
             treeScheduler.Nodes.Clear();
 
-            //_list = list;
+            // don't sort the top ones.  just the children.
+            //list.Sort(new TreeItemComparer());
+
             foreach (ITreeItem item in list)
             {
                 TreeNode node = new TreeNode(item.DisplayName)
@@ -254,6 +264,8 @@ namespace TaskScheduler.WinForm.Controls
             if (parentTreeItem.CanHaveChildren() == true)
             {
                 if (parentTreeItem.Children == null) return;
+
+                parentTreeItem.Children.Sort(new TreeItemComparer());
 
                 foreach (ITreeItem item in parentTreeItem.Children)
                 {

@@ -66,6 +66,12 @@ namespace TaskSched.DataStore
             DB.Activity item = _mapper.Map<DB.Activity>(activity);
 
             item.Id = Guid.Empty;
+            foreach(var field in item.DefaultFields)
+            {
+                field.ActivityId = Guid.Empty;
+                field.Id = Guid.Empty;
+            }
+
             using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
             {
 

@@ -1,16 +1,7 @@
 using CommunityToolkit.WinUI.Notifications;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog;
-using NLog.Config;
-using NLog.Extensions.Logging;
-using NLog.Targets;
-using System.Configuration;
 using System.Diagnostics;
-using System.Windows.Forms;
 using TaskSched.Common.Interfaces;
-using TaskSched.DataStore;
 using TaskScheduler.WinForm.Configuration;
 using TaskScheduler.WinForm.Models;
 using TaskScheduler.WinForm.NLogCustom;
@@ -62,19 +53,19 @@ namespace TaskScheduler.WinForm
 
         private void _engineManager_OnStartActivity(TaskSched.Common.DataModel.ActivityContext context)
         {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new MethodInvoker(() => _engineManager_OnStartActivity(context)));
-            }
-            else
-            {
-                ToastContentBuilder builder = new ToastContentBuilder();
-                builder.AddText($"Running {context.EventItem.Name} {context.Activity.Name}");
-                builder.Show(x =>
-                {
-                    x.ExpirationTime = DateTime.Now.AddSeconds(5);
-                });
-            }
+//            if (InvokeRequired)
+//            {
+//                BeginInvoke(new MethodInvoker(() => _engineManager_OnStartActivity(context)));
+//            }
+//            else
+//            {
+//                ToastContentBuilder builder = new ToastContentBuilder();
+//                builder.AddText($"Running {context.EventItem.Name} {context.Activity.Name}");
+//                builder.Show(x =>
+//                {
+//                    x.ExpirationTime = DateTime.Now.AddSeconds(5);
+//                });
+//            }
         }
 
         private void _engineManager_OnFinishEvent(TaskSched.Common.DataModel.Event context)
@@ -276,5 +267,6 @@ namespace TaskScheduler.WinForm
             _notifyIcon.Text = "Scheduler Stopped";
 
         }
+
     }
 }
