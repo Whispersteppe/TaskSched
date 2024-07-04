@@ -211,7 +211,8 @@ namespace TaskScheduler.WinForm.Controls
         {
             public int Compare(ITreeItem? x, ITreeItem? y)
             {
-                return x.DisplayName.CompareTo(y.DisplayName);
+                int compare = x.DisplayName.CompareTo(y.DisplayName);
+                return compare;
             }
         }
 
@@ -265,9 +266,11 @@ namespace TaskScheduler.WinForm.Controls
             {
                 if (parentTreeItem.Children == null) return;
 
-                parentTreeItem.Children.Sort(new TreeItemComparer());
+                List<ITreeItem> children = new List<ITreeItem>(parentTreeItem.Children);
 
-                foreach (ITreeItem item in parentTreeItem.Children)
+                children.Sort(new TreeItemComparer());
+
+                foreach (ITreeItem item in children)
                 {
                     TreeNode node = new TreeNode(item.DisplayName);
 
