@@ -81,12 +81,12 @@ namespace TaskScheduler.WinForm
             }
             else
             {
-                ToastContentBuilder builder = new ToastContentBuilder();
-                builder.AddText($"Running {context.Name}");
-                builder.Show(x =>
-                {
-                    x.ExpirationTime = DateTime.Now.AddSeconds(5);
-                });
+//                ToastContentBuilder builder = new ToastContentBuilder();
+//                builder.AddText($"Running {context.Name}");
+//                builder.Show(x =>
+//                {
+//                    x.ExpirationTime = DateTime.Now.AddSeconds(5);
+//                });
             }
         }
 
