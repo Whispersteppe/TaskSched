@@ -610,5 +610,19 @@ namespace TaskScheduler.WinForm.Controls
                 }
             }
         }
+
+        private void treeScheduler_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node == null) return;
+            if (_scheduleManager == null) return;
+
+            if (e.Node.Tag is EventModel eventModel)
+            {
+                Task.Run(async () =>
+                {
+                    await _scheduleManager.LaunchEvent(eventModel);
+                }).Wait();
+            }
+        }
     }
 }
