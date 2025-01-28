@@ -30,7 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SchedulerTreeView));
-            txtSearch = new TextBox();
+            txtSearch = new ClearingTextBox();
             treeScheduler = new TreeView();
             treeviewImages = new ImageList(components);
             SuspendLayout();
@@ -96,7 +96,7 @@
 
         #endregion
 
-        private TextBox txtSearch;
+        private ClearingTextBox txtSearch;
         private TreeView treeScheduler;
         private ImageList treeviewImages;
     }

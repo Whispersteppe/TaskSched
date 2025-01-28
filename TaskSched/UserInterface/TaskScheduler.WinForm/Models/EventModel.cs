@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 using TaskSched.Common.DataModel;
 using TaskSched.Common.FieldValidator;
 using TaskScheduler.WinForm.Controls.PropertyGridHelper;
@@ -137,6 +138,30 @@ namespace TaskScheduler.WinForm.Models
 
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        [ReadOnly(true)]
+        [Browsable(true)]
+        [Category("ID")]
+        public string InfoText
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+
+                foreach (EventActivityModel eventActivityModel in Activities)
+                {
+                    sb.AppendLine($"{eventActivityModel}");
+                }
+                foreach (EventScheduleModel eventScheduleModel in Schedules)
+                {
+                    sb.AppendLine($"{eventScheduleModel}");
+                }
+
+                return sb.ToString();
+            }
+        }
+
+
 
         [ReadOnly(true)]
         [Browsable(false)]

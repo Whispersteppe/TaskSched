@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.NetworkInformation;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TaskSched.Component.Cron
 {
@@ -349,12 +342,6 @@ namespace TaskSched.Component.Cron
             }
 
             return workDate;
-
         }
-      
-
-
     }
-
-
 }

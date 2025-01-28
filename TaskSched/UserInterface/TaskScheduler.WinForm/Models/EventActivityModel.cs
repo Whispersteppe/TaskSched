@@ -64,10 +64,7 @@ namespace TaskScheduler.WinForm.Models
 
                 //TODO will also need to reswizzle fields as needed
             }
-
-
         }
-
 
         [ReadOnly(false)]
         [Browsable(false)]
@@ -79,7 +76,14 @@ namespace TaskScheduler.WinForm.Models
 
         public override string ToString()
         {
-            return Name;
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(Name);
+            foreach (var field in Fields)
+            {
+                sb.AppendLine($"{field.Name}: {field.Value}");
+            }
+
+            return sb.ToString();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

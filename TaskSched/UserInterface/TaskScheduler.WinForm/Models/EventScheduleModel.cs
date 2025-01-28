@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using System.Text;
 using TaskSched.Component.Cron;
 
 namespace TaskScheduler.WinForm.Models
@@ -26,7 +27,8 @@ namespace TaskScheduler.WinForm.Models
             get => name;
             set
             {
-                name = value;OnPropertyChanged();
+                name = value;
+                OnPropertyChanged();
             }
         }
         [ReadOnly(false)]
@@ -58,9 +60,24 @@ namespace TaskScheduler.WinForm.Models
             }
         }
 
+        [ReadOnly(true)]
+        [Browsable(true)]
+        [Description("Cron data for the schedule - Sec Min Hour DayOfMonth Month DayOfWeek Year")]
+        [Category("ID")]
+        public string CronDescription
+        {
+            get 
+            {
+                CronExpressionDescriptor.ExpressionDescriptor expressionDescriptor = new CronExpressionDescriptor.ExpressionDescriptor(CRONData);
+
+                var description = expressionDescriptor.GetDescription(CronExpressionDescriptor.DescriptionTypeEnum.FULL);
+
+                return description;
+            }
+        }
         public override string ToString()
         {
-            return Name;
+            return $"{CronDescription}";
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
