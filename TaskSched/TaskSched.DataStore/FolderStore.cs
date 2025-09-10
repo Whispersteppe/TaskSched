@@ -242,9 +242,9 @@ namespace TaskSched.DataStore
                 if (dbEntity != null)
                 {
 
-                    //  we're not doing a mapping since we've only got one field, and i don't want to screw up child events and folders
                     //_dbContext.Entry(dbEntity).CurrentValues.SetValues(folder); 
                     dbEntity.Name = folder.Name;
+                    dbEntity.ParentFolderId = folder.ParentFolderId;
                     dbEntity.DefaultSchedule = folder.DefaultSchedule;
 
                     _dbContext.Update(dbEntity);

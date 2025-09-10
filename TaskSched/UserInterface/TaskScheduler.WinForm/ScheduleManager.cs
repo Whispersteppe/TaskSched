@@ -639,9 +639,9 @@ namespace TaskScheduler.WinForm
 
                         Event eventItem = new Event()
                         {
-                            CatchUpOnStartup = false, 
+                            CatchUpOnStartup = true, 
                             Name = "New Item", 
-                            IsActive = false,
+                            IsActive = true,
                             FolderId = parentItem != null && parentItem is RootModel == false ? parentItem.ID : null,
                             LastExecution = DateTime.Now, 
                             NextExecution = DateTime.Now, 
@@ -658,7 +658,8 @@ namespace TaskScheduler.WinForm
                                              ActivityFieldId = x.Id, 
                                              Name = x.Name, 
                                              Value = x.Value,
-                                             FieldType = x.FieldType}))
+                                             FieldType = x.FieldType
+                                         }))
                                  }
                             },
                             Schedules = new List<EventSchedule>()

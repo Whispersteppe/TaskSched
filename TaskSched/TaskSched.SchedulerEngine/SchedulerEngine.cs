@@ -188,6 +188,7 @@ namespace TaskSched.SchedulerEngine
             if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
                 await LoadEvent(rsltGet.Result, false);
+                eventItem.NextExecution = (await SchedulerUtility.GetNextFireTimeForJob(eventItem.JobKey(), _scheduler)).GetValueOrDefault(DateTime.Now);
             }
 
             return rsltCreate;
@@ -261,6 +262,14 @@ namespace TaskSched.SchedulerEngine
             if (ExecutionStatus == ExecutionStatusEnum.Running)
             {
                 await LoadEvent(eventItem, false);
+
+                var nextExecution = (await SchedulerUtility.GetNextFireTimeForJob(eventItem.JobKey(), _scheduler)).GetValueOrDefault(DateTime.Now);
+                if (nextExecution != eventItem.NextExecution)
+                {
+                    eventItem.NextExecution = nextExecution;
+                    var rslt2 = await _eventStore.Update(eventItem);
+                }
+
             }
 
             return rslt;

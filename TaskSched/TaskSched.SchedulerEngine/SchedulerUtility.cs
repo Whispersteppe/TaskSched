@@ -18,7 +18,6 @@ namespace TaskSched.SchedulerEngine
             {
                 var triggers = await scheduler.GetTriggersOfJob(jobKey);
 
-
                 if (triggers.Count > 0)
                 {
                     foreach (var trigger in triggers)
