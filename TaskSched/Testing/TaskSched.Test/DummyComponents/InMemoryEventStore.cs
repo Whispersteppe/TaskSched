@@ -79,5 +79,14 @@ namespace TaskSched.Test.DummyComponents
             _events[eventItem.Id] = eventItem;
             return new ExpandedResult() { };
         }
+
+        public async Task ResetExecutionTimes()
+        {
+            foreach (var item in _events)
+            {
+                item.Value.LastExecution = DateTime.MinValue;
+                item.Value.NextExecution = DateTime.MinValue;
+            }
+        }
     }
 }

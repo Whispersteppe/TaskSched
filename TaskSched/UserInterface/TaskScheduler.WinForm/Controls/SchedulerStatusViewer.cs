@@ -11,107 +11,130 @@ using System.Windows.Forms;
 using TaskScheduler.WinForm.Models;
 using TaskScheduler.WinForm.NLogCustom;
 
-namespace TaskScheduler.WinForm.Controls
+namespace TaskScheduler.WinForm.Controls;
+
+public partial class SchedulerStatusViewer : UserControl, ICanvasItem
 {
-    public partial class SchedulerStatusViewer : UserControl
+    ScheduleManager _manager;
+    SchedulerStatusModel _model;
+
+    public SchedulerStatusViewer(ScheduleManager scheduleManager, SchedulerStatusModel model)
     {
-        ScheduleManager _manager;
-        SchedulerStatusModel _model;
+        InitializeComponent();
 
-        public SchedulerStatusViewer(ScheduleManager scheduleManager, SchedulerStatusModel model)
+        _manager = scheduleManager;
+        _model = model;
+
+        FillGrid();
+    }
+
+    private void FillGrid()
+    {
+        lvEvents.BeginUpdate();
+        lvEvents.Items.Clear();
+
+        var items = _model.StatusItems().Result;
+        foreach (var item in items)
         {
-            InitializeComponent();
+            ListViewItem lvItem = new ListViewItem(item.Name);
+            lvItem.SubItems.Add(item.NextExecution.ToString());
+            lvItem.SubItems.Add(item.PreviousExecution.ToString());
+            lvItem.SubItems.Add(item.IsActive.ToString());
+            lvItem.Tag = item;
 
-            _manager = scheduleManager;
-            _model = model;
+            lvEvents.Items.Add(lvItem);
 
-            FillGrid();
-        }
-
-        private void FillGrid()
-        {
-            lvEvents.BeginUpdate();
-            lvEvents.Items.Clear();
-
-            var items = _model.StatusItems().Result;
-            foreach (var item in items)
+            foreach (ColumnHeader col in lvEvents.Columns)
             {
-                ListViewItem lvItem = new ListViewItem(item.Name);
-                lvItem.SubItems.Add(item.NextExecution.ToString());
-                lvItem.SubItems.Add(item.PreviousExecution.ToString());
-                lvItem.SubItems.Add(item.IsActive.ToString());
-                lvItem.Tag = item;
-
-                lvEvents.Items.Add(lvItem);
-
-                foreach (ColumnHeader col in lvEvents.Columns)
+                Size t = TextRenderer.MeasureText(lvItem.SubItems[col.Index].Text, lvItem.SubItems[col.Index].Font);
+                if (t.Width + 8 > col.Width)
                 {
-                    Size t = TextRenderer.MeasureText(lvItem.SubItems[col.Index].Text, lvItem.SubItems[col.Index].Font);
-                    if (t.Width + 8 > col.Width)
-                    {
-                        col.Width = t.Width + 8;
-                    }
+                    col.Width = t.Width + 8;
                 }
             }
-
-            lvEvents.ListViewItemSorter = new EventSorter(1);
-            lvEvents.Sort();
-
-            lvEvents.EndUpdate();
         }
 
-        private void lvEvents_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            lvEvents.ListViewItemSorter = new EventSorter(e.Column);
-            lvEvents.Sort();
-        }
+        lvEvents.ListViewItemSorter = new EventSorter(1);
+        lvEvents.Sort();
 
-        private async void lvEvents_DoubleClick(object sender, EventArgs e)
+        lvEvents.EndUpdate();
+    }
+
+    private void lvEvents_ColumnClick(object sender, ColumnClickEventArgs e)
+    {
+        lvEvents.ListViewItemSorter = new EventSorter(e.Column);
+        lvEvents.Sort();
+    }
+
+    private async void lvEvents_DoubleClick(object sender, EventArgs e)
+    {
+        if (lvEvents.SelectedItems.Count > 0)
         {
-            if (lvEvents.SelectedItems.Count > 0)
+            var selectedItem = lvEvents.SelectedItems[0];
+            if (selectedItem.Tag is ScheduleStatusItem item)
             {
-                var selectedItem = lvEvents.SelectedItems[0];
-                if (selectedItem.Tag is ScheduleStatusItem item)
-                {
-                    await _manager.SelectItem(item.ID);
-                }
+                await _manager.SelectItem(item.ID);
             }
         }
     }
 
-    public class EventSorter : IComparer<ListViewItem>, IComparer
+    public List<ToolStripItem> ToolStripItems
     {
-        int _sortColumn;
-
-        public EventSorter(int sortColumn) 
-        { 
-            _sortColumn = sortColumn;
-        }
-
-        public int Compare(ListViewItem? x, ListViewItem? y)
+        get
         {
-            var scheduleStatusItemX = x.Tag as ScheduleStatusItem;
-            var scheduleStatusItemY = y.Tag as ScheduleStatusItem;
-
-            switch(_sortColumn)
-            {
-                case 0:
-                    return  scheduleStatusItemX.Name.CompareTo(scheduleStatusItemY.Name);
-                case 1:
-                    return scheduleStatusItemX.NextExecution.CompareTo(scheduleStatusItemY.NextExecution);
-                case 2:
-                    return scheduleStatusItemX.PreviousExecution.CompareTo(scheduleStatusItemY.PreviousExecution);
-                case 3:
-                    return scheduleStatusItemX.IsActive.CompareTo(scheduleStatusItemY.IsActive);
-                default:
-                    return 0;
-            }
-
+            ToolStripBuilder builder = new ToolStripBuilder();
+            builder.AddButton("Reset All", tsReset_Click);
+            return builder.ToolStripItems;
         }
+    }
 
-        public int Compare(object? x, object? y)
+    private async void tsReset_Click(object? sender, EventArgs e)
+    {
+        _manager.ResetAll();
+        FillGrid();
+    }
+
+    public ITreeItem? TreeItem => throw new NotImplementedException();
+
+    public Task LeavingItem()
+    {
+        //  don't need to do anything when leaving this item
+        return Task.CompletedTask;
+    }
+}
+
+public class EventSorter : IComparer<ListViewItem>, IComparer
+{
+    int _sortColumn;
+
+    public EventSorter(int sortColumn) 
+    { 
+        _sortColumn = sortColumn;
+    }
+
+    public int Compare(ListViewItem? x, ListViewItem? y)
+    {
+        var scheduleStatusItemX = x.Tag as ScheduleStatusItem;
+        var scheduleStatusItemY = y.Tag as ScheduleStatusItem;
+
+        switch(_sortColumn)
         {
-            return Compare(x as ListViewItem, y as ListViewItem);
+            case 0:
+                return  scheduleStatusItemX.Name.CompareTo(scheduleStatusItemY.Name);
+            case 1:
+                return scheduleStatusItemX.NextExecution.CompareTo(scheduleStatusItemY.NextExecution);
+            case 2:
+                return scheduleStatusItemX.PreviousExecution.CompareTo(scheduleStatusItemY.PreviousExecution);
+            case 3:
+                return scheduleStatusItemX.IsActive.CompareTo(scheduleStatusItemY.IsActive);
+            default:
+                return 0;
         }
+
+    }
+
+    public int Compare(object? x, object? y)
+    {
+        return Compare(x as ListViewItem, y as ListViewItem);
     }
 }

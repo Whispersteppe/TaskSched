@@ -53,6 +53,9 @@ namespace TaskSched.Common.Interfaces
         /// <param name="newParentFolderId"></param>
         /// <returns></returns>
         Task<ExpandedResult> MoveEvent(Guid eventId, Guid? newParentFolderId);
+
+        Task ResetExecutionTimes();
+
     }
 
 }

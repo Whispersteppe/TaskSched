@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using model=TaskSched.Common.DataModel;
-using db = TaskSched.DataStore.DataModel;
-using TaskSched.Common.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaskSched.Common.DataModel;
 using TaskSched.Common.FieldValidator;
-using TaskSched.DataStore.DataModel;
+using TaskSched.Common.Interfaces;
+using db = TaskSched.DataStore.DataModel;
+using model = TaskSched.Common.DataModel;
 
 namespace TaskSched.DataStore
 {
@@ -345,6 +339,25 @@ namespace TaskSched.DataStore
 
             }
 
+        }
+
+        public async Task ResetExecutionTimes()
+        {
+
+            DateTime lastExecutionDate = DateTime.Now.AddDays(-1);
+            using (TaskSchedDbContext _dbContext = _contextFactory.GetConnection())
+            {
+                var events = await _dbContext.Events.ToListAsync();
+                foreach(var eventItem in events)
+                {
+                    eventItem.LastExecution = lastExecutionDate;
+                    eventItem.NextExecution = lastExecutionDate;
+
+                    _dbContext.Events.Update(eventItem);
+                }
+                await _dbContext.SaveChangesAsync();
+                _logger.LogInformation($"Reset execution times for {events.Count} events.");
+            }
         }
 
 

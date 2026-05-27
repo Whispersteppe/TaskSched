@@ -1040,5 +1040,10 @@ namespace TaskScheduler.WinForm
 
         }
 
+        public async Task ResetAll()
+        {
+            await _eventStore.ResetExecutionTimes();
+        }
+
     }
 }
